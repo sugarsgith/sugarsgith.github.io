@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<title>スロット実戦メモ（L炎炎ノ消防隊2）</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:8px 12px}
+header h1{font-size:16px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:13px}
+.bar span{padding:2px 8px;border-radius:999px;background:var(--accentSoft)}
+.bar span.ok{background:var(--okSoft);color:var(--ok);font-weight:700}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+main{max-width:720px;margin:0 auto;padding:0 12px 80px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 4px}
+h3{font-size:15px;margin:14px 0 2px}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}
+button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.sm{min-height:36px;padding:4px 12px}
+button:active{transform:scale(.97)}
+.grow{flex:1 1 120px}
+input,select{font:inherit;font-size:18px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--sub);display:block;margin:8px 0 4px}
+.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;font-weight:700}
+.stars{color:var(--warn)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cell{flex:1 1 90px;text-align:center;font-size:12.5px;padding:4px;border-radius:6px;border:1px solid var(--border)}
+.cell.best{border-color:var(--accent);background:var(--accentSoft);font-weight:700}
+.hints{display:flex;flex-wrap:wrap;gap:8px}
+.hint{flex:1 1 260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.hint.on{background:var(--accentSoft)}
+.hint.on.confirm{border-color:var(--ok);background:var(--okSoft)}
+.hint .tap{all:unset;display:block;width:100%;cursor:pointer}
+.look{color:var(--sub);font-size:12.5px;margin:2px 0 6px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.tag.confirm{color:var(--ok);border-color:var(--ok);font-weight:700}
+.tag.strong{color:var(--accent);border-color:var(--accent);font-weight:700}
+.tag.weak{color:var(--warn);border-color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 8px;border:1px solid var(--border);border-radius:6px}
+.est .r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.est .l{width:46px}.est .v{width:52px;text-align:right}
+.est .t{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.est .f{height:100%;background:var(--accent);opacity:.55}
+.est .r.best .f{opacity:1}
+.call{border:1px solid var(--ok);background:var(--okSoft);color:var(--ok);border-radius:10px;padding:8px 10px;font-weight:700;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+th,td{border-bottom:1px solid var(--border);padding:6px 4px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+ul{padding-left:18px;margin:6px 0}
+.src li{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub)}
+textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.grid2 label{margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:8px}
+.chk input{width:22px;height:22px;min-height:0}
+details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
+.used{font-size:12.5px;color:var(--sub);margin-top:8px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:80px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.rel{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid;margin-left:6px;font-weight:700;vertical-align:middle}
+.rel.h{color:var(--ok);border-color:var(--ok)}.rel.m{color:var(--accent);border-color:var(--accent)}.rel.l{color:var(--warn);border-color:var(--warn)}
+.chk.big{font-size:15px;color:var(--text);font-weight:700;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+.alert{border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;border-bottom:1px solid var(--border);padding:5px 0}
+.kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
+.back{font-size:13px;color:var(--accent);text-decoration:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btns button{width:100%;font-size:14px;line-height:1.25}
+.btns button small{display:block;font-size:11.5px;color:var(--sub);font-weight:400}
+button.p small{color:#e6eeff}
+.cnt{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--accentSoft);font-weight:700;font-size:12.5px;margin-left:4px}
+.evs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ev{font-size:12px;padding:2px 4px 2px 8px;border:1px solid var(--border);border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.ev button{min-height:26px;padding:0 8px;border:none;background:transparent;color:var(--danger);font-size:14px}
+.ev.loop{border-color:var(--warn)}
+.badge{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--accentSoft);margin-left:4px}
+.badge.loop{background:#fdf0dc;color:#8a4b00}
+@media (prefers-color-scheme:dark){.badge.loop{background:#3a2a12;color:#f5c27a}}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input{flex:1;min-height:32px;padding:0}
+.rng b{width:48px;text-align:right}
+.zone{display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding:6px 0}
+.zone>b{width:52px}
+.zone .seg{flex:1}
+.zone .seg button{min-width:0;font-size:12.5px;min-height:36px;padding:2px 4px}
+.warnx{color:var(--warn);font-weight:700}
+.mono{font-variant-numeric:tabular-nums}
+button.p .cnt{background:#fff;color:#1d4ed8}
+</style>
+</head>
+<body>
+<noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
+<header>
+  <a href="../" class="back">← メニュー</a>
+  <h1 id="title">スロット実戦メモ（L炎炎ノ消防隊2）</h1>
+  <div class="bar" id="statbar"></div>
+</header>
+<nav>
+  <a href="#base">台・G数</a><a href="#mid" id="navMid">途中から</a><a href="#now">当たり記録</a><a href="#ceil">天井</a><a href="#est">設定推測</a><a href="#es">終了画面</a><a href="#rc">キャラ紹介</a><a href="#coin">枚数表示</a><a href="#end">エンディング</a><a href="#wana">伝導者の罠</a><a href="#gen">その他示唆</a><a href="#wt">⚙重み</a><a href="#mode">モード</a><a href="#memo">メモ</a><a href="#extra">参考</a><a href="#spec">概要</a><a href="#src">出典</a>
+</nav>
+<main>
+  <section id="base">
+    <h2>台と一括入力</h2>
+    <label>打ち始め</label>
+    <div class="seg" id="modeSeg"><button data-set="mode" data-v="asa">朝イチから</button><button data-set="mode" data-v="mid">途中から</button></div>
+    <label>朝イチの設定変更（天井短縮の判断用）</label>
+    <div class="seg" id="resetSeg"><button data-set="reset" data-v="yes">変更あり</button><button data-set="reset" data-v="no">据え置き</button><button data-set="reset" data-v="unknown">不明</button></div>
+    <p class="cap" style="margin-top:6px">リセット判別は解析サイトでも「調査中」（なな徹）。ホールの公表・前日データで判断してください。</p>
+    <h3>自分が打った分（一括入力）</h3>
+    <div class="grid2">
+      <div><label>通常時のゲーム数</label><input data-f="g" inputmode="numeric" placeholder="例 2000"></div>
+      <div><label>ボーナス初当り回数</label><input data-f="bon" inputmode="numeric" placeholder="例 9"></div>
+      <div><label>うち炎炎ループ突入</label><input data-f="loop" inputmode="numeric" placeholder="例 4"></div>
+    </div>
+    <p class="cap" style="margin-top:6px">ボーナス初当り＝初当りREG＋SPエピソード。炎炎ループ突入＝SPエピ直行＋伝導者の罠成功。下の「当たり記録」ボタンでも自動で増えます。</p>
+    <p class="note" id="savestate"></p>
+    <button id="resetAll">リセット</button>
+  </section>
+
+  <section id="mid" hidden>
+    <h2>途中から：前任者データ <span class="rel l">信頼度 低</span></h2>
+    <p class="cap">この機種にはマイスロのような履歴画面が見つかっていません（SANKYO・台の液晶メニュー未確認）。台上のデータカウンターだけが頼りです。ホールのカウンターでBB／RBがどのボーナスに当たるかは店ごとに違うので、1日分の履歴と見比べて確認してください。</p>
+    <div class="grid2">
+      <div><label>着席時の総スタート</label><input data-p="ht" inputmode="numeric" placeholder="例 3000"></div>
+      <div><label>前任の通常G（分かれば）</label><input data-p="g" inputmode="numeric" placeholder="例 2500"></div>
+      <div><label>前任のボーナス初当り</label><input data-p="bon" inputmode="numeric" placeholder="例 10"></div>
+      <div><label>前任の炎炎ループ突入</label><input data-p="loop" inputmode="numeric" placeholder="例 4"></div>
+    </div>
+    <label>この数字の範囲</label>
+    <div class="seg" id="scopeSeg"><button data-set="scope" data-v="today">当日の台全体</button><button data-set="scope" data-v="unknown">不明</button></div>
+    <label class="chk big"><input type="checkbox" id="merge">前任者を合算して設定推測に使う（当日＝重み100%／不明＝50%）</label>
+    <p class="cap">現在G・ループ間G・罠スルー回数は下の「天井カウンター」に入力してください（履歴から数える）。</p>
+    <div id="midBody"></div>
+  </section>
+
+  <section id="now">
+    <h2>当たり記録</h2>
+    <p class="cap">押すと回数と天井カウンターが自動で動き、終了画面の種類も切り替わります。</p>
+    <div class="kv"><span>いまの状態</span><b id="stateLbl"></b></div>
+    <div class="btns" style="margin-top:8px">
+      <button data-q="reg">初当りREG<small>→伝導者の罠へ</small></button>
+      <button data-q="sp">SPエピソード<small>炎炎ループ直行</small></button>
+      <button data-q="ok">罠でエピボ当選<small>→炎炎ループ突入</small></button>
+      <button data-q="thru">罠スルー<small>スルー回数＋1</small></button>
+      <button data-q="end" class="grow" style="grid-column:1/3">炎炎ループ終了（通常へ）<small>ボーナス間・ループ間を0Gに／潜伏確認開始</small></button>
+    </div>
+    <div class="evs" id="qLog"></div>
+  </section>
+
+  <section id="ceil">
+    <h2>天井カウンター <span class="rel h">信頼度 高</span></h2>
+    <div class="grid2">
+      <div><label>ボーナス間G（現在G）</label><input data-c="bg" inputmode="numeric" placeholder="0"></div>
+      <div><label>炎炎ループ間G</label><input data-c="lg" inputmode="numeric" placeholder="0"></div>
+      <div><label>伝導者の罠 スルー回数</label><input data-c="thru" inputmode="numeric" placeholder="0"></div>
+      <div><label>ループ終了後のG（潜伏確認）</label><input data-c="sen" inputmode="numeric" placeholder="0"></div>
+    </div>
+    <div id="ceilBody" style="margin-top:8px"></div>
+  </section>
+
+  <section id="est">
+    <h2>設定推測</h2>
+    <p class="cap">使った要素だけで計算（入力のない要素は無視）。事前は各設定同じ確率。確定・濃厚・否定は常に100%で反映。</p>
+    <div id="estBody" class="est"></div>
+  </section>
+
+  <section id="es">
+    <h2>ボーナス終了画面 <span class="rel h">信頼度 高</span></h2>
+    <p class="cap">設定示唆画面は「通常時REG・炎炎ボーナス・アクセルボーナス・灰焰ボーナス」終了時に出現（なな徹・DMM）。振り分けはボーナスの種類ごと（REG・アクセル・灰焰が同じ表、炎炎ボーナスは別の表）。エピソード・SPエピ・森羅万象後は固定画面で示唆なし。<a href="https://nana-press.com/kaiseki/machine/1088/34558/" target="_blank" rel="noopener">画面の画像（なな徹）</a></p>
+    <label>どのボーナスの終了画面？（当たり記録で自動切替）</label>
+    <div class="seg" id="btypeSeg"><button data-set="btype" data-v="reg">初当りREG</button><button data-set="btype" data-v="acc">アクセル・灰焰</button><button data-set="btype" data-v="big">炎炎ボーナス</button></div>
+    <div id="customWarn"></div>
+    <div class="hints" id="esBtns" style="margin-top:8px"></div>
+    <div class="evs" id="esLog"></div>
+    <p class="note">モード示唆（シルエット白・ヘルメット・119）とストック示唆の画面は設定と無関係なので、ここでは押さず「モード」欄へ。</p>
+  </section>
+
+  <section id="rc">
+    <h2>REG中のキャラ紹介 <span class="rel m">信頼度 中</span></h2>
+    <p class="cap">初当りREG中に5人紹介（P-WORLD）。シナリオを1つ選んで記録。振り分けはちょんぼりすたの表（結合セルを上の値で補完し、各設定の合計100%で検算済み）。<a href="https://www.p-world.co.jp/machine/database/10415" target="_blank" rel="noopener">紹介順の一覧（P-WORLD）</a>・<a href="https://chonborista.com/slot/sankyo-slot/247643/" target="_blank" rel="noopener">振り分け（ちょんぼりすた）</a></p>
+    <div class="hints" id="rcBtns"></div>
+    <h3>出現箇所不問（金キャラ）</h3>
+    <div class="hints" id="rcxBtns"></div>
+    <div class="evs" id="rcLog"></div>
+  </section>
+
+  <section id="coin">
+    <h2>獲得枚数表示 <span class="rel h">信頼度 高</span></h2>
+    <p class="cap">AT中の一定枚数獲得時（P-WORLD）。いずれも確定系。出現率は約1%だが分母が不明なので、否定・確定としてだけ使います。</p>
+    <div class="hints" id="coinBtns"></div>
+    <div class="evs" id="coinLog"></div>
+  </section>
+
+  <section id="end">
+    <h2>エンディング中のミニキャラ <span class="rel m">信頼度 中</span></h2>
+    <p class="cap">エンディング中のレア役で液晶左下に出現（ちょんぼりすた・DMM）。十字リプレイ時は振り分けが別。結合セルを補完・合計100%で検算済み。シンラ／アーサーはDMMでは奇数／偶数示唆、ちょんぼりすたではデフォルト表記（数値は同じ）。</p>
+    <label>成立したレア役</label>
+    <div class="seg" id="roleSeg"><button data-set="role" data-v="other">チェリー・スイカ・チャンス目</button><button data-set="role" data-v="cross">十字リプレイ</button></div>
+    <div class="hints" id="endBtns" style="margin-top:8px"></div>
+    <div class="evs" id="endLog"></div>
+  </section>
+
+  <section id="wana">
+    <h2>伝導者の罠：小Vリプ→十字目変換 <span class="rel l">信頼度 低・調査中</span></h2>
+    <p class="cap">公表は「設定1 約42%／高設定(4以上?) 約50%」の2値だけ（ちょんぼりすた・DMM）。設定1〜3を42%、4〜6を50%と仮定し、⚙の「初当り」重みで弱めて使います。</p>
+    <div class="grid2">
+      <div><label>罠中の小Vリプ回数</label><input data-f="wv" inputmode="numeric" placeholder="0"></div>
+      <div><label>うち十字目変換</label><input data-f="wx" inputmode="numeric" placeholder="0"></div>
+    </div>
+    <div class="row" style="margin-top:8px"><button class="sm" data-inc="wv">小V ＋1</button><button class="sm" data-inc="wx">変換 ＋1（小Vも＋1）</button></div>
+  </section>
+
+  <section id="gen">
+    <h2>その他の示唆（数値未公表） <span class="rel l">信頼度 低</span></h2>
+    <p class="cap">例：有利区間リセット時に炎炎大戦以上（「高設定ほど当選しやすい模様」ちょんぼりすた）など、数値のない示唆。強さはこの機種のREG後終了画面の「弱」「強」と同程度と仮定し、⚙の重み（初当り／連チャン中）を掛けます。</p>
+    <label>タイミング（状態から自動・手動でも可）</label>
+    <div class="seg" id="tmSeg"><button data-set="tm" data-v="first">初当り</button><button data-set="tm" data-v="loop">連チャン中</button></div>
+    <div class="btns" style="margin-top:8px"><button data-gen="weak">高設定示唆（弱）</button><button data-gen="strong">高設定示唆（強）</button></div>
+    <div class="evs" id="genLog"></div>
+  </section>
+
+  <section id="wt">
+    <details id="wtDet"><summary>⚙ 示唆の重み・店長カスタム</summary>
+    <p class="cap">公表された振り分け表がある示唆（終了画面・キャラ紹介・エンディング）は常に100%。確定・濃厚・否定も常に100%。下の重みは数値未公表の示唆（伝導者の罠・その他の示唆）にだけ掛かります。</p>
+    <label>初当りの示唆</label><div class="rng"><input type="range" min="0" max="100" step="5" data-w="first"><b id="wFirst"></b></div>
+    <label>連チャン中の示唆</label><div class="rng"><input type="range" min="0" max="100" step="5" data-w="loop"><b id="wLoop"></b></div>
+    <label class="chk big"><input type="checkbox" id="custom">このホールは店長カスタム（終了画面カスタム）あり</label>
+    <p class="cap">カスタム報知ONの台はリール左下に「終了画面カスタム設定中」のロゴ（なな徹「模様」）。カスタム時は公表の振り分けが当てはまらないため、終了画面の弱・強・デフォルトをこの重みで弱めます。</p>
+    <label>カスタム時の終了画面（弱・強・デフォルト）の重み</label><div class="rng"><input type="range" min="0" max="100" step="5" data-w="custom"><b id="wCustom"></b></div>
+    <button class="sm" id="wReset">初期値に戻す（100% / 50% / 0%）</button>
+    </details>
+  </section>
+
+  <section id="mode">
+    <h2>モード・ゾーン <span class="rel m">信頼度 中</span></h2>
+    <p class="cap">モードはボーナス当選ごとに再抽選。設定推測には使いません（天井までの距離の目安）。前兆が十字目変換の前兆と少しでも被ったゾーンは判別不可なので「—」のまま（ちょんぼりすた）。</p>
+    <label>直前の状況</label>
+    <div class="seg" id="mctxSeg"><button data-set="mctx" data-v="reset">設定変更後</button><button data-set="mctx" data-v="bonus">ボーナス後</button></div>
+    <div id="zones" style="margin-top:6px"></div>
+    <h3>見えたモード示唆</h3>
+    <div class="hints" id="mhBtns"></div>
+    <div id="modeBody" style="margin-top:8px"></div>
+  </section>
+
+  <section id="memo">
+    <h2>自分用カウンター・メモ</h2>
+    <div class="row"><input id="newCnt" placeholder="カウンター名（例 チェリー）" style="flex:1 1 160px"><button class="sm" id="addCnt">追加</button></div>
+    <div id="cntBody" style="margin-top:8px"></div>
+    <label for="notes">メモ</label>
+    <textarea id="notes" placeholder="台番号・ホールの癖・カスタム状況など"></textarea>
+  </section>
+
+  <section id="extra">
+    <h2>参考（設定推測には使わない）</h2>
+    <div id="extraBody"></div>
+  </section>
+
+  <section id="spec">
+    <h2>概要・スペック</h2>
+    <div id="specBody"></div>
+  </section>
+
+  <section id="src">
+    <h2>出典・不一致・調査中</h2>
+    <div id="srcBody"></div>
+  </section>
+</main>
+<script>
+(function(){
+"use strict";
+var KEY="slotmemo:v1:enen2";
+var SPEC={bon:[272,269,257,242,236,227],loop:[684,662,617,546,518,486],wari:[97.7,98.8,101.2,105.6,110.2,114.9]};
+var ESR={rb:{A:[77,74,71,63,59,55],B:[20,22,24,26,28,30],C:[3,4,5,6,8,9]},big:{A:[86,84,83,76,73,70],B:[11,12,13,14,16,17],C:[3,4,4,5,6,7]}};
+var ESD={D:[0,0,0,5,3,3],E:[0,0,0,0,2,2],F:[0,0,0,0,0,1]};
+var ESI=[
+ {v:"A",n:"第8メンバー シルエット（赤）",m:"デフォルト",lv:"default"},
+ {v:"B",n:"シンラ＆タマキ＆タケル＆アーサー",m:"高設定示唆（弱）",lv:"weak"},
+ {v:"C",n:"シンラ＆黒の女",m:"高設定示唆（強）",lv:"strong"},
+ {v:"D",n:"第8メンバー 全員集合",m:"設定4以上濃厚",lv:"confirm",allow:[4,5,6]},
+ {v:"E",n:"第8メンバー 赤枠9人",m:"設定5以上濃厚",lv:"confirm",allow:[5,6]},
+ {v:"F",n:"仲間全員集合（金枠）",m:"設定6濃厚",lv:"confirm",allow:[6]}];
+var RC=[
+ {id:"d1",n:"第8①",s:"シンラ→アーサー→タマキ→マキ→ヒナワ",m:"デフォルト",lv:"default",r:[43,40.5,38,38.5,35.5,30.5]},
+ {id:"d2",n:"第8②",s:"シンラ→リヒト→ヴァルカン→アイリス→オウビ",m:"偶数示唆",lv:"weak",r:[15,20,10,20,10,20]},
+ {id:"d3",n:"第8③",s:"…→マキ→紅丸（金）",m:"設定4以上濃厚",lv:"confirm",r:[0,0,0,1,1,0.5]},
+ {id:"d4",n:"第8④",s:"…→アイリス→シンラ（金）",m:"設定6濃厚",lv:"confirm",r:[0,0,0,0,0,1]},
+ {id:"t1",n:"伝導者①",s:"ジョヴァンニ→カロン→ハウメア→フレイル→インカ",m:"奇数示唆",lv:"weak",r:[15,10,20,10,20,10]},
+ {id:"t2",n:"伝導者②",s:"…→フレイル→オロチ",m:"高設定示唆（弱）",lv:"weak",r:[5,5,5,7.5,7.5,7.5]},
+ {id:"t3",n:"伝導者③",s:"…→フレイル→リツ",m:"高設定示唆（強）",lv:"strong",r:[1,1,1,5,5,5]},
+ {id:"t4",n:"伝導者④",s:"…→フレイル→シンラ（金）※",m:"設定5以上濃厚",lv:"confirm",r:[0,0,0,0,0.5,1]},
+ {id:"i1",n:"アイリス①",s:"まもるくん→オウビ→インカ→アーグ→バーンズ",m:"設定1否定",lv:"confirm",r:[0,10,10,4,4,4]},
+ {id:"i2",n:"アイリス②",s:"アイリス→まもるくん→…",m:"設定2否定",lv:"confirm",r:[7.5,0,10,4,4,4]},
+ {id:"i3",n:"アイリス③",s:"アイリス→オウビ→まもるくん→…",m:"設定3否定",lv:"confirm",r:[7.5,7.5,0,4,4,4]},
+ {id:"i4",n:"アイリス④",s:"…→インカ→まもるくん→バーンズ",m:"設定4否定",lv:"confirm",r:[3,3,3,0,7.5,4]},
+ {id:"i5",n:"アイリス⑤",s:"…→アーグ→まもるくん",m:"設定5否定",lv:"confirm",r:[3,3,3,5,0,7.5]},
+ {id:"i6",n:"アイリス⑥",s:"まもるくんが出ない",m:"設定6濃厚",lv:"confirm",r:[0,0,0,0,0,0.5]},
+ {id:"oc",n:"大隊長",s:"ジョヴァンニ→オウビ→アーグ→バーンズ→紅丸（金）",m:"設定4以上濃厚",lv:"confirm",r:[0,0,0,1,1,0.5]}];
+var RCX=[{id:"kurono",n:"黒野（金）",m:"設定4以上濃厚",allow:[4,5,6]},{id:"joker",n:"ジョーカー（金）",m:"設定5以上濃厚",allow:[5,6]},{id:"shino",n:"シンラ（死ノ圧）",m:"設定6濃厚",allow:[6]}];
+var COIN=[{id:"c119",n:"119枚OVER",m:"設定2以上濃厚",allow:[2,3,4,5,6]},{id:"c246",n:"246枚OVER",m:"偶数設定濃厚",allow:[2,4,6]},{id:"c456",n:"456枚OVER",m:"設定4以上濃厚",allow:[4,5,6]},{id:"c666",n:"666枚OVER",m:"設定6濃厚",allow:[6]}];
+var END=[
+ {id:"shinra",n:"シンラ",m:"奇数寄り（DMM）／デフォルト（ちょんぼ）",lv:"default",o:[51,32,48,28,39,22],x:[51,30,45,24,30,16]},
+ {id:"arthur",n:"アーサー",m:"偶数寄り（DMM）／デフォルト（ちょんぼ）",lv:"default",o:[34,48,32,42,26,33],x:[34,45,30,36,20,24]},
+ {id:"tamaki",n:"タマキ",m:"高設定示唆",lv:"weak",o:[15,15,15,20,20,20],x:[15,15,15,20,20,20]},
+ {id:"e119",n:"119",m:"設定1否定（＝2以上）",lv:"confirm",o:[0,5,5,5,5,10],x:[0,10,10,10,10,10]},
+ {id:"iris",n:"アイリス",m:"設定4以上濃厚",lv:"confirm",o:[0,0,0,5,5,5],x:[0,0,0,10,10,10]},
+ {id:"benij",n:"紅丸＆ジョーカー",m:"設定5以上濃厚",lv:"confirm",o:[0,0,0,0,5,5],x:[0,0,0,0,10,10]},
+ {id:"sho",n:"ショウ",m:"設定6濃厚",lv:"confirm",o:[0,0,0,0,0,5],x:[0,0,0,0,0,10]}];
+var GEN={weak:ESR.rb.B,strong:ESR.rb.C};
+var MODES=["A","B","C","D","E"],MCEIL=[850,650,450,250,88];
+var MPRI={reset:[0,24,4,39,33],bonus:[48,9,14,9,20]};
+// zone table: per mode: 2=濃厚,1=chance,0=none,9=天井
+var ZONES=[88,250,350,450,550,650,750,850];
+var ZT={88:[2,2,1,1,9],250:[1,1,1,9,-1],350:[1,1,1,-1,-1],450:[2,2,9,-1,-1],550:[1,1,-1,-1,-1],650:[2,9,-1,-1,-1],750:[1,-1,-1,-1,-1],850:[9,-1,-1,-1,-1]};
+var MH=[
+ {id:"ey_s",g:"アイキャッチ",n:"シンラ",m:"通常B以上濃厚",min:1,hard:true},
+ {id:"ey_a",g:"アイキャッチ",n:"アーサー",m:"通常C以上濃厚",min:2,hard:true},
+ {id:"ey_m",g:"アイキャッチ",n:"マキ＆タマキ",m:"通常D以上濃厚",min:3,hard:true},
+ {id:"ey_119",g:"アイキャッチ",n:"119",m:"通常E濃厚",min:4,hard:true},
+ {id:"hb_1",g:"ミニキャラ（ハズレ時）",n:"ヒバナ 悩む",m:"通常B以上濃厚",min:1,hard:true},
+ {id:"hb_2",g:"ミニキャラ（ハズレ時）",n:"ヒバナ 泣く",m:"通常C以上濃厚",min:2,hard:true},
+ {id:"hb_3",g:"ミニキャラ（ハズレ時）",n:"ヒバナ ハート",m:"通常D以上（なな徹）／D濃厚（ちょんぼ）",min:3,hard:true},
+ {id:"es_w",g:"終了画面（示唆・濃厚ではない）",n:"シルエット（白）",m:"通常B以上示唆",min:1,hard:false},
+ {id:"es_h",g:"終了画面（示唆・濃厚ではない）",n:"第8ヘルメット",m:"通常D以上示唆",min:3,hard:false},
+ {id:"es_119",g:"終了画面（示唆・濃厚ではない）",n:"119（ワンワンニャイン）",m:"通常E示唆",min:4,hard:false}];
+
+function emptyS(){return {mode:"asa",reset:"unknown",g:"",bon:"",loop:"",wv:"",wx:"",state:"normal",btype:"reg",role:"other",tm:"first",tmAuto:true,
+ ev:[],q:[],c:{bg:"",lg:"",thru:"",sen:""},p:{ht:"",g:"",bon:"",loop:""},scope:"unknown",merge:false,
+ W:{first:100,loop:50,custom:0},custom:false,mctx:"bonus",zones:{},mh:{},cnt:[],notes:""};}
+var S=emptyS(),canSave=true;
+function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var p=JSON.parse(r),e=emptyS();for(var k in e){if(p[k]!==undefined&&p[k]!==null&&typeof p[k]===typeof e[k])e[k]=p[k];}
+ ["c","p","W"].forEach(function(k){var d=emptyS()[k];for(var q in d){if(e[k][q]===undefined)e[k][q]=d[q];}});
+ if(!Array.isArray(e.ev))e.ev=[];if(!Array.isArray(e.q))e.q=[];if(!Array.isArray(e.cnt))e.cnt=[];S=e;}catch(x){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));canSave=true;}catch(x){canSave=false;}}
+function $(id){return document.getElementById(id);}
+function num(x){var n=Number(String(x).replace(/[^\d.]/g,""));return isFinite(n)?n:0;}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function pct(x){return (Math.round(x*1000)/10).toFixed(1)+"%";}
+function table(cols,rows){return '<div class="scroll"><table><thead><tr>'+cols.map(function(c){return "<th>"+esc(c)+"</th>";}).join("")+'</tr></thead><tbody>'+rows.map(function(r){return "<tr>"+r.map(function(c){return "<td>"+esc(c)+"</td>";}).join("")+"</tr>";}).join("")+"</tbody></table></div>";}
+function kv(k,v){return '<div class="kv"><span>'+k+'</span><b>'+v+'</b></div>';}
+function tagOf(lv){return lv==="confirm"?'<span class="tag confirm">確定系</span>':lv==="strong"?'<span class="tag strong">強</span>':lv==="weak"?'<span class="tag weak">弱</span>':'<span class="tag">デフォルト</span>';}
+function curTm(){return S.state==="loop"?"loop":"first";}
+function btTm(bt){return bt==="reg"?"first":"loop";}
+function tmLbl(t){return t==="loop"?'<span class="badge loop">連チャン中</span>':'<span class="badge">初当り</span>';}
+function btLbl(b){return b==="reg"?"初当りREG":b==="acc"?"アクセル・灰焰":"炎炎ボーナス";}
+
+// ---------- estimate ----------
+function binom(k,n,p){if(n<=0)return [0,0,0,0,0,0];return p.map(function(q){return k*Math.log(q)+(n-k)*Math.log(1-q);});}
+function estimate(){
+ var L=[0,0,0,0,0,0],allow=[1,1,1,1,1,1],used=[],masks=[];
+ function addArr(a,w){for(var i=0;i<6;i++)L[i]+=w*a[i];}
+ function cat(r,w){var a=[];for(var i=0;i<6;i++){if(r[i]<=0){allow[i]=0;a.push(0);}else a.push(Math.log(r[i]/100));}addArr(a,w);}
+ function mask(al){for(var i=0;i<6;i++)if(al.indexOf(i+1)<0)allow[i]=0;}
+ var pb=SPEC.bon.map(function(d){return 1/d;}),pq=SPEC.bon.map(function(d,i){return d/SPEC.loop[i];});
+ var G=num(S.g),B=num(S.bon),Lp=num(S.loop);
+ if(G>0&&S.bon!==""){addArr(binom(B,G,pb),1);used.push({t:"ボーナス初当り 1/"+(B?Math.round(G/B):"-")+"（"+B+"回/"+G+"G）",rel:"h"});}
+ if(B>0&&S.loop!==""){var k=Math.min(Lp,B);addArr(binom(k,B,pq),1);used.push({t:"炎炎ループ突入 "+k+"/"+B+"（初当りの"+Math.round(k/B*100)+"%）",rel:"h"});if(Lp>B)used.push({t:"⚠ ループ回数が初当り回数より多い（初当り回数で計算）",rel:"l"});}
+ if(S.mode==="mid"&&S.merge){var w=S.scope==="today"?1:0.5,pg=num(S.p.g),pB=num(S.p.bon),pL=num(S.p.loop);
+  if(pg>0&&S.p.bon!==""){addArr(binom(pB,pg,pb),w);used.push({t:"前任 初当り "+pB+"回/"+pg+"G（重み"+w*100+"%）",rel:"l"});}
+  if(pB>0&&S.p.loop!==""){var k2=Math.min(pL,pB);addArr(binom(k2,pB,pq),w);used.push({t:"前任 ループ "+k2+"/"+pB+"（重み"+w*100+"%）",rel:"l"});}}
+ var esN={reg:{},acc:{},big:{}},cw=S.custom?S.W.custom/100:1;
+ S.ev.forEach(function(e){
+  if(e.k==="es"){esN[e.t][e.v]=(esN[e.t][e.v]||0)+1;var info=ESI.find(function(x){return x.v===e.v;});
+   if(info.allow){mask(info.allow);masks.push(btLbl(e.t)+"後 "+info.n+"（"+info.m+"）");}
+   else{var tb=e.t==="big"?ESR.big:ESR.rb;cat(tb[e.v],cw);}}
+  else if(e.k==="rc"){var s=RC.find(function(x){return x.id===e.v;});cat(s.r,1);if(s.lv==="confirm")masks.push("キャラ紹介 "+s.n+"（"+s.m+"）");}
+  else if(e.k==="rcx"){var x=RCX.find(function(y){return y.id===e.v;});mask(x.allow);masks.push("キャラ紹介 "+x.n+"（"+x.m+"）");}
+  else if(e.k==="coin"){var c=COIN.find(function(y){return y.id===e.v;});mask(c.allow);masks.push(c.n+"（"+c.m+"）");}
+  else if(e.k==="end"){var en=END.find(function(y){return y.id===e.v;});cat(e.r==="cross"?en.x:en.o,1);if(en.lv==="confirm")masks.push("エンディング "+en.n+"（"+en.m+"）");}
+  else if(e.k==="gen"){var ww=(e.tm==="loop"?S.W.loop:S.W.first)/100;cat(GEN[e.v],ww);}
+ });
+ ["reg","acc","big"].forEach(function(t){var o=esN[t],n=0,parts=[];["A","B","C"].forEach(function(v){if(o[v]){n+=o[v];parts.push(v+o[v]);}});
+  if(n)used.push({t:"終了画面 "+btLbl(t)+" "+n+"回（"+parts.join(" ")+"）"+(S.custom?" 重み"+S.W.custom+"%（カスタム）":""),rel:S.custom?"l":"h"});});
+ var rcn=S.ev.filter(function(e){return e.k==="rc";}).length;if(rcn)used.push({t:"REGキャラ紹介 "+rcn+"回",rel:"m"});
+ var enn=S.ev.filter(function(e){return e.k==="end";}).length;if(enn)used.push({t:"エンディング ミニキャラ "+enn+"回",rel:"m"});
+ var wv=num(S.wv),wx=Math.min(num(S.wx),wv);if(wv>0){addArr(binom(wx,wv,[.42,.42,.42,.5,.5,.5]),S.W.first/100);used.push({t:"伝導者の罠 十字目変換 "+wx+"/"+wv+"（仮定値・重み"+S.W.first+"%）",rel:"l"});}
+ var gl=S.ev.filter(function(e){return e.k==="gen";});if(gl.length){var gf=gl.filter(function(e){return e.tm!=="loop";}).length;used.push({t:"その他の示唆 "+gl.length+"回（初当り"+gf+"×"+S.W.first+"%・連チャン中"+(gl.length-gf)+"×"+S.W.loop+"%）",rel:"l"});}
+ var conflict=allow.every(function(a){return !a;});if(conflict)allow=[1,1,1,1,1,1];
+ var mx=-Infinity;for(var i=0;i<6;i++)if(allow[i]&&L[i]>mx)mx=L[i];
+ var post=L.map(function(l,i){return allow[i]?Math.exp(l-mx):0;}),sum=post.reduce(function(a,b){return a+b;},0);post=post.map(function(x){return x/sum;});
+ return {post:post,used:used,masks:masks,conflict:conflict,allow:allow,any:used.length>0||masks.length>0};
+}
+
+// ---------- mode ----------
+function modeEst(){
+ var pr=MPRI[S.mctx].slice(),why=[],soft=[];
+ var bg=num(S.c.bg);
+ ZONES.forEach(function(z){var v=S.zones[z];if(!v)return;var row=ZT[z];
+  for(var m=0;m<5;m++){if(MCEIL[m]<z)pr[m]=0;}
+  if(v==="none"||v==="none2"){for(var m2=0;m2<5;m2++){if(row[m2]===2||row[m2]===9)pr[m2]=0;}why.push(z+"G 前兆なし");if(v==="none2"&&z===88){pr=pr.map(function(p,i){return i===3?p:0;});why.push("88G 連続演出にも発展せず→通常D濃厚");}}
+  if(v==="fake"){for(var m3=0;m3<5;m3++){if(row[m3]===9)pr[m3]=0;}why.push(z+"G 前兆→ハズレ");if(z===350){pr[0]=0;why.push("350Gフェイク→通常B以上濃厚");}if(z===550){pr=pr.map(function(p,i){return i===1?p:0;});why.push("550Gフェイク→通常B濃厚");}}
+ });
+ MH.forEach(function(h){if(!S.mh[h.id])return;if(h.hard){for(var m=0;m<h.min;m++)pr[m]=0;why.push(h.g+" "+h.n+"（"+h.m+"）");}else soft.push(h.n+"（"+h.m+"）");});
+ var s=pr.reduce(function(a,b){return a+b;},0),bad=false;if(s<=0){pr=MPRI[S.mctx].slice();s=100;bad=true;}
+ return {p:pr.map(function(x){return x/s;}),why:why,soft:soft,bad:bad,bg:bg};
+}
+
+// ---------- render ----------
+function seg(id,val){document.querySelectorAll("#"+id+" button").forEach(function(b){b.className=b.dataset.v===val?"on":"";});}
+function renderStatic(){
+ $("esBtns").innerHTML=ESI.map(function(h){return '<div class="hint" data-es="'+h.v+'"><button class="tap"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv)+'</div><div class="look">'+esc(h.m)+'</div></button><div class="row"><button class="sm p" data-es="'+h.v+'">＋記録 <span class="cnt" data-esc="'+h.v+'">0</span></button></div></div>';}).join("");
+ $("rcBtns").innerHTML=RC.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv)+'</div><div class="look">'+esc(h.s)+'<br>'+esc(h.m)+'</div><button class="sm p" data-rc="'+h.id+'">＋記録 <span class="cnt" data-rcc="'+h.id+'">0</span></button></div>';}).join("");
+ $("rcxBtns").innerHTML=RCX.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf("confirm")+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-rcx="'+h.id+'">＋記録 <span class="cnt" data-rcxc="'+h.id+'">0</span></button></div>';}).join("");
+ $("coinBtns").innerHTML=COIN.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf("confirm")+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-coin="'+h.id+'">＋記録 <span class="cnt" data-coinc="'+h.id+'">0</span></button></div>';}).join("");
+ $("endBtns").innerHTML=END.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv)+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-end="'+h.id+'">＋記録 <span class="cnt" data-endc="'+h.id+'">0</span></button></div>';}).join("");
+ var g="";$("mhBtns").innerHTML=MH.map(function(h){var hd=h.g!==g?'<div style="flex:1 1 100%;font-size:12.5px;color:var(--sub)">'+esc(h.g)+'</div>':"";g=h.g;return hd+'<button class="sm" data-mh="'+h.id+'" style="flex:1 1 140px">'+esc(h.n)+'<br><small>'+esc(h.m)+'</small></button>';}).join("");
+ $("zones").innerHTML=ZONES.slice(0,7).map(function(z){var opts=[["","—"],["fake","前兆→ハズレ"],["none","前兆なし"]];if(z===88)opts.push(["none2","なし＋連続演出も無"]);
+  return '<div class="zone"><b>'+z+'G</b><div class="seg" data-zone="'+z+'">'+opts.map(function(o){return '<button data-zv="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>';}).join("");
+ // 参考
+ var ex="";
+ ex+="<h3>モード別の天井と移行率 <span class=\"rel h\">信頼度 高</span></h3>"+table(["モード","天井","設定変更時","ボーナス後"],MODES.map(function(m,i){return ["通常"+m,MCEIL[i]+"G+α",(MPRI.reset[i]||"−")+(MPRI.reset[i]?"%":""),MPRI.bonus[i]+"%"];}));
+ ex+="<p class=\"cap\">ちょんぼりすた・DMMで一致。※119モード（通常E）は88G+前兆＝実質119G前後。</p>";
+ ex+="<h3>ゾーンの前兆移行（ちょんぼりすた）</h3>"+table(["G数","A","B","C","D","E"],ZONES.map(function(z){return [z+"G"].concat(ZT[z].map(function(v){return v===2?"濃厚":v===9?"天井":v===1?"あり":"−";}));}));
+ ex+="<p class=\"cap\">「あり」は◎〜△の差を省略。△ゾーンで前兆に入れば期待度40〜60%。前兆は液晶ゲーム数到達から13G以外で告知ならチャンス（SANKYO開発こぼれ話）。</p>";
+ ex+="<h3>朝イチ・やめ時 <span class=\"rel h\">信頼度 高</span></h3><ul><li>設定変更時：ボーナス天井650G+α、ループ天井1500G+α、通常A否定（D・E選択が多い）</li><li>朝イチリセット台のゾーン狙い：45G〜88G+前兆、155G〜250G+前兆</li><li>REG後：伝導者の罠終了後にヤメ、または88Gゾーンを確認してヤメ</li><li>炎炎激闘後：潜伏（最大28G・平均8G）を必ず確認。25G以上の潜伏は炎炎大戦に期待</li><li>差枚+1500枚超の台は有利区間リセット狙いで88G・250Gまでも選択肢（ちょんぼりすた「!?」）</li></ul>";
+ ex+="<h3>炎炎激闘のストック示唆（設定推測に使わない）</h3><ul><li>終了画面 シンラ（フル装備）＜シンラ＆アーサー＜シンラ（上着肩掛け）（なな徹）／DMMはA=残り2個以上、B=3個以上、C=5個以上</li><li>有利区間リセット時はストックがクリアされるので目安</li><li>突入画面：シンラ・アーサー・タマキ＝5個以上示唆、灰焰騎士団＝10個以上示唆</li><li>エピソード：選択の時3個以上、聖女の苦悩5個以上、ダークヒーロー紅J大戦濃厚</li></ul>";
+ ex+="<h3>実戦値（参考）<span class=\"rel l\">信頼度 低</span></h3><ul><li>設定6は450Gゾーンをほぼ超えない：初当り192回中14回（約7%）（ちょんぼ管理人の実戦・サンプル不足の可能性あり）</li><li>アクセルボーナスの炎炎大戦当選率：約20%（ちょんぼ実戦値）／約13%（DMM）＝不一致</li></ul>";
+ $("extraBody").innerHTML=ex;
+ var sp="";
+ sp+=kv("機種","L炎炎ノ消防隊2（SANKYO・スマスロ）")+kv("導入","2026年2月2日・約15,000台")+kv("AT純増","約5.8枚/G")+kv("50枚あたり","約33.1G（設定1）")+kv("コイン単価","3.2円（ちょんぼりすた）");
+ sp+="<h3>設定別 <span class=\"rel h\">信頼度 高</span></h3>"+table(["設定","ボーナス初当り","炎炎ループ初当り","ループ/初当り","機械割"],SPEC.bon.map(function(b,i){return [String(i+1),"1/"+b,"1/"+SPEC.loop[i],(b/SPEC.loop[i]*100).toFixed(1)+"%",SPEC.wari[i]+"%"];}));
+ sp+="<p class=\"cap\">ちょんぼりすた・なな徹・DMM・1geki・じゃんじゃん丸で一致。「ループ/初当り」は2つの公表値からの計算値（推測ではこちらを使い、初当りとループの二重計算を避けています）。</p>";
+ sp+="<h3>小役（全設定共通）</h3>"+table(["小役","確率"],[["リプレイ","1/8.6（なな徹）／1/8.7（ちょんぼ）"],["リプレイ小V","1/5.7"],["チェリー","1/80"],["スイカ","1/128"],["チャンス目","1/128"],["十字リプレイ","1/5000"]]);
+ sp+="<h3>天井 <span class=\"rel h\">信頼度 高</span></h3><ul><li>ボーナス間 850G+α（設定変更時650G+α）→ボーナス</li><li>炎炎ループ間 2000G+α（設定変更時1500G+α）→SPエピソードボーナス。前回の炎炎激闘終了からカウントするためデータカウンターとズレやすく、実戦上は2000Gを数十G超えて告知が多い</li><li>伝導者の罠 5回連続スルー→次回ボーナスがSPエピソード（炎炎激闘濃厚）</li></ul>";
+ sp+="<h3>終了画面の振り分け（非カスタム時）</h3>"+table(["設定","REG系 A/B/C/D/E/F","炎炎BONUS A/B/C/D/E/F"],[0,1,2,3,4,5].map(function(i){function r(t){return [t.A[i],t.B[i],t.C[i],ESD.D[i],ESD.E[i],ESD.F[i]].map(function(v){return v?v:"−";}).join("/");}return [String(i+1),r(ESR.rb),r(ESR.big)];}));
+ $("specBody").innerHTML=sp;
+ var src='<ul class="src">'+
+ '<li><a href="https://chonborista.com/slot/sankyo-slot/247643/" target="_blank" rel="noopener">ちょんぼりすた</a>：スペック・天井・狙い目・終了画面/キャラ紹介/エンディング振り分け・モード・伝導者の罠</li>'+
+ '<li><a href="https://nana-press.com/kaiseki/machine/1088/" target="_blank" rel="noopener">なな徹 まとめ</a>／<a href="https://nana-press.com/kaiseki/machine/1088/34558/" target="_blank" rel="noopener">終了画面（画像あり）</a>／<a href="https://nana-press.com/kaiseki/machine/1088/34535/" target="_blank" rel="noopener">朝一・リセット</a></li>'+
+ '<li><a href="https://p-town.dmm.com/machines/4926" target="_blank" rel="noopener">DMMぱちタウン</a>：終了画面A〜F・エンディング・ストック/モード画面（画像あり）</li>'+
+ '<li><a href="https://www.p-world.co.jp/machine/database/10415" target="_blank" rel="noopener">P-WORLD</a>：キャラ紹介シナリオ一覧・獲得枚数表示</li>'+
+ '<li><a href="https://jugglersnet.com/chumoku/enennosyobotai2" target="_blank" rel="noopener">ジャグラーズネット</a>／<a href="https://www.slopachi-quest.com/article/enennosyouboutai2-settei/" target="_blank" rel="noopener">スロパチクエスト</a>：キャラ紹介・獲得枚数表示の照合</li>'+
+ '<li><a href="https://www.secret-story.sankyo-fever.jp/product/sbh" target="_blank" rel="noopener">SANKYO 開発こぼれ話</a>：前兆G数の法則・裏ボタン</li>'+
+ '<li><a href="https://1geki.jp/slot/l_ennenn2/" target="_blank" rel="noopener">1geki</a>：スペック照合</li></ul>'+
+ '<h3>不一致・調査中</h3><ul>'+
+ '<li><span class="warnx">不一致</span> ボーナス間の狙い目：670G〜（ちょんぼりすた）／500G〜（rakupachi）。この画面は670Gで判定</li>'+
+ '<li><span class="warnx">不一致</span> 伝導者④の5人目：金シンラ（DMM）／ショウ（ジャグラーズネット）。示唆（設定5以上）は同じ</li>'+
+ '<li><span class="warnx">不一致</span> エンディングのシンラ・アーサー：奇数/偶数示唆（DMM）／デフォルト（ちょんぼ）。数値は同じなので推測は数値どおり</li>'+
+ '<li><span class="warnx">不一致</span> ヒバナ ハート：通常D以上（なな徹）／D濃厚（ちょんぼ）→D以上として扱う</li>'+
+ '<li><span class="warnx">調査中</span> リセット判別・朝イチのステージ（なな徹）</li>'+
+ '<li><span class="warnx">調査中</span> 伝導者の罠の十字目変換は「高設定(4以上?)」の2値のみ</li>'+
+ '<li><span class="warnx">調査中</span> 獲得枚数表示の出現率約1%の分母（表示ごとかAT1回ごとか）不明</li>'+
+ '<li><span class="warnx">補完</span> キャラ紹介・エンディングの表の空欄（結合セル）は上の行の値で補完。全設定で合計100%になることを確認済み</li>'+
+ '<li><span class="warnx">未確認</span> 台の液晶メニューでの履歴表示・SANKYOのスマホ連動サービス（見つからず）</li>'+
+ '<li>前作（L炎炎ノ消防隊・slogati等の1作目の数値）は使っていません</li></ul>';
+ $("srcBody").innerHTML=src;
+}
+
+function evChip(e,i){var t="";
+ if(e.k==="es"){var x=ESI.find(function(y){return y.v===e.v;});t=btLbl(e.t)+"："+x.n+" "+tmLbl(btTm(e.t));}
+ else if(e.k==="rc")t=RC.find(function(y){return y.id===e.v;}).n;
+ else if(e.k==="rcx")t=RCX.find(function(y){return y.id===e.v;}).n;
+ else if(e.k==="coin")t=COIN.find(function(y){return y.id===e.v;}).n;
+ else if(e.k==="end")t=END.find(function(y){return y.id===e.v;}).n+(e.r==="cross"?"（十字リプ）":"");
+ else if(e.k==="gen")t=(e.v==="weak"?"弱":"強")+" "+tmLbl(e.tm);
+ return '<span class="ev'+((e.k==="es"&&e.t!=="reg")||(e.k==="gen"&&e.tm==="loop")?" loop":"")+'">'+t+'<button data-del="'+i+'" aria-label="取り消し">✕</button></span>';}
+function logFor(k,id){var h="";S.ev.forEach(function(e,i){if(k.indexOf(e.k)>=0)h+=evChip(e,i);});$(id).innerHTML=h;}
+
+function render(){
+ seg("modeSeg",S.mode);seg("resetSeg",S.reset);seg("btypeSeg",S.btype);seg("roleSeg",S.role);seg("tmSeg",S.tm);seg("scopeSeg",S.scope);seg("mctxSeg",S.mctx);
+ $("mid").hidden=S.mode!=="mid";$("navMid").style.display=S.mode==="mid"?"":"none";
+ document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f];});
+ document.querySelectorAll("[data-c]").forEach(function(el){if(document.activeElement!==el)el.value=S.c[el.dataset.c];});
+ document.querySelectorAll("[data-p]").forEach(function(el){if(document.activeElement!==el)el.value=S.p[el.dataset.p];});
+ document.querySelectorAll("[data-w]").forEach(function(el){el.value=S.W[el.dataset.w];});
+ $("wFirst").textContent=S.W.first+"%";$("wLoop").textContent=S.W.loop+"%";$("wCustom").textContent=S.W.custom+"%";
+ $("merge").checked=S.merge;$("custom").checked=S.custom;
+ if(document.activeElement!==$("notes"))$("notes").value=S.notes;
+ $("stateLbl").innerHTML=S.state==="loop"?'<span class="badge loop">炎炎ループ中</span>':'<span class="badge">通常時</span>';
+ $("savestate").textContent=canSave?"入力はこの端末に自動保存されます。":"⚠ 保存できません（プライベートブラウズ等）。";
+ // counts on buttons
+ function cnt(k,f,v){return S.ev.filter(function(e){return e.k===k&&e[f]===v&&(k!=="es"||e.t===S.btype);}).length;}
+ document.querySelectorAll("[data-esc]").forEach(function(el){el.textContent=cnt("es","v",el.dataset.esc);});
+ document.querySelectorAll("[data-rcc]").forEach(function(el){el.textContent=cnt("rc","v",el.dataset.rcc);});
+ document.querySelectorAll("[data-rcxc]").forEach(function(el){el.textContent=cnt("rcx","v",el.dataset.rcxc);});
+ document.querySelectorAll("[data-coinc]").forEach(function(el){el.textContent=cnt("coin","v",el.dataset.coinc);});
+ document.querySelectorAll("[data-endc]").forEach(function(el){el.textContent=cnt("end","v",el.dataset.endc);});
+ logFor(["es"],"esLog");logFor(["rc","rcx"],"rcLog");logFor(["coin"],"coinLog");logFor(["end"],"endLog");logFor(["gen"],"genLog");
+ $("customWarn").innerHTML=S.custom?'<div class="alert">店長カスタムあり：弱・強・デフォルトの画面は重み'+S.W.custom+'%で計算。確定系（全員集合・赤枠9人・金枠）は100%のまま（なな徹は「任意に出現させるカスタムも存在できる模様」とも記載。気になる場合はメモへ）。</div>':"";
+ document.querySelectorAll("[data-mh]").forEach(function(b){b.className="sm"+(S.mh[b.dataset.mh]?" p":"");});
+ document.querySelectorAll("[data-zone]").forEach(function(sg){var z=sg.dataset.zone,v=S.zones[z]||"";sg.querySelectorAll("button").forEach(function(b){b.className=b.dataset.zv===v?"on":"";});});
+ $("qLog").innerHTML=S.q.slice(-12).map(function(x){return '<span class="ev" style="padding-right:8px">'+esc(x.t||x)+'</span>';}).join("")+(S.q.length?'<button class="sm" id="qUndo">↶ 最後の当たり記録を取り消し</button>':"");
+ renderCeil();renderEst();renderMode();renderMid();renderCnt();
+}
+function renderCeil(){
+ var rs=S.reset==="yes",bg=num(S.c.bg),lg=num(S.c.lg),th=num(S.c.thru),sen=num(S.c.sen),h="";
+ var bc=rs?650:850,lc=rs?1500:2000;
+ h+=kv("ボーナス天井","あと <b class=\"mono\">"+Math.max(0,bc-bg)+"G</b>（"+bc+"G+α"+(rs?"・設定変更":S.reset==="unknown"?"・変更なら650G":"")+"）");
+ h+=kv("炎炎ループ天井","あと <b class=\"mono\">"+Math.max(0,lc-lg)+"G</b>（"+lc+"G+α"+(S.reset==="unknown"?"・変更なら1500G":"")+"）");
+ h+=kv("伝導者の罠スルー",th+" / 5"+(th>=5?" → 次回SPエピ（炎炎激闘濃厚）":""));
+ var j=[];if(bg>=670)j.push("ボーナス間 670G〜 狙い目圏内");if(lg>=1500)j.push("ループ間 1500G〜 狙い目圏内");if(th>=4)j.push("罠"+th+"スルー（次でSPエピ目前）");
+ if(S.mode==="asa"&&rs&&((bg>=45&&bg<=88)||(bg>=155&&bg<=250)))j.push("リセット台ゾーン狙い（45〜88G／155〜250G）");
+ h+=j.length?'<div class="okbox">'+j.join("<br>")+'</div>':'<p class="note">狙い目：ボーナス間670G〜／ループ間1500G〜（ちょんぼりすた。500G〜とする所もあり＝不一致）</p>';
+ if((S.state==="normal"&&S.q.length&&S.q[S.q.length-1].t==="ループ終了")||sen>0){h+=sen<=28?'<div class="alert">潜伏確認：ループ後 '+sen+'G。最大28G（平均8G）まで回して確認'+(sen>=25?'。25G以上の潜伏は炎炎大戦に期待':'')+'</div>':'<p class="note">潜伏確認済み（28G超）</p>';}
+ $("ceilBody").innerHTML=h;
+}
+function renderEst(){
+ var r=estimate(),h="";
+ if(!r.any){$("estBody").innerHTML='<p class="note">通常G＋初当り回数、または示唆を記録すると表示されます。</p>';statbar(null);return;}
+ var best=0;r.post.forEach(function(p,i){if(p>r.post[best])best=i;});
+ h+=r.post.map(function(p,i){return '<div class="r'+(i===best?" best":"")+'"><span class="l">設定'+(i+1)+'</span><span class="t"><span class="f" style="display:block;width:'+(p*100).toFixed(1)+'%"></span></span><span class="v">'+pct(p)+'</span></div>';}).join("");
+ var hi=r.post[3]+r.post[4]+r.post[5],ev=r.post[1]+r.post[3]+r.post[5];
+ h+='<div class="call">設定4以上 '+pct(hi)+'　偶数 '+pct(ev)+'　最有力 設定'+(best+1)+'</div>';
+ if(r.conflict)h+='<div class="alert">確定・否定どうしが矛盾しています（見間違い・カスタムの可能性）。確定系を無視して計算中。</div>';
+ h+='<div class="used"><b>使った要素</b><ul>'+r.used.map(function(u){return "<li>"+esc(u.t)+' <span class="rel '+u.rel+'">'+(u.rel==="h"?"高":u.rel==="m"?"中":"低")+"</span></li>";}).join("")+r.masks.map(function(m){return '<li>'+esc(m)+' <span class="rel h">確定系100%</span></li>';}).join("")+"</ul></div>";
+ if(r.masks.length){var al=[];r.allow.forEach(function(a,i){if(a)al.push(i+1);});h+='<p class="note">確定・否定で残った設定：'+al.join("・")+'</p>';}
+ $("estBody").innerHTML=h;statbar(r);
+}
+function statbar(r){var h="",G=num(S.g),B=num(S.bon),L=num(S.loop);
+ h+="<span>通常 "+G+"G</span>";if(B)h+="<span>初当り 1/"+Math.round(G/B)+"</span>";if(L)h+="<span>ループ 1/"+Math.round(G/L)+"</span>";
+ if(r){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});h+='<span class="ok">設定'+(b+1)+' '+pct(r.post[b])+'</span><span>4以上 '+pct(r.post[3]+r.post[4]+r.post[5])+'</span>';}
+ $("statbar").innerHTML=h;}
+function renderMode(){
+ var m=modeEst(),h="",bg=m.bg;
+ h+=table(["モード","天井","確率"],MODES.map(function(x,i){return ["通常"+x,MCEIL[i]+"G",pct(m.p[i])];}));
+ var nz=ZONES.filter(function(z){return z>bg;}).find(function(z){return ZT[z].some(function(v,i){return v>0&&m.p[i]>0;});});
+ var maxC=0;MCEIL.forEach(function(c,i){if(m.p[i]>0&&c>maxC)maxC=c;});
+ h+=kv("現在G（ボーナス間）",bg+"G")+kv("次の候補ゾーン",nz?nz+"G":"−")+kv("残っているモードの最深天井",maxC+"G+α");
+ if(m.why.length)h+='<p class="note">根拠：'+esc(m.why.join("／"))+'</p>';
+ if(m.soft.length)h+='<p class="note">示唆（確率には未反映）：'+esc(m.soft.join("／"))+'</p>';
+ if(m.bad)h+='<div class="alert">入力が矛盾（十字目前兆の被り・見間違いの可能性）。事前の振り分けを表示中。</div>';
+ h+='<p class="note">事前の振り分け：'+(S.mctx==="reset"?"設定変更時":"ボーナス後")+'（ちょんぼりすた・DMM）。「—」以外を選んだゾーンより浅い天井のモードは除外。</p>';
+ $("modeBody").innerHTML=h;
+}
+function renderMid(){if(S.mode!=="mid"){$("midBody").innerHTML="";return;}
+ var h="",ht=num(S.p.ht),g=num(S.p.g),b=num(S.p.bon),l=num(S.p.loop);
+ if(g&&b)h+=kv("前任 初当り","1/"+Math.round(g/b));if(g&&l)h+=kv("前任 ループ","1/"+Math.round(g/l));
+ if(b&&S.p.loop!=="")h+=kv("前任 ループ/初当り",Math.round(Math.min(l,b)/b*100)+"%（設定1 39.8%〜設定6 46.7%）");
+ if(ht&&g&&g>ht)h+='<div class="alert">通常Gが総スタートより多い：範囲の取り違えの可能性</div>';
+ if(l>b&&S.p.bon!=="")h+='<div class="alert">ループ回数が初当り回数より多い：カウンターの分類を確認</div>';
+ if(!S.merge)h+='<p class="note">合算OFF：設定推測は自分が打った分だけ。</p>';
+ $("midBody").innerHTML=h;}
+function renderCnt(){$("cntBody").innerHTML=S.cnt.map(function(c,i){return '<div class="kv"><span>'+esc(c.n)+'</span><b><button class="sm" data-cm="'+i+'">−</button> <span class="mono">'+c.v+'</span> <button class="sm p" data-cp="'+i+'">＋</button> <button class="sm" data-cx="'+i+'">✕</button></b></div>';}).join("")+(S.cnt.length?'<p class="note">'+(num(S.g)?S.cnt.map(function(c){return esc(c.n)+" 1/"+(c.v?(num(S.g)/c.v).toFixed(1):"-");}).join("・")+"（通常G基準）":"")+'</p>':"");}
+
+function commit(){if(S.q.length>40)S.q=S.q.slice(-40);save();render();}
+function setState(st){S.state=st;S.btype=st==="loop"?"big":"reg";if(S.tmAuto)S.tm=st==="loop"?"loop":"first";}
+function q(t){var bon=num(S.bon),lp=num(S.loop);var snap=JSON.stringify({bon:S.bon,loop:S.loop,c:S.c,state:S.state,btype:S.btype,tm:S.tm,zones:S.zones,mh:S.mh,mctx:S.mctx});
+ if(t==="reg"){S.bon=String(bon+1);S.c.bg="0";setState("normal");S.btype="reg";S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"初当りREG",s:snap});}
+ else if(t==="sp"){S.bon=String(bon+1);S.loop=String(lp+1);S.c.bg="0";S.c.thru="0";setState("loop");S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"SPエピ",s:snap});}
+ else if(t==="ok"){S.loop=String(lp+1);S.c.thru="0";setState("loop");S.q.push({t:"罠→ループ",s:snap});}
+ else if(t==="thru"){S.c.thru=String(num(S.c.thru)+1);setState("normal");S.q.push({t:"罠スルー",s:snap});}
+ else if(t==="end"){setState("normal");S.c.bg="0";S.c.lg="0";S.c.sen="0";S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"ループ終了",s:snap});}
+}
+function bind(){
+ document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+  if(d.set){S[d.set]=d.v;if(d.set==="tm")S.tmAuto=false;if(d.set==="mode"&&d.v==="asa")S.merge=S.merge;commit();return;}
+  if(d.q){q(d.q);commit();return;}
+  if(b.id==="qUndo"){var last=S.q.pop();if(last&&last.s){try{var o=JSON.parse(last.s);for(var k in o)S[k]=o[k];}catch(x){}}commit();return;}
+  if(d.es&&b.classList.contains("p")){S.ev.push({k:"es",t:S.btype,v:d.es});commit();return;}
+  if(d.rc){S.ev.push({k:"rc",v:d.rc});commit();return;}
+  if(d.rcx){S.ev.push({k:"rcx",v:d.rcx});commit();return;}
+  if(d.coin){S.ev.push({k:"coin",v:d.coin});commit();return;}
+  if(d.end){S.ev.push({k:"end",v:d.end,r:S.role});commit();return;}
+  if(d.gen){S.ev.push({k:"gen",v:d.gen,tm:S.tm});commit();return;}
+  if(d.del!==undefined){S.ev.splice(Number(d.del),1);commit();return;}
+  if(d.mh){S.mh[d.mh]=!S.mh[d.mh];commit();return;}
+  if(d.zv!==undefined){var z=b.parentNode.dataset.zone;S.zones[z]=d.zv;commit();return;}
+  if(d.inc){S[d.inc]=String(num(S[d.inc])+1);if(d.inc==="wx")S.wv=String(num(S.wv)+1);commit();return;}
+  if(d.cp!==undefined){S.cnt[d.cp].v++;commit();return;}
+  if(d.cm!==undefined){S.cnt[d.cm].v=Math.max(0,S.cnt[d.cm].v-1);commit();return;}
+  if(d.cx!==undefined){if(confirm("このカウンターを削除しますか？")){S.cnt.splice(Number(d.cx),1);commit();}return;}
+  if(b.id==="addCnt"){var n=$("newCnt").value.trim();if(n){S.cnt.push({n:n,v:0});$("newCnt").value="";commit();}return;}
+  if(b.id==="wReset"){S.W={first:100,loop:50,custom:0};commit();return;}
+  if(b.id==="resetAll"){if(confirm("この機種の入力をすべて消しますか？")){S=emptyS();commit();}return;}
+ });
+ document.addEventListener("input",function(e){var el=e.target,d=el.dataset;
+  if(d.f!==undefined){S[d.f]=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();return;}
+  if(d.c!==undefined){S.c[d.c]=el.value.replace(/[^\d]/g,"");save();renderCeil();renderMode();return;}
+  if(d.p!==undefined){S.p[d.p]=el.value.replace(/[^\d]/g,"");save();renderEst();renderMid();return;}
+  if(d.w!==undefined){S.W[d.w]=Number(el.value);save();render();return;}
+  if(el.id==="notes"){S.notes=el.value;save();return;}
+ });
+ document.addEventListener("change",function(e){var el=e.target;
+  if(el.id==="merge"){S.merge=el.checked;commit();}
+  if(el.id==="custom"){S.custom=el.checked;commit();}
+  if(el.dataset.f!==undefined||el.dataset.c!==undefined||el.dataset.p!==undefined)render();
+ });
+}
+load();renderStatic();bind();render();
+})();
+</script>
+</body>
+</html>
