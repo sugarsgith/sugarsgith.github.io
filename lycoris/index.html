@@ -79,6 +79,28 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
 .okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
 .kv{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;border-bottom:1px solid var(--border);padding:5px 0}
 .kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
+.hl{margin-top:6px;font-size:12px;line-height:1.3}
+.hll{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:11px;padding:0 40px 0 100px;white-space:nowrap}
+.hlr{display:flex;align-items:center;gap:6px;margin:3px 0}
+.hlk{flex:none;width:54px;color:var(--sub);font-size:11.5px;white-space:nowrap;overflow:hidden}
+.hlv{flex:none;width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hlv.r{text-align:left}
+.hlb{flex:1;min-width:60px;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--border)}
+.hlb i{display:block;height:100%}
+.hlb i.hi{background:#8a93a3}.hlb i.lo{background:#d3d8df}
+@media (prefers-color-scheme:dark){.hlb i.hi{background:#7a8396}.hlb i.lo{background:#3b414e}}
+.hlr.th .hlb i.hi{background:var(--accent)}.hlr.th .hlv:not(.r){color:var(--accent)}
+.hlr.tl .hlb i.lo{background:var(--warn)}.hlr.tl .hlv.r{color:var(--warn)}
+.hlc{color:var(--sub);font-size:11.5px;margin-top:2px}
+.hlc.conf{color:var(--ok);font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:4px 2px;text-align:right;border-bottom:1px solid var(--border)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
+.cmp td.h{font-weight:700}
+.pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input{flex:1;min-height:32px;padding:0}
+.rng b{width:56px;text-align:right}
 </style>
 </head>
 <body>
@@ -87,9 +109,10 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
   <a href="../" class="back" style="font-size:13px;color:var(--accent);text-decoration:none">← メニュー</a>
   <h1 id="title">スロット実戦メモ</h1>
   <div class="bar" id="statbar"></div>
+  <div id="hlbar"></div>
 </header>
 <nav>
-  <a href="#base">台・G数</a><a href="#mid" id="navMid">途中から</a><a href="#bulk">マイスロ入力</a><a href="#hits">当選履歴</a><a href="#est">設定推測</a><a href="#hintsec">確定・示唆</a><a href="#rates">直撃・設定差</a><a href="#trials">G数到達</a><a href="#rushchar">RUSH種別</a><a href="#memo">メモ</a><a href="#extra">参考</a><a href="#ref">天井・狙い目</a><a href="#spec">スペック</a><a href="#src">出典</a>
+  <a href="#base">台・G数</a><a href="#mid" id="navMid">途中から</a><a href="#bulk">マイスロ入力</a><a href="#hits">当選履歴</a><a href="#est">設定推測</a><a href="#hintsec">確定・示唆</a><a href="#wt">⚙重み</a><a href="#rates">直撃・設定差</a><a href="#trials">G数到達</a><a href="#rushchar">RUSH種別</a><a href="#memo">メモ</a><a href="#extra">参考</a><a href="#ref">天井・狙い目</a><a href="#spec">スペック</a><a href="#src">出典</a>
 </nav>
 <main>
   <section id="base">
@@ -164,8 +187,18 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
 
   <section id="est" class="est">
     <h2>設定推測</h2>
-    <p class="cap">入力した回数と確率から計算した各設定の相対的な近さ（事前は均等）。確定系示唆が出たらそれ未満を除外。</p>
+    <p class="cap">入力した回数と確率から計算した各設定の相対的な近さ（事前は均等）。確定系示唆が出たらそれ未満を除外。強・弱示唆は⚙の仮の重みで反映。</p>
     <div id="estBody"></div>
+  </section>
+
+  <section id="wt">
+    <details id="wtDet"><summary>⚙ 強・弱示唆の重み</summary>
+    <p class="cap"><b>仮の値（出現率は未公表）</b>。強・弱の示唆（終了画面・プロローグEP・ラッシュ中EP・ランプ）を1回見るごとに、設定4・5・6の見込みを設定1・2・3に対して何倍にするか。<b>1.0＝示唆を計算に入れない</b>。確定系（○以上濃厚）は常に100%で、この重みとは別です。</p>
+    <label>強示唆（1回ごと）</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-hw="s"><b id="hwS"></b></div>
+    <label>弱示唆（1回ごと）</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-hw="w"><b id="hwW"></b></div>
+    <button class="sm" id="hwReset">初期値に戻す（強 1.2倍 / 弱 1.1倍）</button>
+    <p class="note">「上位ST後は弱示唆どまり」「そのラッシュ1回目のみ有効」などの条件は、有効な時だけタップしてください（タップした回数をそのまま使います）。上位ST後にRUSHと逆キャラの私服が出た時は弱示唆なので、「同じキャラの私服（弱）」のボタンで記録してください。デフォルト画面は計算に入りません。</p>
+    </details>
   </section>
 
   <section id="hintsec">
@@ -347,9 +380,11 @@ var MACHINES=[{
 // ===== 状態と保存 =====
 var curId=MACHINES[0].id, S=null, armed=false, canSave=true, delArmed=-1;
 function emptyPrev(){return {scope:"unknown",last:"unknown",seen:"none",pn:"",ob:"",fl:"",rush:"",rushw:"",ht:"",hcur:"",hreg:"",hart:"",hsince:""};}
-function empty(){return {normalG:"",hits:[],taps:{},trials:{},bulk:{},notes:"",custom:[],enabled:{},mode:"asa",prev:emptyPrev(),merge:false,ownTotal:""};}
+var HW_DEF={s:1.2,w:1.1};
+function emptyHW(){return {s:HW_DEF.s,w:HW_DEF.w};}
+function empty(){return {normalG:"",hits:[],taps:{},trials:{},bulk:{},notes:"",custom:[],enabled:{},mode:"asa",prev:emptyPrev(),merge:false,ownTotal:"",hw:emptyHW()};}
 function key(id){return "slotmemo:v1:"+id;}
-function load(id){try{var r=localStorage.getItem(key(id));if(r){var p=JSON.parse(r);var e=empty();for(var k in e){if(p[k]!==undefined&&p[k]!==null)e[k]=p[k];}if(!Array.isArray(e.custom))e.custom=[];if(typeof e.bulk!=="object")e.bulk={};if(typeof e.enabled!=="object")e.enabled={};if(typeof e.notes!=="string")e.notes="";if(e.mode!=="mid")e.mode="asa";var ep=emptyPrev();if(typeof e.prev!=="object"||!e.prev)e.prev={};for(var q in ep){if(e.prev[q]===undefined||e.prev[q]===null)e.prev[q]=ep[q];}e.merge=e.merge===true;if(typeof e.ownTotal!=="string")e.ownTotal="";return e;}}catch(e){}return empty();}
+function load(id){try{var r=localStorage.getItem(key(id));if(r){var p=JSON.parse(r);var e=empty();for(var k in e){if(p[k]!==undefined&&p[k]!==null)e[k]=p[k];}if(!Array.isArray(e.custom))e.custom=[];if(typeof e.bulk!=="object")e.bulk={};if(typeof e.enabled!=="object")e.enabled={};if(typeof e.notes!=="string")e.notes="";if(e.mode!=="mid")e.mode="asa";var ep=emptyPrev();if(typeof e.prev!=="object"||!e.prev)e.prev={};for(var q in ep){if(e.prev[q]===undefined||e.prev[q]===null)e.prev[q]=ep[q];}e.merge=e.merge===true;if(typeof e.ownTotal!=="string")e.ownTotal="";var dh=emptyHW();if(typeof e.hw!=="object"||!e.hw)e.hw={};["s","w"].forEach(function(q){var v=Number(e.hw[q]);e.hw[q]=(isFinite(v)&&v>=1&&v<=2)?Math.round(v*10)/10:dh[q];});return e;}}catch(e){}return empty();}
 function save(){try{localStorage.setItem(key(curId),JSON.stringify(S));canSave=true;}catch(e){canSave=false;}}
 function M(){for(var i=0;i<MACHINES.length;i++)if(MACHINES[i].id===curId)return MACHINES[i];return MACHINES[0];}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -366,14 +401,18 @@ function minSetting(m){var mn=1;m.hintGroups.forEach(function(g){g.items.forEach
 // 前任者（マイスロ画面）の重み：当日=1、前の人の分だけ=1（実際に観測された数字。期間が短いだけ）、不明=0.5
 var SCOPE_W={today:1,prev:1,unknown:0.5};
 var SCOPE_L={today:"当日の台全体",prev:"前の人の分だけ",unknown:"不明"};
-function prevData(){if(S.mode!=="mid"||!S.merge)return null;var P=S.prev,pn=num(P.pn);if(pn<=0)return null;
+function prevData(force){if(S.mode!=="mid"||(!S.merge&&!force))return null;var P=S.prev,pn=num(P.pn);if(pn<=0)return null;
   return {w:SCOPE_W[P.scope]||0.5,n:pn,cz:num(P.ob)+num(P.fl),youshou:num(P.fl),at:num(P.rush)};}
-function estimate(m){
-  var n=Number(S.normalG)||0, ll=m.settings.map(function(){return 0;}), used=false, PD=prevData();
-  m.rates.forEach(function(r){if(!rateUsed(m,r))return;var k=rateCount(m,r);if(n>0&&k<=n){used=true;r.denoms.forEach(function(d,i){var p=1/d;ll[i]+=k*Math.log(p)+(n-k)*Math.log(1-p);});}
+// o: own=false→自分の分を使わない／prev=true|false→前任者を強制ON/OFF（未指定は合算スイッチどおり）／mask=false→確定系示唆を使わない（数字だけ）
+function hintCounts(m){var r={s:0,w:0};m.hintGroups.forEach(function(g){g.items.forEach(function(h){var c=S.taps[h.id]||0;if(c>0&&h.level==="strong")r.s+=c;else if(c>0&&h.level==="weak")r.w+=c;});});return r;}
+// o.hints=false→強・弱示唆の重みを使わない（未指定は mask と同じ。数字だけ＝mask:false で両方OFF）
+function estimate(m,o){o=o||{};var OWN=o.own!==false,MSK=o.mask!==false,HNT=o.hints!==undefined?o.hints:MSK;
+  var n=Number(S.normalG)||0, ll=m.settings.map(function(){return 0;}), used=false, PD=o.prev===undefined?prevData():(o.prev?prevData(true):null);
+  m.rates.forEach(function(r){if(!rateUsed(m,r))return;var k=rateCount(m,r);if(OWN&&n>0&&k<=n){used=true;r.denoms.forEach(function(d,i){var p=1/d;ll[i]+=k*Math.log(p)+(n-k)*Math.log(1-p);});}
     if(PD&&r.fromHits&&PD[r.fromHits]!==undefined&&PD[r.fromHits]<=PD.n){var pk=PD[r.fromHits];used=true;r.denoms.forEach(function(d,i){var p=1/d;ll[i]+=PD.w*(pk*Math.log(p)+(PD.n-pk)*Math.log(1-p));});}});
-  m.trials.forEach(function(t){var v=S.trials[t.id];if(v&&v.n>0&&v.k<=v.n){used=true;t.pcts.forEach(function(pc,i){var p=pc/100;ll[i]+=v.k*Math.log(p)+(v.n-v.k)*Math.log(1-p);});}});
-  var mn=minSetting(m); if(mn>1)used=true; if(!used)return null;
+  m.trials.forEach(function(t){var v=S.trials[t.id];if(OWN&&v&&v.n>0&&v.k<=v.n){used=true;t.pcts.forEach(function(pc,i){var p=pc/100;ll[i]+=v.k*Math.log(p)+(v.n-v.k)*Math.log(1-p);});}});
+  if(OWN&&HNT){var hc=hintCounts(m),hs=S.hw.s,hw=S.hw.w;if((hc.s&&hs>1)||(hc.w&&hw>1)){used=true;var add=hc.s*Math.log(hs)+hc.w*Math.log(hw);ll=ll.map(function(v,i){return i>=3?v+add:v;});}}
+  var mn=MSK?minSetting(m):1; if(mn>1)used=true; if(!used)return null;
   var masked=ll.map(function(v,i){return i+1<mn?-Infinity:v;});
   var mx=Math.max.apply(null,masked);
   var w=masked.map(function(v){return v===-Infinity?0:Math.exp(v-mx);});
@@ -383,6 +422,18 @@ function estimate(m){
 function closest(arr,val,logScale){var b=-1,bd=Infinity;arr.forEach(function(x,i){var d=logScale?Math.abs(Math.log(x)-Math.log(val)):Math.abs(x-val);if(d<bd){bd=d;b=i;}});return b;}
 function stars(n){return "★★★".slice(0,n)+"☆☆☆".slice(0,3-n);}
 
+// ---------- 高設定域／低設定域（v5） ----------
+function hlPct(x){return Math.round(x*100)+"%";}
+function hlHi(p){return p[3]+p[4]+p[5];}
+function hlRow(key,p){var hi=hlHi(p),lo=Math.max(0,1-hi),c=hi>0.7?" th":lo>0.7?" tl":"";
+ return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+hlPct(lo)+'</span></div>';}
+function hlBlock(rows,conf,note){if(!rows.length)return "";
+ return '<div class="hl"><div class="hll"><span>高設定域 4〜6</span><span>低設定域 1〜3</span></div>'+rows.map(function(r){return hlRow(r[0],r[1]);}).join("")+
+ '<div class="hlc'+(conf?" conf":"")+'">'+(conf?"確定・濃厚示唆あり":"あくまで予想です。様子見の判断材料に")+(note?'<span style="color:var(--sub);font-weight:400">　'+note+'</span>':"")+'</div></div>';}
+function cmpTable(rows){return '<table class="cmp"><thead><tr><th></th><th>4〜6</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>'+
+ rows.map(function(r){return '<tr><td>'+r[0]+'</td><td class="h">'+hlPct(hlHi(r[1]))+'</td>'+r[1].map(function(v){return '<td>'+Math.round(v*100)+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table><p class="note" style="margin:0">数字は各設定の％（四捨五入）。</p>';}
+function fr(e){return e?e.map(function(v){return v/100;}):null;}
+function preEst(m){if(S.mode!=="mid"||num(S.prev.pn)<=0)return null;return estimate(m,{own:false,prev:true,mask:false});}
 // ===== 描画 =====
 function renderStatic(){
   var m=M();
@@ -419,13 +470,16 @@ function render(){
   } else eh='<p class="note">通常G数と、カウンターか当選履歴を入れると表示されます。</p>';
   if(mn>1)eh+='<div class="call">設定'+mn+'以上濃厚（確定系の示唆が出ています）</div>';
   var seen=[];m.hintGroups.forEach(function(g){g.items.forEach(function(h){if((h.level==="strong"||h.level==="weak")&&(S.taps[h.id]||0)>0)seen.push(h.label+"（"+h.meaning+"）×"+S.taps[h.id]);});});
-  if(seen.length)eh+='<p style="margin:8px 0 0">見えた高設定示唆：'+esc(seen.join("、"))+'</p>';
+  if(seen.length){var hc2=hintCounts(m);eh+='<p style="margin:8px 0 0">見えた高設定示唆：'+esc(seen.join("、"))+'</p><p class="note" style="margin:2px 0 0">→ 計算：強 '+hc2.s+'回×'+S.hw.s.toFixed(1)+'倍、弱 '+hc2.w+'回×'+S.hw.w.toFixed(1)+'倍（仮の値・⚙で変更）'+(S.hw.s===1&&S.hw.w===1?'＝今は計算に入れていません':'')+'</p>';}
   var usedL=[];m.rates.forEach(function(r){if(rateUsed(m,r)&&n>0)usedL.push(r.label.replace(/（.*$/,"")+" "+rateCount(m,r)+"回");});
   m.trials.forEach(function(t){var v=S.trials[t.id];if(v&&v.n>0)usedL.push(t.label+" "+v.k+"/"+v.n);});
   var unused=m.rates.filter(function(r){return !rateUsed(m,r);}).map(function(r){return r.label.replace(/（.*$/,"");});
   var PD=prevData();
   if(est&&PD)eh+='<div class="okbox">前任者データを合算中（範囲：'+esc(SCOPE_L[S.prev.scope])+'・重み'+PD.w+'）：通常'+PD.n+'G、CZ '+PD.cz+'回、幼少期 '+PD.youshou+'回、ラッシュ '+PD.at+'回</div>';
   else if(S.mode==="mid")eh+='<p class="note">途中から：自分が打った分だけで計算中（前任者は合算していません）。</p>';
+  if(est)eh+='<div class="call">高設定域（4・5・6） '+(hlHi(fr(est))*100).toFixed(1)+'%</div>';
+  if(S.mode==="mid"&&S.merge&&prevData()){var ea=estimate(m,{prev:false});eh+='<h3>自分の分だけ／前任者込み</h3>'+(ea&&est?cmpTable([["自分の分だけ",fr(ea)],["前任者込み",fr(est)]]):'<p class="note">自分の分を入れると、合算前との比較を表示します。</p>');}
+  eh+='<p class="note">上部バーの「数字だけ」＝CZ・幼少期CZ・ラッシュ回数・到達抽選などの数字のみ。「示唆込み」＝それに確定系（トロフィー・終了画面の○以上濃厚）と、強・弱示唆の仮の重み（⚙：強 '+S.hw.s.toFixed(1)+'倍／弱 '+S.hw.w.toFixed(1)+'倍・1回ごとに設定4〜6を1〜3に対して掛ける）を加えたもの。強・弱の出現率は未公表なので、重みは仮の値です。前任者データには示唆がないので、前任者の分には掛かりません。</p>';
   if(est)eh+='<p class="used">推測に使った項目：'+esc(usedL.join("、")||(PD?"前任者データのみ":"確定系示唆のみ"))+(unused.length?'<br>未使用（0回のため除外）：'+esc(unused.join("、")):"")+'</p>';
   $("estBody").innerHTML=eh;
   // 示唆
@@ -462,6 +516,7 @@ function render(){
   if(document.activeElement!==$("notes"))$("notes").value=S.notes||"";
   // 参考
   $("extraBody").innerHTML=m.extraCounters.map(function(h){var c=S.taps[h.id]||0;return '<div class="box"><div class="hd"><span>'+esc(h.label)+'</span><span>'+c+'回</span></div><div class="row" style="margin-top:6px"><button class="p sm grow" data-tap="'+h.id+'" data-d="1">＋1</button><button class="sm" data-tap="'+h.id+'" data-d="-1">−1</button></div></div>';}).join("");
+  document.querySelectorAll("[data-hw]").forEach(function(el){el.value=S.hw[el.dataset.hw];});$("hwS").textContent=S.hw.s.toFixed(1)+"倍";$("hwW").textContent=S.hw.w.toFixed(1)+"倍";
   renderMid(m);
   renderTrophy(m);
   // 上部バー
@@ -469,6 +524,10 @@ function render(){
   if(est){var bi2=est.indexOf(Math.max.apply(null,est));bar+='<span>推測 設定'+m.settings[bi2]+'寄り</span>';}
   if(mn>1)bar+='<span class="ok">設定'+mn+'以上濃厚</span>';
   $("statbar").innerHTML=bar;
+  var rows=[],note="";
+  if(est){var en=estimate(m,{mask:false});if(en)rows.push(["数字だけ",fr(en)]);rows.push(["示唆込み",fr(est)]);}
+  else{var pe=preEst(m);if(pe){rows.push(["座る前",fr(pe)]);note="前任者分のみ・信頼度 低〜中";}}
+  $("hlbar").innerHTML=hlBlock(rows,!!est&&mn>1,note);
 }
 function seg(id,key,val){document.querySelectorAll("#"+id+" button").forEach(function(b){var v=b.dataset.v||b.dataset.mode;b.className=v===val?"on":"";});}
 function kv(k,v){return '<div class="kv"><span>'+k+'</span><b>'+v+'</b></div>';}
@@ -485,7 +544,11 @@ function renderMid(m){
   var w=SCOPE_W[P.scope]||0.5;
   $("mergeNote").innerHTML="合算するのは通常G・CZ（OB＋FIRST）・幼少期CZ（FIRST）・ラッシュ回数だけ。Rush Wは設定差なし。範囲「"+esc(SCOPE_L[P.scope])+"」なので重み"+w+(P.scope==="unknown"?"（半分の重みで足す）":"")+"。この画面の数字が当日全体か前の人の分だけかは公式情報で未確認です。据え置き時は前日のマイスロデータが残る場合もあります（<a href=\""+RX7038+"\" target=\"_blank\" rel=\"noopener\">出典</a>）。";
   var pn=num(P.pn),ht=num(P.ht),reg=num(P.hreg),art=num(P.hart),cur=num(P.hcur),since=num(P.hsince),rush=num(P.rush);
-  var h="";
+  var h="", pe=preEst(m);
+  h+='<div class="pre"><h3 style="margin-top:0">座る前（前任者データだけ）の推測 <span class="rel m">信頼度 低〜中</span></h3>';
+  if(pe)h+=hlBlock([["前任者",fr(pe)]],false,"")+cmpTable([["前任者",fr(pe)]])+'<p class="note" style="margin:4px 0 0">マイスロ画面の通常G・CZ（OB＋FIRST）・幼少期CZ・ラッシュ回数だけで計算（範囲「'+esc(SCOPE_L[P.scope])+'」→重み'+(SCOPE_W[P.scope]||0.5)+'）。示唆は入っていません。合算スイッチに関係なく表示。</p>';
+  else h+='<p class="note" style="margin:0">マイスロ画面の通常総ゲーム数と各回数を入れると表示します。</p>';
+  h+='</div>';
   // 範囲チェック
   h+='<h3>範囲の確かめ</h3>';
   if(P.rush!==""&&P.hreg!==""){
@@ -553,11 +616,12 @@ document.addEventListener("click",function(e){
   if(el.dataset.cdel!==undefined){var di=Number(el.dataset.cdel);if(delArmed===di){S.custom.splice(di,1);delArmed=-1;commit();}else{delArmed=di;render();}return;}
   if(el.id==="cadd"){var nm=$("cname").value.trim();if(!nm){$("cname").focus();return;}S.custom.push({name:nm,count:0});$("cname").value="";commit();return;}
   delArmed=-1;
+  if(el.id==="hwReset"){S.hw=emptyHW();commit();return;}
   if(el.id==="undo"){S.hits.pop();commit();return;}
   if(el.id==="reset"){if(armed){S=empty();armed=false;commit();}else{armed=true;render();}return;}
   render();
 });
-document.addEventListener("input",function(e){var t=e.target;if(t.dataset&&t.dataset.prev){var pv=t.value.replace(/[^0-9]/g,"");t.value=pv;S.prev[t.dataset.prev]=pv;commit();return;}if(t.id==="ownTotal"){S.ownTotal=t.value.replace(/[^0-9]/g,"");t.value=S.ownTotal;commit();return;}if(t.dataset&&t.dataset.bulk){var v=t.value.replace(/[^0-9]/g,"");t.value=v;if(t.dataset.bulk==="normalG"){S.normalG=v;}else{S.bulk[t.dataset.bulk]=v;}commit();}});
+document.addEventListener("input",function(e){var t=e.target;if(t.dataset&&t.dataset.hw){var hv=Math.round(Number(t.value)*10)/10;if(isFinite(hv)&&hv>=1&&hv<=2){S.hw[t.dataset.hw]=hv;commit();}return;}if(t.dataset&&t.dataset.prev){var pv=t.value.replace(/[^0-9]/g,"");t.value=pv;S.prev[t.dataset.prev]=pv;commit();return;}if(t.id==="ownTotal"){S.ownTotal=t.value.replace(/[^0-9]/g,"");t.value=S.ownTotal;commit();return;}if(t.dataset&&t.dataset.bulk){var v=t.value.replace(/[^0-9]/g,"");t.value=v;if(t.dataset.bulk==="normalG"){S.normalG=v;}else{S.bulk[t.dataset.bulk]=v;}commit();}});
 document.addEventListener("change",function(e){var t=e.target;if(t.id==="merge"){S.merge=t.checked;commit();return;}if(t.dataset&&t.dataset.en){S.enabled[t.dataset.en]=t.checked;commit();}});
 $("notes").addEventListener("input",function(e){S.notes=e.target.value;save();});
 $("cname").addEventListener("keydown",function(e){if(e.key==="Enter")$("cadd").click();});

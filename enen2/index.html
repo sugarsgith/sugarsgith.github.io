@@ -102,6 +102,25 @@ button.p small{color:#e6eeff}
 .warnx{color:var(--warn);font-weight:700}
 .mono{font-variant-numeric:tabular-nums}
 button.p .cnt{background:#fff;color:#1d4ed8}
+.hl{margin-top:6px;font-size:12px;line-height:1.3}
+.hll{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:11px;padding:0 40px 0 100px;white-space:nowrap}
+.hlr{display:flex;align-items:center;gap:6px;margin:3px 0}
+.hlk{flex:none;width:54px;color:var(--sub);font-size:11.5px;white-space:nowrap;overflow:hidden}
+.hlv{flex:none;width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hlv.r{text-align:left}
+.hlb{flex:1;min-width:60px;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--border)}
+.hlb i{display:block;height:100%}
+.hlb i.hi{background:#8a93a3}.hlb i.lo{background:#d3d8df}
+@media (prefers-color-scheme:dark){.hlb i.hi{background:#7a8396}.hlb i.lo{background:#3b414e}}
+.hlr.th .hlb i.hi{background:var(--accent)}.hlr.th .hlv:not(.r){color:var(--accent)}
+.hlr.tl .hlb i.lo{background:var(--warn)}.hlr.tl .hlv.r{color:var(--warn)}
+.hlc{color:var(--sub);font-size:11.5px;margin-top:2px}
+.hlc.conf{color:var(--ok);font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:4px 2px;text-align:right;border-bottom:1px solid var(--border)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
+.cmp td.h{font-weight:700}
+.pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
 </style>
 </head>
 <body>
@@ -110,6 +129,7 @@ button.p .cnt{background:#fff;color:#1d4ed8}
   <a href="../" class="back">← メニュー</a>
   <h1 id="title">スロット実戦メモ（L炎炎ノ消防隊2）</h1>
   <div class="bar" id="statbar"></div>
+  <div id="hlbar"></div>
 </header>
 <nav>
   <a href="#base">台・G数</a><a href="#mid" id="navMid">途中から</a><a href="#now">当たり記録</a><a href="#ceil">天井</a><a href="#est">設定推測</a><a href="#es">終了画面</a><a href="#rc">キャラ紹介</a><a href="#coin">枚数表示</a><a href="#end">エンディング</a><a href="#wana">伝導者の罠</a><a href="#gen">その他示唆</a><a href="#wt">⚙重み</a><a href="#mode">モード</a><a href="#memo">メモ</a><a href="#extra">参考</a><a href="#spec">概要</a><a href="#src">出典</a>
@@ -121,7 +141,7 @@ button.p .cnt{background:#fff;color:#1d4ed8}
     <div class="seg" id="modeSeg"><button data-set="mode" data-v="asa">朝イチから</button><button data-set="mode" data-v="mid">途中から</button></div>
     <label>朝イチの設定変更（天井短縮の判断用）</label>
     <div class="seg" id="resetSeg"><button data-set="reset" data-v="yes">変更あり</button><button data-set="reset" data-v="no">据え置き</button><button data-set="reset" data-v="unknown">不明</button></div>
-    <p class="cap" style="margin-top:6px">リセット判別は解析サイトでも「調査中」（なな徹）。ホールの公表・前日データで判断してください。</p>
+    <p class="cap" style="margin-top:6px">リセット判別は解析サイトでも「調査中」（なな徹）。間接的な目安：<b>650G+α（炎炎ループ間は1500G+α）で当たらなければ据え置き濃厚</b>（<a href="https://altema.jp/pachimo/lenen2reset" target="_blank" rel="noopener">アルテマ</a>・<a href="https://www.slopachi-quest.com/article/enennosyouboutai2-tenjou/" target="_blank" rel="noopener">スロパチクエスト</a>）。ホールの公表・前日データと合わせて判断してください。</p>
     <h3>自分が打った分（一括入力）</h3>
     <div class="grid2">
       <div><label>通常時のゲーム数</label><input data-f="g" inputmode="numeric" placeholder="例 2000"></div>
@@ -209,7 +229,7 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 
   <section id="end">
     <h2>エンディング中のミニキャラ <span class="rel m">信頼度 中</span></h2>
-    <p class="cap">エンディング中のレア役で液晶左下に出現（ちょんぼりすた・DMM）。十字リプレイ時は振り分けが別。結合セルを補完・合計100%で検算済み。シンラ／アーサーはDMMでは奇数／偶数示唆、ちょんぼりすたではデフォルト表記（数値は同じ）。</p>
+    <p class="cap">エンディング中のレア役で液晶左下に出現（ちょんぼりすた・DMM）。十字リプレイ時は振り分けが別。結合セルを補完・合計100%で検算済み。シンラ／アーサーはこの画面では「デフォルト（ちょんぼ）」と表示。DMM・P-WORLD・なな徹は奇数／偶数示唆として扱っています（振り分けの数値は同じなので、計算は変わりません）。</p>
     <label>成立したレア役</label>
     <div class="seg" id="roleSeg"><button data-set="role" data-v="other">チェリー・スイカ・チャンス目</button><button data-set="role" data-v="cross">十字リプレイ</button></div>
     <div class="hints" id="endBtns" style="margin-top:8px"></div>
@@ -255,6 +275,7 @@ button.p .cnt{background:#fff;color:#1d4ed8}
     <div id="zones" style="margin-top:6px"></div>
     <h3>見えたモード示唆</h3>
     <div class="hints" id="mhBtns"></div>
+    <p class="note" id="hibanaNote">ヒバナ ハート：メーカー公式『<a href="https://www.secret-story.sankyo-fever.jp/article/sbh-secret_124" target="_blank" rel="noopener">質問大戦⑥</a>』は「モードD以上示唆（強）」。解析サイト（なな徹・DMM・P-WORLD）は「D以上濃厚」、ちょんぼは「D濃厚」と表記。メーカーは立場上「濃厚」と書けないという説もあるが、X上でも打ち手の報告が少なく未確認。<b>この画面の仮定：</b>D未満（A・B・C）を完全には消さず、確率を1/10に弱めて残します（尤度比 D未満0.1：D以上1）。</p>
     <div id="modeBody" style="margin-top:8px"></div>
   </section>
 
@@ -303,7 +324,7 @@ var RC=[
  {id:"t1",n:"伝導者①",s:"ジョヴァンニ→カロン→ハウメア→フレイル→インカ",m:"奇数示唆",lv:"weak",r:[15,10,20,10,20,10]},
  {id:"t2",n:"伝導者②",s:"…→フレイル→オロチ",m:"高設定示唆（弱）",lv:"weak",r:[5,5,5,7.5,7.5,7.5]},
  {id:"t3",n:"伝導者③",s:"…→フレイル→リツ",m:"高設定示唆（強）",lv:"strong",r:[1,1,1,5,5,5]},
- {id:"t4",n:"伝導者④",s:"…→フレイル→シンラ（金）※",m:"設定5以上濃厚",lv:"confirm",r:[0,0,0,0,0.5,1]},
+ {id:"t4",n:"伝導者④",s:"…→フレイル→ショウ（金）",m:"設定5以上濃厚",lv:"confirm",r:[0,0,0,0,0.5,1]},
  {id:"i1",n:"アイリス①",s:"まもるくん→オウビ→インカ→アーグ→バーンズ",m:"設定1否定",lv:"confirm",r:[0,10,10,4,4,4]},
  {id:"i2",n:"アイリス②",s:"アイリス→まもるくん→…",m:"設定2否定",lv:"confirm",r:[7.5,0,10,4,4,4]},
  {id:"i3",n:"アイリス③",s:"アイリス→オウビ→まもるくん→…",m:"設定3否定",lv:"confirm",r:[7.5,7.5,0,4,4,4]},
@@ -314,8 +335,8 @@ var RC=[
 var RCX=[{id:"kurono",n:"黒野（金）",m:"設定4以上濃厚",allow:[4,5,6]},{id:"joker",n:"ジョーカー（金）",m:"設定5以上濃厚",allow:[5,6]},{id:"shino",n:"シンラ（死ノ圧）",m:"設定6濃厚",allow:[6]}];
 var COIN=[{id:"c119",n:"119枚OVER",m:"設定2以上濃厚",allow:[2,3,4,5,6]},{id:"c246",n:"246枚OVER",m:"偶数設定濃厚",allow:[2,4,6]},{id:"c456",n:"456枚OVER",m:"設定4以上濃厚",allow:[4,5,6]},{id:"c666",n:"666枚OVER",m:"設定6濃厚",allow:[6]}];
 var END=[
- {id:"shinra",n:"シンラ",m:"奇数寄り（DMM）／デフォルト（ちょんぼ）",lv:"default",o:[51,32,48,28,39,22],x:[51,30,45,24,30,16]},
- {id:"arthur",n:"アーサー",m:"偶数寄り（DMM）／デフォルト（ちょんぼ）",lv:"default",o:[34,48,32,42,26,33],x:[34,45,30,36,20,24]},
+ {id:"shinra",n:"シンラ",m:"デフォルト（ちょんぼ）※DMM・P-WORLD・なな徹は奇数示唆",lv:"default",o:[51,32,48,28,39,22],x:[51,30,45,24,30,16]},
+ {id:"arthur",n:"アーサー",m:"デフォルト（ちょんぼ）※DMM・P-WORLD・なな徹は偶数示唆",lv:"default",o:[34,48,32,42,26,33],x:[34,45,30,36,20,24]},
  {id:"tamaki",n:"タマキ",m:"高設定示唆",lv:"weak",o:[15,15,15,20,20,20],x:[15,15,15,20,20,20]},
  {id:"e119",n:"119",m:"設定1否定（＝2以上）",lv:"confirm",o:[0,5,5,5,5,10],x:[0,10,10,10,10,10]},
  {id:"iris",n:"アイリス",m:"設定4以上濃厚",lv:"confirm",o:[0,0,0,5,5,5],x:[0,0,0,10,10,10]},
@@ -334,7 +355,7 @@ var MH=[
  {id:"ey_119",g:"アイキャッチ",n:"119",m:"通常E濃厚",min:4,hard:true},
  {id:"hb_1",g:"ミニキャラ（ハズレ時）",n:"ヒバナ 悩む",m:"通常B以上濃厚",min:1,hard:true},
  {id:"hb_2",g:"ミニキャラ（ハズレ時）",n:"ヒバナ 泣く",m:"通常C以上濃厚",min:2,hard:true},
- {id:"hb_3",g:"ミニキャラ（ハズレ時）",n:"ヒバナ ハート",m:"通常D以上（なな徹）／D濃厚（ちょんぼ）",min:3,hard:true},
+ {id:"hb_3",g:"ミニキャラ（ハズレ時）",n:"ヒバナ ハート",m:"通常D以上示唆（強）※D未満も少し残す",min:3,hard:false,lr:0.1},
  {id:"es_w",g:"終了画面（示唆・濃厚ではない）",n:"シルエット（白）",m:"通常B以上示唆",min:1,hard:false},
  {id:"es_h",g:"終了画面（示唆・濃厚ではない）",n:"第8ヘルメット",m:"通常D以上示唆",min:3,hard:false},
  {id:"es_119",g:"終了画面（示唆・濃厚ではない）",n:"119（ワンワンニャイン）",m:"通常E示唆",min:4,hard:false}];
@@ -359,22 +380,32 @@ function btTm(bt){return bt==="reg"?"first":"loop";}
 function tmLbl(t){return t==="loop"?'<span class="badge loop">連チャン中</span>':'<span class="badge">初当り</span>';}
 function btLbl(b){return b==="reg"?"初当りREG":b==="acc"?"アクセル・灰焰":"炎炎ボーナス";}
 
+// ---------- 高設定域／低設定域（v5） ----------
+function hlPct(x){return Math.round(x*100)+"%";}
+function hlHi(p){return p[3]+p[4]+p[5];}
+function hlRow(key,p){var hi=hlHi(p),lo=Math.max(0,1-hi),c=hi>0.7?" th":lo>0.7?" tl":"";
+ return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+hlPct(lo)+'</span></div>';}
+function hlBlock(rows,conf,note){if(!rows.length)return "";
+ return '<div class="hl"><div class="hll"><span>高設定域 4〜6</span><span>低設定域 1〜3</span></div>'+rows.map(function(r){return hlRow(r[0],r[1]);}).join("")+
+ '<div class="hlc'+(conf?" conf":"")+'">'+(conf?"確定・濃厚示唆あり":"あくまで予想です。様子見の判断材料に")+(note?'<span style="color:var(--sub);font-weight:400">　'+note+'</span>':"")+'</div></div>';}
+function cmpTable(rows){return '<table class="cmp"><thead><tr><th></th><th>4〜6</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>'+
+ rows.map(function(r){return '<tr><td>'+r[0]+'</td><td class="h">'+hlPct(hlHi(r[1]))+'</td>'+r[1].map(function(v){return '<td>'+Math.round(v*100)+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table><p class="note" style="margin:0">数字は各設定の％（四捨五入）。</p>';}
 // ---------- estimate ----------
 function binom(k,n,p){if(n<=0)return [0,0,0,0,0,0];return p.map(function(q){return k*Math.log(q)+(n-k)*Math.log(1-q);});}
-function estimate(){
+function estimate(o){o=o||{};var OWN=o.own!==false,PRV=o.prev!==undefined?o.prev:(S.mode==="mid"&&S.merge),HNT=o.hints!==false;
  var L=[0,0,0,0,0,0],allow=[1,1,1,1,1,1],used=[],masks=[];
  function addArr(a,w){for(var i=0;i<6;i++)L[i]+=w*a[i];}
  function cat(r,w){var a=[];for(var i=0;i<6;i++){if(r[i]<=0){allow[i]=0;a.push(0);}else a.push(Math.log(r[i]/100));}addArr(a,w);}
  function mask(al){for(var i=0;i<6;i++)if(al.indexOf(i+1)<0)allow[i]=0;}
  var pb=SPEC.bon.map(function(d){return 1/d;}),pq=SPEC.bon.map(function(d,i){return d/SPEC.loop[i];});
  var G=num(S.g),B=num(S.bon),Lp=num(S.loop);
- if(G>0&&S.bon!==""){addArr(binom(B,G,pb),1);used.push({t:"ボーナス初当り 1/"+(B?Math.round(G/B):"-")+"（"+B+"回/"+G+"G）",rel:"h"});}
- if(B>0&&S.loop!==""){var k=Math.min(Lp,B);addArr(binom(k,B,pq),1);used.push({t:"炎炎ループ突入 "+k+"/"+B+"（初当りの"+Math.round(k/B*100)+"%）",rel:"h"});if(Lp>B)used.push({t:"⚠ ループ回数が初当り回数より多い（初当り回数で計算）",rel:"l"});}
- if(S.mode==="mid"&&S.merge){var w=S.scope==="today"?1:0.5,pg=num(S.p.g),pB=num(S.p.bon),pL=num(S.p.loop);
+ if(OWN&&G>0&&S.bon!==""){addArr(binom(B,G,pb),1);used.push({t:"ボーナス初当り 1/"+(B?Math.round(G/B):"-")+"（"+B+"回/"+G+"G）",rel:"h"});}
+ if(OWN&&B>0&&S.loop!==""){var k=Math.min(Lp,B);addArr(binom(k,B,pq),1);used.push({t:"炎炎ループ突入 "+k+"/"+B+"（初当りの"+Math.round(k/B*100)+"%）",rel:"h"});if(Lp>B)used.push({t:"⚠ ループ回数が初当り回数より多い（初当り回数で計算）",rel:"l"});}
+ if(PRV){var w=S.scope==="today"?1:0.5,pg=num(S.p.g),pB=num(S.p.bon),pL=num(S.p.loop);
   if(pg>0&&S.p.bon!==""){addArr(binom(pB,pg,pb),w);used.push({t:"前任 初当り "+pB+"回/"+pg+"G（重み"+w*100+"%）",rel:"l"});}
   if(pB>0&&S.p.loop!==""){var k2=Math.min(pL,pB);addArr(binom(k2,pB,pq),w);used.push({t:"前任 ループ "+k2+"/"+pB+"（重み"+w*100+"%）",rel:"l"});}}
  var esN={reg:{},acc:{},big:{}},cw=S.custom?S.W.custom/100:1;
- S.ev.forEach(function(e){
+ if(HNT)S.ev.forEach(function(e){
   if(e.k==="es"){esN[e.t][e.v]=(esN[e.t][e.v]||0)+1;var info=ESI.find(function(x){return x.v===e.v;});
    if(info.allow){mask(info.allow);masks.push(btLbl(e.t)+"後 "+info.n+"（"+info.m+"）");}
    else{var tb=e.t==="big"?ESR.big:ESR.rb;cat(tb[e.v],cw);}}
@@ -384,12 +415,12 @@ function estimate(){
   else if(e.k==="end"){var en=END.find(function(y){return y.id===e.v;});cat(e.r==="cross"?en.x:en.o,1);if(en.lv==="confirm")masks.push("エンディング "+en.n+"（"+en.m+"）");}
   else if(e.k==="gen"){var ww=(e.tm==="loop"?S.W.loop:S.W.first)/100;cat(GEN[e.v],ww);}
  });
- ["reg","acc","big"].forEach(function(t){var o=esN[t],n=0,parts=[];["A","B","C"].forEach(function(v){if(o[v]){n+=o[v];parts.push(v+o[v]);}});
+ if(HNT)["reg","acc","big"].forEach(function(t){var o=esN[t],n=0,parts=[];["A","B","C"].forEach(function(v){if(o[v]){n+=o[v];parts.push(v+o[v]);}});
   if(n)used.push({t:"終了画面 "+btLbl(t)+" "+n+"回（"+parts.join(" ")+"）"+(S.custom?" 重み"+S.W.custom+"%（カスタム）":""),rel:S.custom?"l":"h"});});
- var rcn=S.ev.filter(function(e){return e.k==="rc";}).length;if(rcn)used.push({t:"REGキャラ紹介 "+rcn+"回",rel:"m"});
- var enn=S.ev.filter(function(e){return e.k==="end";}).length;if(enn)used.push({t:"エンディング ミニキャラ "+enn+"回",rel:"m"});
- var wv=num(S.wv),wx=Math.min(num(S.wx),wv);if(wv>0){addArr(binom(wx,wv,[.42,.42,.42,.5,.5,.5]),S.W.first/100);used.push({t:"伝導者の罠 十字目変換 "+wx+"/"+wv+"（仮定値・重み"+S.W.first+"%）",rel:"l"});}
- var gl=S.ev.filter(function(e){return e.k==="gen";});if(gl.length){var gf=gl.filter(function(e){return e.tm!=="loop";}).length;used.push({t:"その他の示唆 "+gl.length+"回（初当り"+gf+"×"+S.W.first+"%・連チャン中"+(gl.length-gf)+"×"+S.W.loop+"%）",rel:"l"});}
+ var rcn=HNT?S.ev.filter(function(e){return e.k==="rc";}).length:0;if(rcn)used.push({t:"REGキャラ紹介 "+rcn+"回",rel:"m"});
+ var enn=HNT?S.ev.filter(function(e){return e.k==="end";}).length:0;if(enn)used.push({t:"エンディング ミニキャラ "+enn+"回",rel:"m"});
+ var wv=num(S.wv),wx=Math.min(num(S.wx),wv);if(OWN&&wv>0){addArr(binom(wx,wv,[.42,.42,.42,.5,.5,.5]),S.W.first/100);used.push({t:"伝導者の罠 十字目変換 "+wx+"/"+wv+"（仮定値・重み"+S.W.first+"%）",rel:"l"});}
+ var gl=HNT?S.ev.filter(function(e){return e.k==="gen";}):[];if(gl.length){var gf=gl.filter(function(e){return e.tm!=="loop";}).length;used.push({t:"その他の示唆 "+gl.length+"回（初当り"+gf+"×"+S.W.first+"%・連チャン中"+(gl.length-gf)+"×"+S.W.loop+"%）",rel:"l"});}
  var conflict=allow.every(function(a){return !a;});if(conflict)allow=[1,1,1,1,1,1];
  var mx=-Infinity;for(var i=0;i<6;i++)if(allow[i]&&L[i]>mx)mx=L[i];
  var post=L.map(function(l,i){return allow[i]?Math.exp(l-mx):0;}),sum=post.reduce(function(a,b){return a+b;},0);post=post.map(function(x){return x/sum;});
@@ -405,7 +436,7 @@ function modeEst(){
   if(v==="none"||v==="none2"){for(var m2=0;m2<5;m2++){if(row[m2]===2||row[m2]===9)pr[m2]=0;}why.push(z+"G 前兆なし");if(v==="none2"&&z===88){pr=pr.map(function(p,i){return i===3?p:0;});why.push("88G 連続演出にも発展せず→通常D濃厚");}}
   if(v==="fake"){for(var m3=0;m3<5;m3++){if(row[m3]===9)pr[m3]=0;}why.push(z+"G 前兆→ハズレ");if(z===350){pr[0]=0;why.push("350Gフェイク→通常B以上濃厚");}if(z===550){pr=pr.map(function(p,i){return i===1?p:0;});why.push("550Gフェイク→通常B濃厚");}}
  });
- MH.forEach(function(h){if(!S.mh[h.id])return;if(h.hard){for(var m=0;m<h.min;m++)pr[m]=0;why.push(h.g+" "+h.n+"（"+h.m+"）");}else soft.push(h.n+"（"+h.m+"）");});
+ MH.forEach(function(h){if(!S.mh[h.id])return;if(h.hard){for(var m=0;m<h.min;m++)pr[m]=0;why.push(h.g+" "+h.n+"（"+h.m+"）");}else if(h.lr){for(var m4=0;m4<h.min;m4++)pr[m4]*=h.lr;why.push(h.g+" "+h.n+"（D以上示唆（強）：D未満を1/10に弱めて反映＝仮定）");}else soft.push(h.n+"（"+h.m+"）");});
  var s=pr.reduce(function(a,b){return a+b;},0),bad=false;if(s<=0){pr=MPRI[S.mctx].slice();s=100;bad=true;}
  return {p:pr.map(function(x){return x/s;}),why:why,soft:soft,bad:bad,bg:bg};
 }
@@ -427,9 +458,9 @@ function renderStatic(){
  ex+="<p class=\"cap\">ちょんぼりすた・DMMで一致。※119モード（通常E）は88G+前兆＝実質119G前後。</p>";
  ex+="<h3>ゾーンの前兆移行（ちょんぼりすた）</h3>"+table(["G数","A","B","C","D","E"],ZONES.map(function(z){return [z+"G"].concat(ZT[z].map(function(v){return v===2?"濃厚":v===9?"天井":v===1?"あり":"−";}));}));
  ex+="<p class=\"cap\">「あり」は◎〜△の差を省略。△ゾーンで前兆に入れば期待度40〜60%。前兆は液晶ゲーム数到達から13G以外で告知ならチャンス（SANKYO開発こぼれ話）。</p>";
- ex+="<h3>朝イチ・やめ時 <span class=\"rel h\">信頼度 高</span></h3><ul><li>設定変更時：ボーナス天井650G+α、ループ天井1500G+α、通常A否定（D・E選択が多い）</li><li>朝イチリセット台のゾーン狙い：45G〜88G+前兆、155G〜250G+前兆</li><li>REG後：伝導者の罠終了後にヤメ、または88Gゾーンを確認してヤメ</li><li>炎炎激闘後：潜伏（最大28G・平均8G）を必ず確認。25G以上の潜伏は炎炎大戦に期待</li><li>差枚+1500枚超の台は有利区間リセット狙いで88G・250Gまでも選択肢（ちょんぼりすた「!?」）</li></ul>";
+ ex+="<h3>朝イチ・やめ時 <span class=\"rel h\">信頼度 高</span></h3><ul><li>設定変更時：ボーナス天井650G+α、ループ天井1500G+α、通常A否定（D・E選択が多い）</li><li>リセット判別は調査中。間接的に、650G+α（炎炎ループ間は1500G+α）で当たらなければ据え置き濃厚（アルテマ・スロパチクエスト）</li><li>朝イチリセット台のゾーン狙い：45G〜88G+前兆、155G〜250G+前兆</li><li>REG後：伝導者の罠終了後にヤメ、または88Gゾーンを確認してヤメ</li><li>炎炎激闘後：潜伏（最大28G・平均8G）を必ず確認。25G以上の潜伏は炎炎大戦に期待</li><li>差枚+1500枚超の台は有利区間リセット狙いで88G・250Gまでも選択肢（ちょんぼりすた「!?」）</li></ul>";
  ex+="<h3>炎炎激闘のストック示唆（設定推測に使わない）</h3><ul><li>終了画面 シンラ（フル装備）＜シンラ＆アーサー＜シンラ（上着肩掛け）（なな徹）／DMMはA=残り2個以上、B=3個以上、C=5個以上</li><li>有利区間リセット時はストックがクリアされるので目安</li><li>突入画面：シンラ・アーサー・タマキ＝5個以上示唆、灰焰騎士団＝10個以上示唆</li><li>エピソード：選択の時3個以上、聖女の苦悩5個以上、ダークヒーロー紅J大戦濃厚</li></ul>";
- ex+="<h3>実戦値（参考）<span class=\"rel l\">信頼度 低</span></h3><ul><li>設定6は450Gゾーンをほぼ超えない：初当り192回中14回（約7%）（ちょんぼ管理人の実戦・サンプル不足の可能性あり）</li><li>アクセルボーナスの炎炎大戦当選率：約20%（ちょんぼ実戦値）／約13%（DMM）＝不一致</li></ul>";
+ ex+="<h3>実戦値（参考）<span class=\"rel l\">信頼度 低</span></h3><ul><li>設定6は450Gゾーンをほぼ超えない：初当り192回中14回（約7%）（ちょんぼ管理人の実戦・サンプル不足の可能性あり）</li><li>アクセルボーナスの炎炎大戦当選率：約20%（ちょんぼ・アルテマ）／DMMは約13%（参考値・推測には使いません）</li></ul>";
  $("extraBody").innerHTML=ex;
  var sp="";
  sp+=kv("機種","L炎炎ノ消防隊2（SANKYO・スマスロ）")+kv("導入","2026年2月2日・約15,000台")+kv("AT純増","約5.8枚/G")+kv("50枚あたり","約33.1G（設定1）")+kv("コイン単価","3.2円（ちょんぼりすた）");
@@ -446,18 +477,23 @@ function renderStatic(){
  '<li><a href="https://www.p-world.co.jp/machine/database/10415" target="_blank" rel="noopener">P-WORLD</a>：キャラ紹介シナリオ一覧・獲得枚数表示</li>'+
  '<li><a href="https://jugglersnet.com/chumoku/enennosyobotai2" target="_blank" rel="noopener">ジャグラーズネット</a>／<a href="https://www.slopachi-quest.com/article/enennosyouboutai2-settei/" target="_blank" rel="noopener">スロパチクエスト</a>：キャラ紹介・獲得枚数表示の照合</li>'+
  '<li><a href="https://www.secret-story.sankyo-fever.jp/product/sbh" target="_blank" rel="noopener">SANKYO 開発こぼれ話</a>：前兆G数の法則・裏ボタン</li>'+
- '<li><a href="https://1geki.jp/slot/l_ennenn2/" target="_blank" rel="noopener">1geki</a>：スペック照合</li></ul>'+
- '<h3>不一致・調査中</h3><ul>'+
- '<li><span class="warnx">不一致</span> ボーナス間の狙い目：670G〜（ちょんぼりすた）／500G〜（rakupachi）。この画面は670Gで判定</li>'+
- '<li><span class="warnx">不一致</span> 伝導者④の5人目：金シンラ（DMM）／ショウ（ジャグラーズネット）。示唆（設定5以上）は同じ</li>'+
- '<li><span class="warnx">不一致</span> エンディングのシンラ・アーサー：奇数/偶数示唆（DMM）／デフォルト（ちょんぼ）。数値は同じなので推測は数値どおり</li>'+
- '<li><span class="warnx">不一致</span> ヒバナ ハート：通常D以上（なな徹）／D濃厚（ちょんぼ）→D以上として扱う</li>'+
- '<li><span class="warnx">調査中</span> リセット判別・朝イチのステージ（なな徹）</li>'+
- '<li><span class="warnx">調査中</span> 伝導者の罠の十字目変換は「高設定(4以上?)」の2値のみ</li>'+
- '<li><span class="warnx">調査中</span> 獲得枚数表示の出現率約1%の分母（表示ごとかAT1回ごとか）不明</li>'+
- '<li><span class="warnx">補完</span> キャラ紹介・エンディングの表の空欄（結合セル）は上の行の値で補完。全設定で合計100%になることを確認済み</li>'+
- '<li><span class="warnx">未確認</span> 台の液晶メニューでの履歴表示・SANKYOのスマホ連動サービス（見つからず）</li>'+
- '<li>前作（L炎炎ノ消防隊・slogati等の1作目の数値）は使っていません</li></ul>';
+ '<li><a href="https://1geki.jp/slot/l_ennenn2/" target="_blank" rel="noopener">1geki</a>：スペック照合</li>'+
+'<li><a href="https://www.secret-story.sankyo-fever.jp/article/sbh-secret_124" target="_blank" rel="noopener">SANKYO 質問大戦⑥</a>：ヒバナ ハート＝モードD以上示唆（強）</li>'+
+'<li><a href="https://www.secret-story.sankyo-fever.jp/article/sbh-secret_128" target="_blank" rel="noopener">SANKYO 質問大戦⑩</a>：伝導者④の5人目＝ショウ</li>'+
+'<li><a href="https://altema.jp/pachimo/lenen2reset" target="_blank" rel="noopener">アルテマ</a>／<a href="https://www.slopachi-quest.com/article/enennosyouboutai2-tenjou/" target="_blank" rel="noopener">スロパチクエスト 天井</a>：据え置き判別の目安（650G+α）・狙い目</li>'+
+'<li><a href="https://slobase.jp/articles/enen2-expected-value" target="_blank" rel="noopener">スロベース</a>：ボーナス間の狙い目（670G〜）の照合</li></ul>'+
+ '<h3>不一致・調査中</h3><p class="cap">今回の改訂では、資料が食い違う所はちょんぼりすたを優先（ちょんぼも誤りがあり得るので、他サイトの記載も併記）。</p><ul>'+
+'<li><span class="warnx">採用</span> ボーナス間の狙い目：670G〜（ちょんぼりすた・ジャグラーズネット・スロベース）。スロパチクエストは等価630G〜、rakupachiは500G〜</li>'+
+'<li><span class="warnx">解決</span> 伝導者④の5人目：ショウ（金）（メーカー公式 質問大戦⑩で確認）。意味は設定5以上濃厚</li>'+
+'<li><span class="warnx">採用</span> エンディングのシンラ・アーサー：デフォルト（ちょんぼ）として表示。DMM・P-WORLD・なな徹は奇偶示唆扱い。振り分けの数値は同じなので推測の計算は変わりません</li>'+
+'<li><span class="warnx">仮定</span> ヒバナ ハート：メーカー公式（質問大戦⑥）は「モードD以上示唆（強）」。解析サイト（なな徹・DMM・P-WORLD）は「D以上濃厚」、ちょんぼは「D濃厚」と表記。メーカーは立場上「濃厚」と書けないという説もあるが、X上でも打ち手の報告が少なく未確認。→この画面ではD以上の強い示唆として、D未満のモードを1/10（尤度比 約0.1）に弱めて残す（D以上=1）。0.1は仮定値</li>'+
+'<li><span class="warnx">参考</span> アクセルボーナスの炎炎大戦当選率：約20%（ちょんぼ・アルテマ）／DMMは約13%。推測には使いません</li>'+
+'<li><span class="warnx">調査中</span> リセット判別・朝イチのステージ（なな徹）。間接的な目安：650G+α（炎炎ループ間は1500G+α）で当たらなければ据え置き濃厚（アルテマ・スロパチクエスト）</li>'+
+'<li><span class="warnx">調査中</span> 伝導者の罠の十字目変換は「高設定(4以上?)」の2値のみ（この画面では仮定値で計算）</li>'+
+'<li><span class="warnx">調査中</span> 獲得枚数表示の出現率約1%の分母（表示ごとかAT1回ごとか）不明</li>'+
+'<li><span class="warnx">補完</span> キャラ紹介・エンディングの表の空欄（結合セル）は上の行の値で補完。全設定で合計100%になることを確認済み</li>'+
+'<li><span class="warnx">調査中</span> 台の液晶メニューでの履歴表示・SANKYOのスマホ連動サービス（見つからず）</li>'+
+'<li>前作（L炎炎ノ消防隊・slogati等の1作目の数値）は使っていません</li></ul>';
  $("srcBody").innerHTML=src;
 }
 
@@ -505,26 +541,37 @@ function renderCeil(){
  h+=kv("伝導者の罠スルー",th+" / 5"+(th>=5?" → 次回SPエピ（炎炎激闘濃厚）":""));
  var j=[];if(bg>=670)j.push("ボーナス間 670G〜 狙い目圏内");if(lg>=1500)j.push("ループ間 1500G〜 狙い目圏内");if(th>=4)j.push("罠"+th+"スルー（次でSPエピ目前）");
  if(S.mode==="asa"&&rs&&((bg>=45&&bg<=88)||(bg>=155&&bg<=250)))j.push("リセット台ゾーン狙い（45〜88G／155〜250G）");
- h+=j.length?'<div class="okbox">'+j.join("<br>")+'</div>':'<p class="note">狙い目：ボーナス間670G〜／ループ間1500G〜（ちょんぼりすた。500G〜とする所もあり＝不一致）</p>';
+ h+=j.length?'<div class="okbox">'+j.join("<br>")+'</div>':'<p class="note">狙い目：ボーナス間670G〜／ループ間1500G〜（ちょんぼりすた・ジャグラーズネット・スロベース。スロパチクエストは等価630G〜、rakupachiは500G〜）</p>';
  if((S.state==="normal"&&S.q.length&&S.q[S.q.length-1].t==="ループ終了")||sen>0){h+=sen<=28?'<div class="alert">潜伏確認：ループ後 '+sen+'G。最大28G（平均8G）まで回して確認'+(sen>=25?'。25G以上の潜伏は炎炎大戦に期待':'')+'</div>':'<p class="note">潜伏確認済み（28G超）</p>';}
  $("ceilBody").innerHTML=h;
 }
 function renderEst(){
  var r=estimate(),h="";
- if(!r.any){$("estBody").innerHTML='<p class="note">通常G＋初当り回数、または示唆を記録すると表示されます。</p>';statbar(null);return;}
+ if(!r.any){$("estBody").innerHTML='<p class="note">通常G＋初当り回数、または示唆を記録すると表示されます。</p>'+cmpBlock();statbar(null);return;}
  var best=0;r.post.forEach(function(p,i){if(p>r.post[best])best=i;});
  h+=r.post.map(function(p,i){return '<div class="r'+(i===best?" best":"")+'"><span class="l">設定'+(i+1)+'</span><span class="t"><span class="f" style="display:block;width:'+(p*100).toFixed(1)+'%"></span></span><span class="v">'+pct(p)+'</span></div>';}).join("");
  var hi=r.post[3]+r.post[4]+r.post[5],ev=r.post[1]+r.post[3]+r.post[5];
- h+='<div class="call">設定4以上 '+pct(hi)+'　偶数 '+pct(ev)+'　最有力 設定'+(best+1)+'</div>';
+ h+='<div class="call">高設定域（4・5・6） '+pct(hi)+'　偶数 '+pct(ev)+'　最有力 設定'+(best+1)+'</div>';
  if(r.conflict)h+='<div class="alert">確定・否定どうしが矛盾しています（見間違い・カスタムの可能性）。確定系を無視して計算中。</div>';
+ h+=cmpBlock();
  h+='<div class="used"><b>使った要素</b><ul>'+r.used.map(function(u){return "<li>"+esc(u.t)+' <span class="rel '+u.rel+'">'+(u.rel==="h"?"高":u.rel==="m"?"中":"低")+"</span></li>";}).join("")+r.masks.map(function(m){return '<li>'+esc(m)+' <span class="rel h">確定系100%</span></li>';}).join("")+"</ul></div>";
  if(r.masks.length){var al=[];r.allow.forEach(function(a,i){if(a)al.push(i+1);});h+='<p class="note">確定・否定で残った設定：'+al.join("・")+'</p>';}
  $("estBody").innerHTML=h;statbar(r);
 }
+function prevAny(){return S.mode==="mid"&&((num(S.p.g)>0&&S.p.bon!=="")||(num(S.p.bon)>0&&S.p.loop!==""));}
+function preEst(){if(!prevAny())return null;var r=estimate({own:false,prev:true,hints:false});return r.any?r:null;}
+function cmpBlock(){if(S.mode!=="mid"||!S.merge||!prevAny())return "";
+ var a=estimate({prev:false}),b=estimate();if(!a.any)return '<h3>自分の分だけ／前任者込み</h3><p class="note">自分の分を入れると、合算前との比較を表示します。</p>';
+ return '<h3>自分の分だけ／前任者込み</h3>'+cmpTable([["自分の分だけ",a.post],["前任者込み",b.post]]);}
 function statbar(r){var h="",G=num(S.g),B=num(S.bon),L=num(S.loop);
- h+="<span>通常 "+G+"G</span>";if(B)h+="<span>初当り 1/"+Math.round(G/B)+"</span>";if(L)h+="<span>ループ 1/"+Math.round(G/L)+"</span>";
- if(r){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});h+='<span class="ok">設定'+(b+1)+' '+pct(r.post[b])+'</span><span>4以上 '+pct(r.post[3]+r.post[4]+r.post[5])+'</span>';}
- $("statbar").innerHTML=h;}
+ if(S.mode==="mid")h+="<span>途中から"+(S.merge?"・合算ON":"")+"</span>";
+ h+="<span>"+(S.mode==="mid"?"自分 ":"")+"通常 "+G+"G</span>";if(B)h+="<span>初当り 1/"+Math.round(G/B)+"</span>";if(L)h+="<span>ループ 1/"+Math.round(G/L)+"</span>";
+ if(r){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});h+='<span>最有力 設定'+(b+1)+'</span>';}
+ $("statbar").innerHTML=h;
+ var rows=[],conf=false,note="";
+ if(r){var n=estimate({hints:false});if(n.any)rows.push(["数字だけ",n.post]);rows.push(["示唆込み",r.post]);conf=r.masks.length>0;}
+ else{var pe=preEst();if(pe){rows.push(["座る前",pe.post]);note="前任者分のみ・信頼度 低〜中";}}
+ $("hlbar").innerHTML=hlBlock(rows,conf,note);}
 function renderMode(){
  var m=modeEst(),h="",bg=m.bg;
  h+=table(["モード","天井","確率"],MODES.map(function(x,i){return ["通常"+x,MCEIL[i]+"G",pct(m.p[i])];}));
@@ -543,6 +590,11 @@ function renderMid(){if(S.mode!=="mid"){$("midBody").innerHTML="";return;}
  if(b&&S.p.loop!=="")h+=kv("前任 ループ/初当り",Math.round(Math.min(l,b)/b*100)+"%（設定1 39.8%〜設定6 46.7%）");
  if(ht&&g&&g>ht)h+='<div class="alert">通常Gが総スタートより多い：範囲の取り違えの可能性</div>';
  if(l>b&&S.p.bon!=="")h+='<div class="alert">ループ回数が初当り回数より多い：カウンターの分類を確認</div>';
+ var pe=preEst();
+ h+='<div class="pre"><h3 style="margin-top:0">座る前（前任者データだけ）の推測 <span class="rel m">信頼度 低〜中</span></h3>';
+ if(pe){var pb=0;pe.post.forEach(function(p,i){if(p>pe.post[pb])pb=i;});h+=hlBlock([["前任者",pe.post]],false,"")+cmpTable([["前任者",pe.post]])+'<p class="note" style="margin:4px 0 0">前任者の初当り・ループだけで計算（範囲「'+(S.scope==="today"?"当日":"不明")+'」→重み'+(S.scope==="today"?"100":"50")+'%）。示唆は入っていません。合算スイッチに関係なく表示。</p>';}
+ else h+='<p class="note" style="margin:0">前任者の通常G・初当り回数（・ループ回数）を入れると表示します。</p>';
+ h+='</div>';
  if(!S.merge)h+='<p class="note">合算OFF：設定推測は自分が打った分だけ。</p>';
  $("midBody").innerHTML=h;}
 function renderCnt(){$("cntBody").innerHTML=S.cnt.map(function(c,i){return '<div class="kv"><span>'+esc(c.n)+'</span><b><button class="sm" data-cm="'+i+'">−</button> <span class="mono">'+c.v+'</span> <button class="sm p" data-cp="'+i+'">＋</button> <button class="sm" data-cx="'+i+'">✕</button></b></div>';}).join("")+(S.cnt.length?'<p class="note">'+(num(S.g)?S.cnt.map(function(c){return esc(c.n)+" 1/"+(c.v?(num(S.g)/c.v).toFixed(1):"-");}).join("・")+"（通常G基準）":"")+'</p>':"");}
