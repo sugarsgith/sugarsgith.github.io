@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<title>スロット実戦メモ（スマスロ リコリス・リコイル）</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:8px 12px}
+header h1{font-size:16px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:13px}
+.bar span{padding:2px 8px;border-radius:999px;background:var(--accentSoft)}
+.bar span.ok{background:var(--okSoft);color:var(--ok);font-weight:700}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+main{max-width:720px;margin:0 auto;padding:0 12px 80px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 4px}
+h3{font-size:15px;margin:14px 0 2px}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}
+button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.sm{min-height:36px;padding:4px 12px}
+button:active{transform:scale(.97)}
+.grow{flex:1 1 120px}
+input,select{font:inherit;font-size:18px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--sub);display:block;margin:8px 0 4px}
+.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;font-weight:700}
+.stars{color:var(--warn)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cell{flex:1 1 90px;text-align:center;font-size:12.5px;padding:4px;border-radius:6px;border:1px solid var(--border)}
+.cell.best{border-color:var(--accent);background:var(--accentSoft);font-weight:700}
+.hints{display:flex;flex-wrap:wrap;gap:8px}
+.hint{flex:1 1 260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.hint.on{background:var(--accentSoft)}
+.hint.on.confirm{border-color:var(--ok);background:var(--okSoft)}
+.hint .tap{all:unset;display:block;width:100%;cursor:pointer}
+.look{color:var(--sub);font-size:12.5px;margin:2px 0 6px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.tag.confirm{color:var(--ok);border-color:var(--ok);font-weight:700}
+.tag.strong{color:var(--accent);border-color:var(--accent);font-weight:700}
+.tag.weak{color:var(--warn);border-color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 8px;border:1px solid var(--border);border-radius:6px}
+.est .r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.est .l{width:46px}.est .v{width:52px;text-align:right}
+.est .t{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.est .f{height:100%;background:var(--accent);opacity:.55}
+.est .r.best .f{opacity:1}
+.call{border:1px solid var(--ok);background:var(--okSoft);color:var(--ok);border-radius:10px;padding:8px 10px;font-weight:700;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+th,td{border-bottom:1px solid var(--border);padding:6px 4px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+ul{padding-left:18px;margin:6px 0}
+.src li{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub)}
+</style>
+</head>
+<body>
+<noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
+<header>
+  <h1 id="title">スロット実戦メモ</h1>
+  <div class="bar" id="statbar"></div>
+</header>
+<nav>
+  <a href="#base">台・G数</a><a href="#hits">当選履歴</a><a href="#est">設定推測</a><a href="#hintsec">確定・示唆</a><a href="#rates">直撃・設定差</a><a href="#trials">G数到達</a><a href="#ref">天井・狙い目</a><a href="#spec">スペック</a><a href="#src">出典</a>
+</nav>
+<main>
+  <section id="base">
+    <h2>台と通常G数</h2>
+    <label for="machine">機種</label><select id="machine"><option value="lycoris" selected>スマスロ リコリス・リコイル</option></select>
+    <label for="normalG">通常時の総ゲーム数（メニュー画面の「通常総ゲーム数」）</label>
+    <input id="normalG" inputmode="numeric" placeholder="例 2400">
+    <p class="cap" id="maker" style="margin-top:8px"></p>
+    <p class="note" id="savestate"></p>
+    <button id="reset">リセット</button>
+  </section>
+
+  <section id="hits">
+    <h2>当選履歴</h2>
+    <p class="cap">G数を入れて当選の種類をタップ。青いボタンはラッシュ初当りに数えます。</p>
+    <div class="row"><input id="hitG" inputmode="numeric" placeholder="当選G数" style="flex:1 1 140px;width:auto"><button id="undo">最後の1件を取消</button></div>
+    <div class="row" id="hitBtns" style="margin:10px 0"></div>
+    <div id="hitSummary" style="margin-bottom:8px"></div>
+    <div class="chips" id="hitList"></div>
+  </section>
+
+  <section id="est" class="est">
+    <h2>設定推測</h2>
+    <p class="cap">入力した回数と確率から計算した各設定の相対的な近さ（事前は均等）。確定系示唆が出たらそれ未満を除外。</p>
+    <div id="estBody"></div>
+  </section>
+
+  <section id="hintsec">
+    <h2>確定・高設定示唆</h2>
+    <p class="cap">出たらタップ。緑＝設定○以上濃厚、青＝高設定示唆（強）、橙＝（弱）。リンク先で実際の画面画像を確認できます。</p>
+    <div id="hintBody"></div>
+  </section>
+
+  <section id="rates">
+    <h2>直撃・設定差カウンター</h2>
+    <p class="cap">★が多いほど設定差が大きい。枠が強調された設定が現在の実測に最も近い値。</p>
+    <div id="rateBody"></div>
+  </section>
+
+  <section id="trials">
+    <h2>G数到達時の抽選</h2>
+    <div id="trialBody"></div>
+  </section>
+
+  <section id="ref">
+    <h2>天井・狙い目</h2>
+    <div id="refBody"></div>
+  </section>
+
+  <section id="spec">
+    <h2>設定別スペック</h2>
+    <div id="specBody" class="scroll"></div>
+  </section>
+
+  <section id="src">
+    <h2>出典</h2>
+    <ul class="src" id="srcBody"></ul>
+    <p class="note">数値はすべて上記の解析サイトの掲載値です（2026年11月3日時点で確認）。</p>
+  </section>
+</main>
+
+<script>
+"use strict";
+// ===== 機種データ（新しい台はこの配列に1件追加するだけ） =====
+var ENDING="https://p-slot-life.com/lycoris-recoil-ending-screen-mujun";
+var CHONBO="https://chonborista.com/slot/sammy-slot/261631/";
+var NANA="https://nana-press.com/kaiseki/machine/1166/38718/";
+var NANA_TOP="https://nana-press.com/kaiseki/machine/1166/";
+var MACHINES=[{
+  id:"lycoris", name:"スマスロ リコリス・リコイル", maker:"サミー（2026年9月7日導入）",
+  settings:["1","2","3","4","5","6"],
+  spec:{cols:["設定","CZ","ラッシュ","機械割"],rows:[
+    ["設定1","1/198.7","1/328.8","97.9%"],["設定2","1/196.9","1/323.4","98.9%"],["設定3","1/191.3","1/312.1","101.3%"],
+    ["設定4","1/183.3","1/288.3","106.1%"],["設定5","1/175.9","1/271.6","110.4%"],["設定6","1/169.4","1/256.7","114.6%"]]},
+  spec2:{cols:["設定","直撃","幼少期CZ","共通ベル","400G CZ"],rows:[
+    ["設定1","1/22429.5","1/3965.0","1/95.8","10.9%"],["設定2","1/19006.5","1/3706.6","1/95.8","11.7%"],["設定3","1/15454.1","1/3107.3","1/95.8","14.5%"],
+    ["設定4","1/10809.3","1/2925.9","1/87.6","16.8%"],["設定5","1/7809.6","1/2425.8","1/83.2","19.5%"],["設定6","1/6263.7","1/2084.8","1/79.1","25.4%"]]},
+  specNote:"共通ベルの設定2・3はなな徹の値（ちょんぼりすたは空欄）。",
+  hitTypes:[
+    {id:"cz_ok",label:"CZ成功",flags:["cz","at"]},
+    {id:"cz_ng",label:"CZ失敗",flags:["cz"]},
+    {id:"ys_ok",label:"幼少期CZ成功",flags:["cz","youshou","at"]},
+    {id:"ys_ng",label:"幼少期CZ失敗",flags:["cz","youshou"]},
+    {id:"direct",label:"ラッシュ直撃",flags:["at","direct"]},
+    {id:"tenjo",label:"天井ラッシュ",flags:["at"]}],
+  rates:[
+    {id:"direct",label:"ラッシュ直撃",how:"CZを経由しない直撃（850G天井は除く）。当選履歴の「ラッシュ直撃」で自動カウント。設定1と6で約3.6倍差",stars:3,denoms:[22429.5,19006.5,15454.1,10809.3,7809.6,6263.7],fromHits:"direct"},
+    {id:"youshou",label:"幼少期CZ（ファーストリコリス）",how:"オポジットバトル突入時に画面ノイズ→幼少期CZ。当選履歴の幼少期CZで自動カウント。約1.9倍差",stars:3,denoms:[3965.0,3706.6,3107.3,2925.9,2425.8,2084.8],fromHits:"youshou"},
+    {id:"bell",label:"共通ベル（右下がり15枚ベル）",how:"通常時のみタップ。押し順ナビ中は数えない",stars:2,denoms:[95.8,95.8,95.8,87.6,83.2,79.1]},
+    {id:"at",label:"ラッシュ初当り",how:"当選履歴から自動（CZ成功・幼少期成功・直撃・天井）",stars:2,denoms:[328.8,323.4,312.1,288.3,271.6,256.7],fromHits:"at"},
+    {id:"cz",label:"CZ初当り",how:"当選履歴から自動（CZ成功＋失敗、幼少期含む）",stars:1,denoms:[198.7,196.9,191.3,183.3,175.9,169.4],fromHits:"cz"}],
+  trials:[
+    {id:"z400",label:"400G到達時のCZ当選",how:"400Gに到達したら「到達」、そこでCZに当選したら「当選」も",stars:2,pcts:[10.9,11.7,14.5,16.8,19.5,25.4],nLabel:"到達",kLabel:"当選"},
+    {id:"r50",label:"ラッシュ50終了時の天井短縮",how:"ウォールナットハック後のラッシュ終了を「終了」、短縮告知（CZ最終G告知・復活）を確認したら「短縮」",stars:2,pcts:[11.7,12.1,13.3,16.8,20.3,23.4],nLabel:"終了",kLabel:"短縮"},
+    {id:"h150",label:"150G消化時の変換高確移行",how:"150G到達を「到達」、「変換高確率中」の帯が出たら「移行」。約10%は帯なしで移行するので低めに出る",stars:1,pcts:[50.0,50.0,50.0,54.7,58.6,62.5],nLabel:"到達",kLabel:"移行"},
+    {id:"wlyco",label:"弱リコリス目→変換高確移行",how:"通常時の弱リコリス目を「成立」、帯が出たら「移行」。差は小さめ",stars:1,pcts:[38.3,38.3,39.1,41.0,43.0,44.9],nLabel:"成立",kLabel:"移行"}],
+  hintGroups:[
+    {id:"end",title:"ラッシュ終了画面",when:"ラッシュ終了時（上位ST中はポイントMAX後の前半パート終了時も有効）",link:ENDING,items:[
+      {id:"e_dress",label:"千束＆たきな ドレスコード",look:"ドレス姿の2人",meaning:"高設定示唆（強）",level:"strong"},
+      {id:"e_oshiage",label:"押上の風景",look:"スカイツリーが写った風景画面",meaning:"設定2以上濃厚",level:"confirm",min:2},
+      {id:"e_robota",label:"ロボ太",look:"ロボットのアップ",meaning:"設定4以上濃厚",level:"confirm",min:4},
+      {id:"e_hawaii",label:"ハワイ",look:"千束・たきな・クルミ全員集合の南国画面",meaning:"設定6濃厚",level:"confirm",min:6},
+      {id:"e_tk_mu",label:"たきな私服（千束RUSH後＝矛盾）",look:"青いパーカー・ビル街の背景",meaning:"設定4以上濃厚（上位ST後は弱示唆どまり）",level:"confirm",min:4},
+      {id:"e_ch_mu",label:"千束私服（たきなRUSH後＝矛盾）",look:"白いトップス・夜の街の背景",meaning:"設定4以上濃厚（上位ST後は弱示唆どまり）",level:"confirm",min:4},
+      {id:"e_tk_s",label:"たきな私服（たきなRUSH後）",look:"青いパーカー・ビル街の背景",meaning:"高設定示唆（弱）",level:"weak"},
+      {id:"e_ch_s",label:"千束私服（千束RUSH後）",look:"白いトップス・夜の街の背景",meaning:"高設定示唆（弱）",level:"weak"},
+      {id:"e_def",label:"制服（デフォルト）",look:"消化したRUSHキャラのリコリス制服",meaning:"示唆なし",level:"default"}]},
+    {id:"trophy",title:"サミートロフィー",when:"ラッシュ終了画面に出現",link:CHONBO,items:[
+      {id:"t_cu",label:"銅トロフィー",look:"銅色のトロフィー",meaning:"設定2以上濃厚",level:"confirm",min:2},
+      {id:"t_ag",label:"銀トロフィー",look:"銀色のトロフィー",meaning:"設定3以上濃厚",level:"confirm",min:3},
+      {id:"t_au",label:"金トロフィー",look:"金色のトロフィー",meaning:"設定4以上濃厚",level:"confirm",min:4},
+      {id:"t_kirin",label:"キリン柄トロフィー",look:"キリン柄のトロフィー",meaning:"設定5以上濃厚",level:"confirm",min:5},
+      {id:"t_rainbow",label:"虹トロフィー",look:"虹色のトロフィー",meaning:"設定6濃厚",level:"confirm",min:6}]},
+    {id:"prologue",title:"プロローグのエピソード（初当り時）",when:"ラッシュ初当りのプロローグ。名前は出ないので映像で判断",link:CHONBO,items:[
+      {id:"p_ep4",label:"Time will tell ②",look:"真島がビルの屋上で通話",meaning:"高設定示唆（強）",level:"strong"},
+      {id:"p_ep3",label:"Repay evil with evil",look:"真島がモニターをハッキングして演説",meaning:"高設定示唆（弱）",level:"weak"},
+      {id:"p_ep1",label:"Time will tell ①",look:"真島が車内で通話",meaning:"デフォルト",level:"default"},
+      {id:"p_ep2",label:"The more the merrier",look:"ロボ太とウォールナットが電脳空間で会話",meaning:"デフォルト",level:"default"}]},
+    {id:"epbonus",title:"エピソードボーナス",when:"ラッシュ中のエピソードボーナス。名前は液晶左上に表示",link:CHONBO,items:[
+      {id:"b_r_ep4",label:"Recoil of Lycoris -side 千束＆真島-",look:"リコリスラッシュ中・液晶左上に表示",meaning:"高設定示唆（強）いつ出ても有効",level:"strong"},
+      {id:"b_r_ep3",label:"Opposites attract",look:"リコリスラッシュ中・液晶左上に表示",meaning:"高設定示唆（弱）そのラッシュ1回目のみ有効",level:"weak"},
+      {id:"b_w_ep4",label:"Recoil of Lycoris -side ハワイ-",look:"リコリスラッシュW中・液晶左上に表示",meaning:"高設定示唆（強）いつ出ても有効",level:"strong"},
+      {id:"b_w_ep3",label:"Recoil of Lycoris -side リコリコ-",look:"リコリスラッシュW中・液晶左上に表示",meaning:"高設定示唆（弱）そのラッシュ1回目のみ有効",level:"weak"}]},
+    {id:"lamp",title:"筐体上部ランプ",when:"エンディング中、または後半パートで1000pt到達後のボーナス中のレア役成立時",link:ENDING,items:[
+      {id:"l_red",label:"赤ランプ",look:"筐体上部ランプが赤く発光",meaning:"高設定示唆（強）",level:"strong"},
+      {id:"l_green",label:"緑ランプ",look:"筐体上部ランプが緑に発光",meaning:"高設定示唆（弱）",level:"weak"},
+      {id:"l_def",label:"青・黄ランプ",look:"青または黄に発光",meaning:"デフォルト",level:"default"}]}],
+  ref:[
+    {title:"天井",cols:["状況","天井","恩恵"],rows:[
+      ["通常（ラッシュ後）","CZ間600G＋α","CZ当選"],["通常（ラッシュ後）","ラッシュ間850G＋α","ラッシュ＋Vストック抽選"],
+      ["設定変更・駆け抜け後","CZ間250G＋α","CZ当選"],["設定変更・駆け抜け後","ラッシュ間600G＋α","成功濃厚CZ"],["上位CZ失敗後","ラッシュ間250G＋α","成功濃厚CZ"]]},
+    {title:"狙い目（ちょんぼりすた管理人の個人的な目安）",cols:["状況","狙い目"],rows:[
+      ["設定変更後","70G〜ラッシュまで"],["ラッシュ駆け抜け後","70G〜ラッシュまで"],["ラッシュ連チャン後","480G〜ラッシュまで"],["上位CZ失敗後","0G〜ラッシュまで"],["上位ST終了後","0G〜100G＋α（引き戻し）"]]},
+    {title:"規定G数",cols:["G数","内容"],rows:[
+      ["100G","CZチャンス大"],["250G","CZチャンス大（250GまでのCZ期待度 約90%）"],["300G","変換高確 移行濃厚"],["400G","CZチャンス（当選率に設定差）"],["600G","CZチャンス大"],["750G","CZチャンス"],["850G","天井"]]},
+    {title:"CZ失敗後アイキャッチ（設定ではなく短縮天井・復活の示唆）",cols:["アイキャッチ","示唆"],rows:[
+      ["たきなA（モノクロ背景）","デフォルト"],["クルミA（椅子に座る）","短縮天井期待度 低"],["たきなB（ギター）","短縮天井期待度 中"],
+      ["クルミB（サメのパーカー）","短縮天井期待度 高"],["千束A（振り向き）","CZ復活期待度 大幅アップ"],["千束B（テレビの中）","CZ復活濃厚"]]}],
+  notes:[
+    "ラッシュ駆け抜け（ボーナス非当選）は約4割。データカウンターでRB後にBBなしは駆け抜けの可能性大",
+    "上位ST終了後100G＋α以内（下パネル明滅）のCZからの当選は上位STに復帰",
+    "設定変更時は有利区間・天井・スタンプがリセット。電源ON/OFFのみは引き継ぎ",
+    "中段チェリー（1/16384）はラッシュ直撃かロングフリーズ",
+    "やめどきはラッシュ後。駆け抜け後は短縮天井（CZ250G・ラッシュ600G）があるので状況確認"],
+  sources:[
+    {title:"スマスロ リコリス・リコイル 解析まとめ（天井・設定判別・小役）",site:"ちょんぼりすた",href:CHONBO},
+    {title:"設定判別（設定差・示唆演出）まとめ",site:"なな徹",href:NANA},
+    {title:"解析情報まとめ（天井・リセット）",site:"なな徹",href:NANA_TOP},
+    {title:"終了画面・アイキャッチ・ランプの示唆一覧（画像あり）",site:"P-Slot Life",href:ENDING},
+    {title:"設定差まとめ（エピソード一覧）",site:"スロパチクエスト",href:"https://www.slopachi-quest.com/article/rikorisu-rikoiru-settei/"}]
+}];
+
+// ===== 状態と保存 =====
+var curId=MACHINES[0].id, S=null, armed=false, canSave=true;
+function empty(){return {normalG:"",hits:[],taps:{},trials:{}};}
+function key(id){return "slotmemo:v1:"+id;}
+function load(id){try{var r=localStorage.getItem(key(id));if(r){var p=JSON.parse(r);var e=empty();for(var k in e){if(p[k]!==undefined)e[k]=p[k];}return e;}}catch(e){}return empty();}
+function save(){try{localStorage.setItem(key(curId),JSON.stringify(S));canSave=true;}catch(e){canSave=false;}}
+function M(){for(var i=0;i<MACHINES.length;i++)if(MACHINES[i].id===curId)return MACHINES[i];return MACHINES[0];}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function $(id){return document.getElementById(id);}
+
+// ===== 計算 =====
+function hitCount(m,flag){return S.hits.filter(function(h){var t=m.hitTypes.find(function(x){return x.id===h.type;});return t?t.flags.indexOf(flag)>=0:false;}).length;}
+function rateCount(m,r){return r.fromHits?hitCount(m,r.fromHits):(S.taps[r.id]||0);}
+function minSetting(m){var mn=1;m.hintGroups.forEach(function(g){g.items.forEach(function(h){if((S.taps[h.id]||0)>0&&h.min&&h.min>mn)mn=h.min;});});return mn;}
+function estimate(m){
+  var n=Number(S.normalG)||0, ll=m.settings.map(function(){return 0;}), used=false;
+  m.rates.forEach(function(r){var k=rateCount(m,r);if(n>0&&k<=n){used=true;r.denoms.forEach(function(d,i){var p=1/d;ll[i]+=k*Math.log(p)+(n-k)*Math.log(1-p);});}});
+  m.trials.forEach(function(t){var v=S.trials[t.id];if(v&&v.n>0&&v.k<=v.n){used=true;t.pcts.forEach(function(pc,i){var p=pc/100;ll[i]+=v.k*Math.log(p)+(v.n-v.k)*Math.log(1-p);});}});
+  var mn=minSetting(m); if(mn>1)used=true; if(!used)return null;
+  var masked=ll.map(function(v,i){return i+1<mn?-Infinity:v;});
+  var mx=Math.max.apply(null,masked);
+  var w=masked.map(function(v){return v===-Infinity?0:Math.exp(v-mx);});
+  var sum=w.reduce(function(a,b){return a+b;},0);
+  return w.map(function(v){return v/sum*100;});
+}
+function closest(arr,val,logScale){var b=-1,bd=Infinity;arr.forEach(function(x,i){var d=logScale?Math.abs(Math.log(x)-Math.log(val)):Math.abs(x-val);if(d<bd){bd=d;b=i;}});return b;}
+function stars(n){return "★★★".slice(0,n)+"☆☆☆".slice(0,3-n);}
+
+// ===== 描画 =====
+function renderStatic(){
+  var m=M();
+  $("title").textContent="スロット実戦メモ｜"+m.name;
+  $("machine").innerHTML=MACHINES.map(function(x){return '<option value="'+x.id+'"'+(x.id===curId?" selected":"")+'>'+esc(x.name)+'</option>';}).join("");
+  $("maker").textContent=m.maker;
+  $("hitBtns").innerHTML=m.hitTypes.map(function(h){return '<button class="grow'+(h.flags.indexOf("at")>=0?" p":"")+'" data-hit="'+h.id+'">'+esc(h.label)+'</button>';}).join("");
+  var html="";
+  m.ref.forEach(function(t){html+="<h3>"+esc(t.title)+"</h3>"+table(t.cols,t.rows);});
+  html+="<ul>"+m.notes.map(function(x){return "<li>"+esc(x)+"</li>";}).join("")+"</ul>";
+  $("refBody").innerHTML=html;
+  $("specBody").innerHTML=table(m.spec.cols,m.spec.rows)+table(m.spec2.cols,m.spec2.rows)+'<p class="note">'+esc(m.specNote)+'</p>';
+  $("srcBody").innerHTML=m.sources.map(function(s){return '<li><a href="'+s.href+'" target="_blank" rel="noopener">'+esc(s.title)+'</a>（'+esc(s.site)+'）<br><span class="note">'+esc(s.href)+'</span></li>';}).join("");
+}
+function table(cols,rows){return '<div class="scroll"><table><thead><tr>'+cols.map(function(c){return "<th>"+esc(c)+"</th>";}).join("")+'</tr></thead><tbody>'+rows.map(function(r){return "<tr>"+r.map(function(c){return "<td>"+esc(c)+"</td>";}).join("")+"</tr>";}).join("")+"</tbody></table></div>";}
+
+function render(){
+  var m=M(), n=Number(S.normalG)||0;
+  if(document.activeElement!==$("normalG"))$("normalG").value=S.normalG;
+  $("savestate").textContent=canSave?"入力はこのブラウザに自動保存されます。":"このブラウザでは保存できません（プライベートモード等）。閉じると消えます。";
+  $("reset").textContent=armed?"もう一度押すと全データを消去":"リセット";
+  $("reset").className=armed?"p":"";
+  // 履歴
+  var avg=S.hits.length?S.hits.reduce(function(a,h){return a+h.g;},0)/S.hits.length:0;
+  var cz=S.hits.filter(function(h){return h.type.indexOf("cz")===0||h.type.indexOf("ys")===0;});
+  var czAvg=cz.length?cz.reduce(function(a,h){return a+h.g;},0)/cz.length:0;
+  var atN=hitCount(m,"at");
+  $("hitSummary").textContent="当選 "+S.hits.length+"回　平均 "+(avg?avg.toFixed(0)+"G":"—")+"　CZ平均 "+(czAvg?czAvg.toFixed(0)+"G":"—")+"　ラッシュ初当り "+atN+"回"+(atN&&n?"（1/"+(n/atN).toFixed(1)+"）":"");
+  $("hitList").innerHTML=S.hits.map(function(h,i){var t=m.hitTypes.find(function(x){return x.id===h.type;});return '<span class="chip">'+(i+1)+". "+h.g+"G "+esc(t?t.label:h.type)+"</span>";}).join("");
+  // 推測
+  var est=estimate(m), mn=minSetting(m), eh="";
+  if(est){var bi=est.indexOf(Math.max.apply(null,est));
+    eh=est.map(function(v,i){return '<div class="r'+(i===bi?" best":"")+'"><span class="l">設定'+m.settings[i]+'</span><span class="t"><span class="f" style="display:block;width:'+v.toFixed(1)+'%"></span></span><span class="v">'+v.toFixed(1)+'%</span></div>';}).join("");
+  } else eh='<p class="note">通常G数と、カウンターか当選履歴を入れると表示されます。</p>';
+  if(mn>1)eh+='<div class="call">設定'+mn+'以上濃厚（確定系の示唆が出ています）</div>';
+  var seen=[];m.hintGroups.forEach(function(g){g.items.forEach(function(h){if((h.level==="strong"||h.level==="weak")&&(S.taps[h.id]||0)>0)seen.push(h.label+"（"+h.meaning+"）×"+S.taps[h.id]);});});
+  if(seen.length)eh+='<p style="margin:8px 0 0">見えた高設定示唆：'+esc(seen.join("、"))+'</p>';
+  $("estBody").innerHTML=eh;
+  // 示唆
+  $("hintBody").innerHTML=m.hintGroups.map(function(g){
+    return '<h3>'+esc(g.title)+'</h3><p class="cap">'+esc(g.when)+'　<a href="'+g.link+'" target="_blank" rel="noopener">画像つき解説を開く</a></p><div class="hints">'+
+      g.items.map(function(h){var c=S.taps[h.id]||0;return '<div class="hint'+(c>0?" on":"")+(h.level==="confirm"?" confirm":"")+'"><button class="tap" data-tap="'+h.id+'" data-d="1"><div class="hd"><span>'+esc(h.label)+'</span><span>'+c+'回</span></div><div class="look">見た目：'+esc(h.look)+'</div><span class="tag '+h.level+'">'+esc(h.meaning)+'</span></button><div class="row" style="margin-top:8px"><button class="p sm" data-tap="'+h.id+'" data-d="1">＋1</button><button class="sm" data-tap="'+h.id+'" data-d="-1">−1</button></div></div>';}).join("")+'</div>';
+  }).join("");
+  // 設定差
+  $("rateBody").innerHTML=m.rates.slice().sort(function(a,b){return b.stars-a.stars;}).map(function(r){
+    var k=rateCount(m,r), obs=k>0&&n>0?n/k:0, best=obs>0?closest(r.denoms,obs,true):-1;
+    return '<div class="box"><div class="hd"><span>'+esc(r.label)+' <span class="stars">'+stars(r.stars)+'</span></span><span>'+k+'回 / '+(obs?"1/"+obs.toFixed(1):"—")+'</span></div><div class="look">'+esc(r.how)+'</div><div class="cells">'+
+      r.denoms.map(function(d,i){return '<div class="cell'+(i===best?" best":"")+'">設定'+m.settings[i]+' 1/'+d+'</div>';}).join("")+'</div>'+
+      (r.fromHits?"":'<div class="row"><button class="p grow" data-tap="'+r.id+'" data-d="1">＋1 タップ</button><button data-tap="'+r.id+'" data-d="-1">−1</button></div>')+'</div>';
+  }).join("");
+  // 到達抽選
+  $("trialBody").innerHTML=m.trials.map(function(t){
+    var v=S.trials[t.id]||{n:0,k:0}, rate=v.n>0?v.k/v.n*100:-1, best=rate>=0?closest(t.pcts,rate,false):-1;
+    return '<div class="box"><div class="hd"><span>'+esc(t.label)+' <span class="stars">'+stars(t.stars)+'</span></span><span>'+v.k+'/'+v.n+(rate>=0?" "+rate.toFixed(1)+"%":"")+'</span></div><div class="look">'+esc(t.how)+'</div><div class="cells">'+
+      t.pcts.map(function(p,i){return '<div class="cell'+(i===best?" best":"")+'">設定'+m.settings[i]+' '+p+'%</div>';}).join("")+'</div><div class="row">'+
+      '<button class="grow" data-trial="'+t.id+'" data-f="n" data-d="1">＋'+t.nLabel+'</button><button class="p grow" data-trial="'+t.id+'" data-f="k" data-d="1">＋'+t.kLabel+'</button>'+
+      '<button class="sm" data-trial="'+t.id+'" data-f="n" data-d="-1">'+t.nLabel+'−1</button><button class="sm" data-trial="'+t.id+'" data-f="k" data-d="-1">'+t.kLabel+'−1</button></div></div>';
+  }).join("");
+  // 上部バー
+  var bar='<span>通常 '+(n||0)+'G</span><span>当選 '+S.hits.length+'</span>';
+  if(est){var bi2=est.indexOf(Math.max.apply(null,est));bar+='<span>推測 設定'+m.settings[bi2]+'寄り</span>';}
+  if(mn>1)bar+='<span class="ok">設定'+mn+'以上濃厚</span>';
+  $("statbar").innerHTML=bar;
+}
+function commit(){save();render();}
+
+// ===== 操作 =====
+document.addEventListener("click",function(e){
+  var el=e.target.closest?e.target.closest("button"):null; if(!el)return;
+  if(el.id!=="reset"&&armed){armed=false;}
+  if(el.dataset.hit){var g=$("hitG").value.replace(/[^0-9]/g,"");if(!g){$("hitG").focus();return;}S.hits.push({g:Number(g),type:el.dataset.hit});$("hitG").value="";commit();return;}
+  if(el.dataset.tap){var id=el.dataset.tap,d=Number(el.dataset.d);S.taps[id]=Math.max(0,(S.taps[id]||0)+d);commit();return;}
+  if(el.dataset.trial){var tid=el.dataset.trial,f=el.dataset.f,dd=Number(el.dataset.d),cur=S.trials[tid]||{n:0,k:0};cur[f]=Math.max(0,cur[f]+dd);if(f==="k"&&dd>0&&cur.k>cur.n)cur.n=cur.k;S.trials[tid]=cur;commit();return;}
+  if(el.id==="undo"){S.hits.pop();commit();return;}
+  if(el.id==="reset"){if(armed){S=empty();armed=false;commit();}else{armed=true;render();}return;}
+  render();
+});
+$("normalG").addEventListener("input",function(e){S.normalG=e.target.value.replace(/[^0-9]/g,"");e.target.value=S.normalG;commit();});
+$("machine").addEventListener("change",function(e){curId=e.target.value;S=load(curId);armed=false;renderStatic();render();});
+
+S=load(curId);renderStatic();render();
+</script>
+</body>
+</html>
