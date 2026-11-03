@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<title>スロット実戦メモ（Lうみねこのなく頃に2）</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:8px 12px}
+header h1{font-size:16px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:13px}
+.bar span{padding:2px 8px;border-radius:999px;background:var(--accentSoft)}
+.bar span.ok{background:var(--okSoft);color:var(--ok);font-weight:700}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+main{max-width:720px;margin:0 auto;padding:0 12px 80px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 4px}
+h3{font-size:15px;margin:14px 0 2px}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}
+button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.sm{min-height:36px;padding:4px 12px}
+button:active{transform:scale(.97)}
+.grow{flex:1 1 120px}
+input,select{font:inherit;font-size:18px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--sub);display:block;margin:8px 0 4px}
+.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;font-weight:700}
+.stars{color:var(--warn)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cell{flex:1 1 90px;text-align:center;font-size:12.5px;padding:4px;border-radius:6px;border:1px solid var(--border)}
+.cell.best{border-color:var(--accent);background:var(--accentSoft);font-weight:700}
+.hints{display:flex;flex-wrap:wrap;gap:8px}
+.hint{flex:1 1 260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.hint.on{background:var(--accentSoft)}
+.hint.on.confirm{border-color:var(--ok);background:var(--okSoft)}
+.hint .tap{all:unset;display:block;width:100%;cursor:pointer}
+.look{color:var(--sub);font-size:12.5px;margin:2px 0 6px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.tag.confirm{color:var(--ok);border-color:var(--ok);font-weight:700}
+.tag.strong{color:var(--accent);border-color:var(--accent);font-weight:700}
+.tag.weak{color:var(--warn);border-color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 8px;border:1px solid var(--border);border-radius:6px}
+.est .r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.est .l{width:46px}.est .v{width:52px;text-align:right}
+.est .t{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.est .f{height:100%;background:var(--accent);opacity:.55}
+.est .r.best .f{opacity:1}
+.call{border:1px solid var(--ok);background:var(--okSoft);color:var(--ok);border-radius:10px;padding:8px 10px;font-weight:700;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+th,td{border-bottom:1px solid var(--border);padding:6px 4px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+ul{padding-left:18px;margin:6px 0}
+.src li{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub)}
+textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.grid2 label{margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:8px}
+.chk input{width:22px;height:22px;min-height:0}
+details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
+.used{font-size:12.5px;color:var(--sub);margin-top:8px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:80px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.rel{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid;margin-left:6px;font-weight:700;vertical-align:middle}
+.rel{white-space:nowrap;display:inline-block;width:max-content;flex:none;box-sizing:content-box}
+.rel.h{color:var(--ok);border-color:var(--ok)}.rel.m{color:var(--accent);border-color:var(--accent)}.rel.l{color:var(--warn);border-color:var(--warn)}
+.chk.big{font-size:15px;color:var(--text);font-weight:700;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+.alert{border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;border-bottom:1px solid var(--border);padding:5px 0}
+.kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
+.back{font-size:13px;color:var(--accent);text-decoration:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btns button{width:100%;font-size:14px;line-height:1.25}
+.btns button small{display:block;font-size:11.5px;color:var(--sub);font-weight:400}
+button.p small{color:#e6eeff}
+.cnt{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--accentSoft);font-weight:700;font-size:12.5px;margin-left:4px}
+.evs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ev{font-size:12px;padding:2px 4px 2px 8px;border:1px solid var(--border);border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.ev button{min-height:26px;padding:0 8px;border:none;background:transparent;color:var(--danger);font-size:14px}
+.ev.loop{border-color:var(--warn)}
+.badge{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--accentSoft);margin-left:4px}
+.badge.loop{background:#fdf0dc;color:#8a4b00}
+@media (prefers-color-scheme:dark){.badge.loop{background:#3a2a12;color:#f5c27a}}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input{flex:1;min-height:32px;padding:0}
+.rng b{width:48px;text-align:right}
+.zone{display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding:6px 0}
+.zone>b{width:52px}
+.zone .seg{flex:1}
+.zone .seg button{min-width:0;font-size:12.5px;min-height:36px;padding:2px 4px}
+.warnx{color:var(--warn);font-weight:700}
+.mono{font-variant-numeric:tabular-nums}
+button.p .cnt{background:#fff;color:#1d4ed8}
+.hl{margin-top:6px;font-size:12px;line-height:1.3}
+.hll{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:11px;padding:0 40px 0 100px;white-space:nowrap}
+.hlr{display:flex;align-items:center;gap:6px;margin:3px 0}
+.hlk{flex:none;width:54px;color:var(--sub);font-size:11.5px;white-space:nowrap;overflow:hidden}
+.hlv{flex:none;width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hlv.r{text-align:left}
+.hlb{flex:1;min-width:60px;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--border)}
+.hlb i{display:block;height:100%}
+.hlb i.hi{background:#8a93a3}.hlb i.lo{background:#d3d8df}
+@media (prefers-color-scheme:dark){.hlb i.hi{background:#7a8396}.hlb i.lo{background:#3b414e}}
+.hlr.th .hlb i.hi{background:var(--accent)}.hlr.th .hlv:not(.r){color:var(--accent)}
+.hlr.tl .hlb i.lo{background:var(--warn)}.hlr.tl .hlv.r{color:var(--warn)}
+.hlc{color:var(--sub);font-size:11.5px;margin-top:2px}
+.hlc.conf{color:var(--ok);font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:4px 2px;text-align:right;border-bottom:1px solid var(--border)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
+.cmp td.h{font-weight:700}
+.pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+</style>
+</head>
+<body>
+<noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
+<header>
+  <a href="../" class="back">← メニュー</a>
+  <h1 id="title">スロット実戦メモ（Lうみねこのなく頃に2）</h1>
+  <div class="bar" id="statbar"></div>
+  <div id="hlbar"></div>
+</header>
+<nav>
+  <a href="#base">台・G数</a><a href="#mid" id="navMid">途中から</a><a href="#now">当たり記録</a><a href="#ceil">天井</a><a href="#est">設定推測</a><a href="#cnt">設定差カウンター</a><a href="#hint">示唆</a><a href="#wt">⚙重み</a><a href="#rank">示唆の強さ順</a><a href="#memo">メモ</a><a href="#spec">概要</a><a href="#src">出典</a>
+</nav>
+<main>
+  <section id="base">
+    <h2>台と一括入力</h2>
+    <label>打ち始め</label>
+    <div class="seg" id="modeSeg"><button data-set="mode" data-v="asa">朝イチから</button><button data-set="mode" data-v="mid">途中から</button></div>
+    <h3>自分が打った分（一括入力）</h3>
+    <div class="grid2">
+      <div><label>総ゲーム数（データカウンター）</label><input data-f="g" inputmode="numeric" placeholder="例 3000"></div>
+      <div><label>うちART中のG数</label><input data-f="ag" inputmode="numeric" placeholder="例 400"></div>
+      <div><label>BIG回数</label><input data-f="big" inputmode="numeric" placeholder="例 9"></div>
+      <div><label>REG回数</label><input data-f="reg" inputmode="numeric" placeholder="例 8"></div>
+    </div>
+    <p class="cap" style="margin-top:6px">ボーナス合算は「データカウンター上の合算」（設定1 1/201.5〜設定6 1/180.8）で計算します。ART中に引いたボーナスはART完走後に出てくるので、公表の合算（1/189.4〜1/167.6）より重く見えます。通常時G＝総G−ART中G として通常時ベルに使います。下の「当たり記録」でもBIG・REGが増えます。</p>
+    <p class="note" id="savestate"></p>
+    <button id="resetAll">リセット</button>
+  </section>
+
+  <section id="mid" hidden>
+    <h2>途中から：前任者データ <span class="rel l">信頼度 低</span></h2>
+    <p class="cap">マイスロのようなスマホ連動の履歴は見つかっていません（調査中）。台上のデータカウンターの数字を使います。BB／RBのランプ分類は店ごとに違うので、履歴と見比べて確認してください。</p>
+    <div class="grid2">
+      <div><label>前任の総ゲーム数</label><input data-p="g" inputmode="numeric" placeholder="例 4000"></div>
+      <div><label>前任のBIG</label><input data-p="big" inputmode="numeric" placeholder="例 11"></div>
+      <div><label>前任のREG</label><input data-p="reg" inputmode="numeric" placeholder="例 10"></div>
+      <div><label>着席時のCZ間G（天井用）</label><input data-c="cz" inputmode="numeric" placeholder="例 80"></div>
+    </div>
+    <label>この数字の範囲</label>
+    <div class="seg" id="scopeSeg"><button data-set="scope" data-v="today">当日の台全体</button><button data-set="scope" data-v="unknown">不明</button></div>
+    <label class="chk big"><input type="checkbox" id="merge">前任者を合算して設定推測に使う（当日＝重み100%／不明＝50%）</label>
+    <div id="midBody"></div>
+  </section>
+
+  <section id="now">
+    <h2>当たり記録</h2>
+    <p class="cap">押すとBIG・REGの回数と天井カウンターが自動で動きます。</p>
+    <div class="btns">
+      <button data-q="bigS" class="p">同色BIG<small>BIG＋1</small></button>
+      <button data-q="bigD" class="p">異色BIG<small>BIG＋1</small></button>
+      <button data-q="reg" class="p">REG<small>REG＋1</small></button>
+      <button data-q="fall">CZ転落（通常へ）<small>CZ間Gを0に</small></button>
+    </div>
+    <div class="evs" id="qLog"></div>
+  </section>
+
+  <section id="ceil">
+    <h2>天井カウンター <span class="rel h">信頼度 高</span></h2>
+    <div class="grid2">
+      <div><label>CZ間G（転落リプレイ後のG数）</label><input data-c="cz" inputmode="numeric" placeholder="0"></div>
+      <div style="display:flex;align-items:flex-end;gap:6px"><button class="sm" data-cinc="1">＋1</button><button class="sm" data-cinc="10">＋10</button></div>
+    </div>
+    <div id="ceilBody" style="margin-top:8px"></div>
+  </section>
+
+  <section id="est">
+    <h2>設定推測</h2>
+    <p class="cap">使った要素だけで計算（入力のない要素は無視）。事前は各設定同じ確率。濃厚・確定・設定1否定は常に100%で反映（該当しない設定を0に）。</p>
+    <div id="estBody" class="est"></div>
+  </section>
+
+  <section id="cnt">
+    <h2>設定差カウンター</h2>
+    <p class="cap">★が多いほど判別に効きます。ワンタップで＋1、数字は直接書き換えもできます。枠が強調された設定が今の実測に一番近い値。</p>
+    <div id="cntBody"></div>
+  </section>
+
+  <section id="hint">
+    <h2>設定示唆（出たらタップ）</h2>
+    <p class="cap">緑＝濃厚・確定（該当しない設定を除外）、青＝強、橙＝弱・偶奇（⚙の仮の重み）、灰＝デフォルト・設定変更系（計算に入れない）。<b>超パー22%は「期待度アップ」止まりで、濃厚ではありません。</b>「公式」はオーイズミ スロ開発室Q&Aの表記。</p>
+    <div id="hintBody"></div>
+    <div class="evs" id="hintLog"></div>
+  </section>
+
+  <section id="wt">
+    <details id="wtDet"><summary>⚙ 示唆の重み（仮の値）</summary>
+    <p class="cap"><b>仮の値（出現率は未公表）</b>。示唆を1回見るごとに、対象の設定の見込みを何倍にするか。<b>1.0＝計算に入れない</b>。濃厚・確定・設定1否定と、振り分けが公表されているロゴ発光はこの重みと別です。</p>
+    <label>強：高設定示唆（REG銀背景）→ 設定4〜6を</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-w="s"><b id="wS"></b></div>
+    <label>CHECKMATE 金（4以上の期待度アップ）→ 設定4〜6を</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-w="cm"><b id="wCm"></b></div>
+    <label>弱：設定2以上示唆・期待度アップ（超パー22%など）→ 設定2〜6を</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-w="w"><b id="wW"></b></div>
+    <label>偶奇示唆 → 該当する偶数／奇数の設定を</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-w="p"><b id="wP"></b></div>
+    <button class="sm" id="wReset">初期値に戻す（強 1.2 / 金 1.2 / 弱 1.1 / 偶奇 1.1）</button>
+    <p class="note">弱（2以上示唆）は設定1だけを少し下げるので、高低の比はほとんど動きません。偶奇示唆も高低にはほぼ中立です（偶数＝2・4・6でやや高設定域寄り、奇数＝1・3・5でやや低設定域寄り）。</p>
+    </details>
+  </section>
+
+  <section id="rank">
+    <h2>示唆の強さ順（高低への向き）</h2>
+    <div id="rankBody"></div>
+  </section>
+
+  <section id="memo">
+    <h2>自分用カウンター・メモ</h2>
+    <div class="row"><input id="newCnt" placeholder="カウンター名（例 チェリー）" style="flex:1 1 160px"><button class="sm" id="addCnt">追加</button></div>
+    <div id="myCnt" style="margin-top:8px"></div>
+    <label for="notes">メモ</label>
+    <textarea id="notes" placeholder="台番号・時計の時刻・引継ランプなど"></textarea>
+  </section>
+
+  <section id="spec">
+    <h2>概要・スペック</h2>
+    <div id="specBody"></div>
+  </section>
+
+  <section id="src">
+    <h2>出典・不一致・調査中</h2>
+    <div id="srcBody"></div>
+  </section>
+</main>
+<script id="core">
+(function(root){
+"use strict";
+// ===== データ（数値はすべて出典記載値。§出典を参照）=====
+var D={
+ dc:[201.5,196.8,191.4,187.6,183.7,180.8],            // データカウンター上のボーナス合算（ちょんぼ・1geki・DMM）
+ artBell:[29.4,28.3,26.5,22.6,21.5,21.0],             // ART中 共通ベル
+ artHaz:[56.2,55.4,53.8,52.3,51.5,50.3],              // ART中 ハズレ
+ nBell:[6.89,6.83,6.72,6.44,6.34,6.30],               // 通常時 共通ベル＋2択ベル正解（ちょんぼ独自算出）
+ kakA:[16384,13107.2,10922.7,9362.3,8192.0,7281.8],   // 確定役A（＋赤赤白BB）公式qa/274・300
+ c1:[16384,13107.2,10922.7,9362.3,8192.0,7281.8],     // 1枚役C＋赤赤赤BB 公式qa/274・300
+ repR:[6553.6,5461.35,4681.15,4096,3640.9,3276.8],    // リプレイ＋REG（赤赤青＋白白青 合算）公式qa/300（各1/13107.2→1/6553.6）
+ regFake:[70.0,70.0,70.0,70.0,70.0,70.0],             // REG中 青7フェイク（設定差なし）
+ regPar:[148.3,148.3,148.3,148.3,148.3,148.3],        // 平行揃い（設定差なし）
+ regDia:[555.4,474.9,442.8,300.6,268.6,258.0],        // 斜め揃い
+ lv2:{same:[70.3,71.1,72.7,74.2,78.1,80.1],diff:[5.1,5.5,5.9,8.6,10.2,12.5],other:[1.6,2.0,2.3,3.9,5.1,5.9]},
+ bb3:[70.3,71.1,72.7,74.2,78.1,80.1],                 // BB中ハズレ→3pt
+ hiki:[12.5,13.3,14.1,14.8,16.4,20.3],                // 転落時 引き継ぎ100G
+ cyc:{p30:[45.3,44.5,43.0,41.8,40.6,34.8],p50:[40.6,41.0,41.4,41.8,42.2,47.6],p70:[12.5,12.5,12.5,12.5,12.5,12.5],p200:[1.6,2.0,3.1,3.9,4.7,5.1]},
+ logoS:[29.2,25.0,31.3,25.0,33.3,25.0]                // ロゴ小（大＝残り）
+};
+// ===== 示唆（§8 強度表）=====
+// lv: c=○以上濃厚/確定(allow) n1=設定1否定 s=強(4-6に重み) w=弱(2-6に重み) e/o=偶数/奇数示唆 cm=CHECKMATE金 x=設定変更系 d=デフォルト
+var A2=[2,3,4,5,6],A3=[3,4,5,6],A4=[4,5,6],A5=[5,6],A6=[6],EV=[2,4,6];
+var H=[
+ // 超パー
+ {id:"cp22",g:"cp",n:"22%",lv:"w",m:"設定2以上の期待度アップ（濃厚ではない）",off:"公式Q&A（qa/713）に記載なし",flag:"不一致：アルテマのみ「設定2以上濃厚」＝誇張。ちょんぼ「期待度UP」／1geki「可能性アップ（濃厚ではない）」／DMM・P-WORLD・なな徹「示唆」"},
+ {id:"cp33",g:"cp",n:"33%",lv:"c",allow:A3,m:"設定3以上濃厚",off:"公式記載なし",flag:"なな徹は「設定3以上」（濃厚の語なし）"},
+ {id:"cp44",g:"cp",n:"44%",lv:"c",allow:A4,m:"設定4以上濃厚",off:"公式記載なし",flag:"なな徹は「濃厚」の語なし"},
+ {id:"cp55",g:"cp",n:"55%",lv:"c",allow:A5,m:"設定5以上濃厚",off:"公式記載なし",flag:"なな徹は「濃厚」の語なし"},
+ {id:"cp66",g:"cp",n:"66%",lv:"c",allow:A6,m:"設定6濃厚",off:"公式記載なし",flag:"なな徹は「設定6」（濃厚の語なし）"},
+ {id:"cp88",g:"cp",n:"88%",lv:"n1",allow:A2,m:"ボーナス＋設定2以上濃厚",off:"公式「ボーナス+設定2以上濃厚?!」（qa/713）",flag:"アルテマは「+BB」と記載（公式はボーナス）"},
+ // 確定画面
+ {id:"kh",g:"kk",n:"ハロウィン（コスプレ）",lv:"c",allow:A4,m:"BIG＋設定4以上濃厚",off:"公式記載なし",flag:""},
+ {id:"kd",g:"kk",n:"6人",lv:"d",m:"デフォルト",off:"",flag:""},
+ // 終了画面（番号はちょんぼの画像の順）
+ {id:"es1",g:"es",n:"① 昼・都会など",lv:"d",m:"デフォルト",off:"公式記載なし",flag:""},
+ {id:"es2",g:"es",n:"② 夜＋縁寿ダイブ",lv:"x",m:"設定変更濃厚（高低には影響なし）",off:"公式記載なし",flag:""},
+ {id:"es3",g:"es",n:"③ ベアト見下ろし・屋敷の玄関",lv:"x",m:"設定上げ濃厚（前日より上）",off:"公式記載なし",flag:"表記ゆれ：ちょんぼ・アルテマ「設定アゲ濃厚」／DMM「設定変更+設定アップ濃厚」／P-WORLD「前日の設定より上げ濃厚」"},
+ {id:"es4",g:"es",n:"④ 戦人一家",lv:"n1",allow:A2,m:"設定2以上濃厚",off:"公式記載なし",flag:"BB後のみ"},
+ {id:"es5",g:"es",n:"⑤ ベアト＆戦人①",lv:"c",allow:EV,m:"設定2・4・6濃厚",off:"公式記載なし",flag:"DMM・アルテマは「偶数設定濃厚」。BB後のみ"},
+ {id:"es6",g:"es",n:"⑥ ベアト＆戦人②",lv:"c",allow:A4,m:"設定4以上濃厚",off:"公式記載なし",flag:"BB後のみ"},
+ {id:"es7",g:"es",n:"⑦ ベアト＆GM戦人①",lv:"c",allow:A5,m:"設定5以上濃厚",off:"公式記載なし",flag:"BB後のみ"},
+ {id:"es8",g:"es",n:"⑧ ベアト＆GM戦人②",lv:"c",allow:A6,m:"設定6濃厚",off:"公式記載なし",flag:"BB後のみ"},
+ // REGキャラ紹介
+ {id:"rgs",g:"rg",n:"銀背景（1人でも）",lv:"s",m:"高設定示唆",off:"公式は「背景イラストで設定示唆（デフォルト／銀／金）」のみ（qa/230）",flag:"ちょんぼ画像「高設定期待度UP」／DMM「高設定示唆」。1回のREGで1回だけ押す"},
+ {id:"rgw",g:"rg",n:"金 ウィラード／金 理御（金背景1人）",lv:"n1",allow:A2,m:"設定2以上濃厚",off:"公式は強度の記載なし",flag:"DMM「金背景単体でも2以上濃厚」"},
+ {id:"rga",g:"rg",n:"全員 銀背景",lv:"n1",allow:A2,m:"設定2以上濃厚",off:"公式記載なし",flag:"アルテマは「設定2以上」（濃厚の語なし）"},
+ {id:"rge",g:"rg",n:"金 ドレスヱリカ",lv:"c",allow:A4,m:"設定4以上濃厚",off:"公式記載なし",flag:""},
+ {id:"rgg",g:"rg",n:"金 GM戦人",lv:"c",allow:A5,m:"設定5以上濃厚",off:"公式記載なし",flag:""},
+ {id:"rgz",g:"rg",n:"全員 金背景",lv:"c",allow:A6,m:"設定6濃厚",off:"公式記載なし",flag:"なな徹は「濃厚」の語なし"},
+ // 1枚絵 通常BIG 1回目
+ {id:"p1m",g:"p1",n:"真里亞",lv:"e",m:"偶数示唆",off:"公式「偶数示唆」",flag:"ちょんぼ「偶数設定期待度UP」"},
+ {id:"p1j",g:"p1",n:"譲治",lv:"w",m:"設定2以上示唆",off:"公式「設定2以上示唆」",flag:"ちょんぼ「期待度UP」／1geki「可能性アップ」"},
+ {id:"p1s",g:"p1",n:"朱志香",lv:"n1",allow:A2,m:"設定1否定",off:"公式「設定1否定?!」",flag:"DMM・P-WORLD・1gekiは「2以上濃厚」（同じ意味）"},
+ // 通常BIG 2回目以降
+ {id:"p2e",g:"p2",n:"縁寿＆ヱリカ",lv:"e",m:"偶数示唆",off:"公式「偶数示唆」",flag:""},
+ {id:"p2z",g:"p2",n:"ゼパル＆フルフル",lv:"o",m:"奇数示唆",off:"公式「奇数示唆」",flag:""},
+ {id:"p2o",g:"p2",n:"叔母たち",lv:"w",m:"設定2以上示唆",off:"公式「設定2以上示唆」",flag:""},
+ {id:"p2s",g:"p2",n:"シエスタ姉妹",lv:"n1",allow:A2,m:"設定1否定",off:"公式「設定1否定?!」",flag:""},
+ // 初代BIG（1回目・2回目以降とも）
+ {id:"s1b",g:"s1",n:"ベルン＆ラムダ",lv:"e",m:"偶数示唆",off:"公式「偶数示唆」",flag:""},
+ {id:"s1e",g:"s1",n:"ヱリカ（2回目以降）",lv:"o",m:"奇数示唆",off:"公式「奇数示唆」",flag:""},
+ {id:"s1sb",g:"s1",n:"ベアト（竜騎士07サイン絵）",lv:"e",m:"偶数示唆",off:"公式「偶数示唆」（ビタ5回ごとに変化）",flag:""},
+ {id:"s1sx",g:"s1",n:"戦人（竜騎士07サイン絵）",lv:"o",m:"奇数示唆",off:"公式「奇数示唆」（ビタ5回ごとに変化）",flag:""},
+ {id:"s1w",g:"s1",n:"ウィル＆理御",lv:"w",m:"設定2以上示唆",off:"公式「設定2以上示唆」",flag:"1gekiは2回目以降を「叔母／シエスタ」と記載＝誤り（公式で確認）"},
+ {id:"s1n",g:"s1",n:"縁寿",lv:"n1",allow:A2,m:"設定1否定",off:"公式「設定1否定?!」",flag:""},
+ // 共通
+ {id:"pc7",g:"pc",n:"縁寿＆七姉妹",lv:"c",allow:A4,m:"設定4以上濃厚",off:"公式「設定4以上?!」",flag:"アルテマ・なな徹は「設定4以上」（濃厚の語なし）"},
+ {id:"pcm",g:"pc",n:"ミニキャラ集合",lv:"c",allow:A6,m:"設定6濃厚",off:"公式「設定6?!」",flag:""},
+ // CZ即転落ボイス（公式qa/291）
+ {id:"vn",g:"vc",n:"南條「残念だが、…手の施しようがない…」",lv:"o",m:"奇数示唆",off:"公式「奇数示唆」",flag:"ちょんぼ「奇数設定期待度UP」"},
+ {id:"vk",g:"vc",n:"金蔵「ベアトリーチェぇぇぇ！！」",lv:"o",m:"奇数示唆",off:"公式「奇数示唆」",flag:""},
+ {id:"vt",g:"vc",n:"夏妃「もう……私を…許してッ…！」",lv:"e",m:"偶数示唆",off:"公式「偶数示唆」",flag:""},
+ {id:"vr",g:"vc",n:"楼座「私は何て、……馬鹿なママだったの…！！」",lv:"e",m:"偶数示唆",off:"公式「偶数示唆」",flag:""},
+ {id:"ve",g:"vc",n:"縁寿「ここはあなたのいるべき世界じゃないわ」",lv:"w",m:"設定2以上示唆",off:"公式「2以上示唆」",flag:"ちょんぼ「期待度UP」／1geki「可能性アップ」"},
+ {id:"vd",g:"vc",n:"ドラノール「ここがアナタの墓場となり、残念デス」",lv:"w",m:"設定2以上示唆",off:"公式「2以上示唆」",flag:""},
+ {id:"vw",g:"vc",n:"ウィル「挫けるんじゃねぇ足掻いて足掻くんだよ…！！」",lv:"c",allow:A3,m:"設定3以上濃厚",off:"公式「3以上濃厚?!」",flag:""},
+ {id:"vb",g:"vc",n:"ベルンカステル「グッバイ、ハバナイスディ」",lv:"c",allow:A3,m:"設定3以上濃厚",off:"公式「3以上濃厚?!」",flag:""},
+ {id:"vh",g:"vc",n:"ベアト（雛）「どうして私は……戦人さんを好きなの…？」",lv:"c",allow:A4,m:"設定4以上濃厚",off:"公式「4以上濃厚?!」",flag:""},
+ {id:"va",g:"vc",n:"ベアト「あっひゃははははっ！！」",lv:"c",allow:A5,m:"設定5以上濃厚",off:"公式「5以上濃厚?!」",flag:""},
+ {id:"vs",g:"vc",n:"秀吉「悪魔や！悪魔の仕業や！」",lv:"d",m:"デフォルト",off:"公式「デフォルト」",flag:""},
+ // ストーリーコレクション
+ {id:"scg",g:"sc",n:"CHECKMATE 金",lv:"cm",m:"設定4以上の期待度アップ（この画面の扱い）",off:"公式記載なし",flag:"不一致：ちょんぼ・1geki・P-WORLD・アルテマ「設定4以上濃厚（4以上で高確率で出現）」／DMMは「設定4以上の場合に高確率で発生」のみ → 除外せず重み（⚙）で反映"},
+ {id:"scr",g:"sc",n:"CHECKMATE 虹",lv:"c",allow:A6,m:"設定6濃厚",off:"公式記載なし",flag:"DMMは「設定6の場合に高確率で発生」のみ（濃厚と書いていない）。この画面では濃厚扱い"},
+ {id:"scd",g:"sc",n:"Congratulation",lv:"d",m:"デフォルト",off:"",flag:""}
+];
+var WDEF={s:1.2,w:1.1,p:1.1,cm:1.2};
+function binom(k,n,p){if(n<=0)return [0,0,0,0,0,0];return p.map(function(q){return k*Math.log(q)+(n-k)*Math.log(1-q);});}
+function multi(ks,ps){ // ks:[k...], ps:[[6]...]（確率）
+ var r=[0,0,0,0,0,0];for(var i=0;i<6;i++){for(var j=0;j<ks.length;j++){if(ks[j]>0)r[i]+=ks[j]*Math.log(ps[j][i]);}}return r;}
+function inv(a){return a.map(function(d){return 1/d;});}
+function pc(a){return a.map(function(x){return x/100;});}
+function num(x){var n=Number(String(x==null?"":x).replace(/[^\d.]/g,""));return isFinite(n)?n:0;}
+function regProbs(){ // 狙え1回あたりの 斜め/平行/ガセ
+ var o={d:[],p:[],f:[]};for(var i=0;i<6;i++){var d=1/D.regDia[i],p=1/D.regPar[i],f=1/D.regFake[i],t=d+p+f;o.d.push(d/t);o.p.push(p/t);o.f.push(f/t);}return o;}
+var RP=regProbs();
+function hintById(id){for(var i=0;i<H.length;i++)if(H[i].id===id)return H[i];return null;}
+// S: 状態。o: {own,prev,hints}
+function estimate(S,o){o=o||{};var OWN=o.own!==false,PRV=o.prev!==undefined?o.prev:(S.mode==="mid"&&S.merge),HNT=o.hints!==false;
+ var L=[0,0,0,0,0,0],allow=[1,1,1,1,1,1],used=[],masks=[],W=S.W||WDEF;
+ function add(a,w){w=w==null?1:w;for(var i=0;i<6;i++)L[i]+=w*a[i];}
+ function mask(al){for(var i=0;i<6;i++)if(al.indexOf(i+1)<0)allow[i]=0;}
+ var c=S.n||{};
+ var G=num(S.g),AG=Math.min(num(S.ag),G),B=num(S.big)+num(S.reg),NG=Math.max(0,G-AG);
+ if(OWN){
+  if(G>0&&(S.big!==""||S.reg!=="")){add(binom(B,G,inv(D.dc)));used.push({t:"ボーナス合算 "+B+"回/"+G+"G（データカウンター上の確率で計算）",rel:"m"});}
+  var ab=num(c.artBell),ah=num(c.artHaz);if(AG>0&&(ab||ah)){var pb=inv(D.artBell),ph=inv(D.artHaz),rest=pb.map(function(x,i){return 1-x-ph[i];});add(multi([ab,ah,AG-ab-ah],[pb,ph,rest]));used.push({t:"ART中 共通ベル "+ab+"・ハズレ "+ah+"／"+AG+"G",rel:"h"});}
+  var nb=num(c.nBell);if(NG>0&&nb){add(binom(nb,NG,inv(D.nBell)));used.push({t:"通常時ベル "+nb+"回/"+NG+"G（ちょんぼ独自算出値）",rel:"m"});}
+  [["kakA","確定役A＋赤赤白BB",D.kakA],["c1","1枚役C＋赤赤赤BB",D.c1],["repR","リプレイ＋REG",D.repR]].forEach(function(r){var k=num(c[r[0]]);if(G>0&&(k>0||(S.z&&S.z[r[0]]))){add(binom(k,G,inv(r[2])));used.push({t:r[1]+" "+k+"回/"+G+"G",rel:"h"});}});
+  var rn=num(c.regN),rd=Math.min(num(c.regD),rn),rpp=Math.min(num(c.regP),rn-rd);if(rn>0){add(multi([rd,rpp,rn-rd-rpp],[RP.d,RP.p,RP.f]));used.push({t:"REG狙え "+rn+"回（斜め"+rd+"・平行"+rpp+"）",rel:"h"});}
+  [["same","同色BIG後"],["diff","異色BIG後"],["other","REG後・その他"]].forEach(function(r){var n=num(c["lv2n_"+r[0]]),k=Math.min(num(c["lv2k_"+r[0]]),n);if(n>0){add(binom(k,n,pc(D.lv2[r[0]])));used.push({t:"Lv2ナビ("+r[1]+") "+k+"/"+n,rel:"m"});}});
+  var bn=num(c.bbN),bk=Math.min(num(c.bb3),bn);if(bn>0){add(binom(bk,bn,pc(D.bb3)));used.push({t:"BB中ハズレ→3pt "+bk+"/"+bn,rel:"m"});}
+  var hn=num(c.hkN),hk=Math.min(num(c.hk100),hn);if(hn>0){add(binom(hk,hn,pc(D.hiki)));used.push({t:"転落時 引継100G "+hk+"/"+hn,rel:"m"});}
+  var cy=[num(c.cy30),num(c.cy50),num(c.cy70),num(c.cy200)];if(cy[0]+cy[1]+cy[2]+cy[3]>0){add(multi(cy,[pc(D.cyc.p30),pc(D.cyc.p50),pc(D.cyc.p70),pc(D.cyc.p200)]));used.push({t:"周期の初期pt 30:"+cy[0]+" 50:"+cy[1]+" 70:"+cy[2]+" 200:"+cy[3],rel:"m"});}
+ }
+ if(PRV){var w=S.scope==="today"?1:0.5,pg=num(S.p&&S.p.g),pB=num(S.p&&S.p.big)+num(S.p&&S.p.reg);
+  if(pg>0&&(S.p.big!==""||S.p.reg!=="")){add(binom(pB,pg,inv(D.dc)),w);used.push({t:"前任 ボーナス "+pB+"回/"+pg+"G（データカウンター・重み"+w*100+"%）",rel:"l"});}}
+ if(HNT){
+  var ls=num(c.logoS),lb=num(c.logoB);if(ls+lb>0){var s=pc(D.logoS);add(multi([ls,lb],[s,s.map(function(x){return 1-x;})]));used.push({t:"ロゴ発光 小"+ls+"・大"+lb+"（公表の振り分け）",rel:"h"});}
+  var cnt={s:0,w:0,e:0,o:0,cm:0};
+  (S.ev||[]).forEach(function(e){var h=hintById(e.v);if(!h)return;
+   if(h.lv==="c"||h.lv==="n1"){mask(h.allow);masks.push(h.n+"（"+h.m+"）");}
+   else if(cnt[h.lv]!==undefined)cnt[h.lv]++;});
+  var ls2=Math.log(W.s),lw=Math.log(W.w),lp=Math.log(W.p),lc=Math.log(W.cm);
+  for(var i=0;i<6;i++){var st=i+1;
+   if(st>=4){L[i]+=cnt.s*ls2+cnt.cm*lc;}
+   if(st>=2){L[i]+=cnt.w*lw;}
+   if(st%2===0)L[i]+=cnt.e*lp;else L[i]+=cnt.o*lp;}
+  if(cnt.s)used.push({t:"高設定示唆（強）"+cnt.s+"回 ×"+W.s.toFixed(1)+"（設定4〜6）",rel:"l"});
+  if(cnt.cm)used.push({t:"CHECKMATE金 "+cnt.cm+"回 ×"+W.cm.toFixed(1)+"（設定4〜6）",rel:"l"});
+  if(cnt.w)used.push({t:"設定2以上示唆（弱）"+cnt.w+"回 ×"+W.w.toFixed(1)+"（設定2〜6）",rel:"l"});
+  if(cnt.e||cnt.o)used.push({t:"偶奇示唆 偶数"+cnt.e+"・奇数"+cnt.o+" ×"+W.p.toFixed(1),rel:"l"});
+ }
+ var conflict=allow.every(function(a){return !a;});if(conflict)allow=[1,1,1,1,1,1];
+ var mx=-Infinity;for(var j=0;j<6;j++)if(allow[j]&&L[j]>mx)mx=L[j];
+ var post=L.map(function(l,i){return allow[i]?Math.exp(l-mx):0;}),sum=post.reduce(function(a,b){return a+b;},0);post=post.map(function(x){return x/sum;});
+ return {post:post,used:used,masks:masks,conflict:conflict,allow:allow,any:used.length>0||masks.length>0};
+}
+root.UM2={D:D,H:H,WDEF:WDEF,estimate:estimate,RP:RP,num:num};
+})(typeof window!=="undefined"?window:globalThis);
+</script>
+<script>
+(function(){
+"use strict";
+var U=window.UM2,D=U.D,H=U.H,num=U.num;
+var KEY="slotmemo:v1:umineko2";
+function emptyS(){return {mode:"asa",g:"",ag:"",big:"",reg:"",n:{},z:{},ev:[],q:[],c:{cz:""},p:{g:"",big:"",reg:""},scope:"unknown",merge:false,W:{s:U.WDEF.s,w:U.WDEF.w,p:U.WDEF.p,cm:U.WDEF.cm},cnt:[],notes:""};}
+var S=emptyS(),canSave=true;
+function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var p=JSON.parse(r),e=emptyS();for(var k in e){if(p[k]!==undefined&&p[k]!==null&&typeof p[k]===typeof e[k])e[k]=p[k];}
+ ["c","p","W"].forEach(function(k){var d=emptyS()[k];for(var q in d){if(e[k][q]===undefined)e[k][q]=d[q];}});
+ ["ev","q","cnt"].forEach(function(k){if(!Array.isArray(e[k]))e[k]=[];});S=e;}catch(x){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));canSave=true;}catch(x){canSave=false;}}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function pct(x){return (Math.round(x*1000)/10).toFixed(1)+"%";}
+function table(cols,rows){return '<div class="scroll"><table><thead><tr>'+cols.map(function(c){return "<th>"+esc(c)+"</th>";}).join("")+'</tr></thead><tbody>'+rows.map(function(r){return "<tr>"+r.map(function(c){return "<td>"+esc(c)+"</td>";}).join("")+"</tr>";}).join("")+"</tbody></table></div>";}
+function kv(k,v){return '<div class="kv"><span>'+k+'</span><b>'+v+'</b></div>';}
+function est(o){return U.estimate(S,o);}
+var LV={c:'<span class="tag confirm">濃厚</span>',n1:'<span class="tag confirm">設定1否定</span>',s:'<span class="tag strong">強</span>',cm:'<span class="tag strong">期待度アップ</span>',w:'<span class="tag weak">弱</span>',e:'<span class="tag weak">偶数</span>',o:'<span class="tag weak">奇数</span>',x:'<span class="tag">設定変更系</span>',d:'<span class="tag">デフォルト</span>'};
+var GROUPS=[["cp","超パー（獲得枚数表示の下2桁）","18/28/34/92/98/2/8% と BGM「人形劇」はボーナス・BIG告知で、設定示唆ではありません（公式qa/713）。","h"],
+ ["kk","ボーナス確定画面","7人＝同色BIG、魔女＝BIG（設定示唆ではない）。","h"],
+ ["es","ボーナス終了画面","番号はちょんぼりすたの画像の順。④〜⑧はBIG後のみ。夢想空間G数（楼座&真里亞・縁寿）・魔女ptの画面は設定と無関係（公式qa/271）。","h"],
+ ["rg","REG中のキャラ紹介（背景色）","背景は茶（デフォルト）→銀→金の順に強い。公式は「背景イラストで設定示唆」とだけ記載（qa/230）。","m"],
+ ["p1","BIG中ビタ押し成功の1枚絵：通常BIG 1回目","予告が出てビタ押し成功した時だけ表示。戦人＝デフォルト。公式一覧 qa/283。","h"],
+ ["p2","1枚絵：通常BIG 2回目以降","1回目の4人（戦人・真里亞・朱志香・譲治）は2回目以降はデフォルト。","h"],
+ ["s1","1枚絵：初代BIG","初代BIGは絵が違うが、示唆内容と出現率は通常BIGと同じ（公式qa/283・ちょんぼ）。楼座&真里亞ほかはデフォルト。偶奇の絵はビタ5回ごとに竜騎士07サイン絵へ変化。","h"],
+ ["pc","1枚絵：通常・初代共通","","h"],
+ ["vc","CZ（運命分岐モード）即転落ボイス","即転落＝ART未突入＆1回目の転落リプレイで転落（公式qa/291）。","h"],
+ ["sc","ストーリーコレクション（全イラスト解放後に1回）","CHECKMATE 金は除外せず重み、虹は濃厚として扱います（ユーザー判断）。","l"]];
+var CN=[ // 設定差カウンター
+ {id:"art",t:"ART中 共通ベル・ハズレ",st:3,rel:"h",how:"ART中のG数は上の一括入力。押し順ナビのベルは数えない。設定3→4で大きく変化",fields:[["artBell","共通ベル"],["artHaz","ハズレ"]],obs:function(){var g=num(S.ag);return g?["ベル 1/"+(num(S.n.artBell)?(g/num(S.n.artBell)).toFixed(1):"−"),"ハズレ 1/"+(num(S.n.artHaz)?(g/num(S.n.artHaz)).toFixed(1):"−")]:[];},rows:[["ベル",D.artBell],["ハズレ",D.artHaz]]},
+ {id:"reg7",t:"REG中 青7「狙え」→斜め・平行",st:3,rel:"h",how:"狙えカットインの回数と、そのうち斜め揃い・平行揃い。斜めだけに設定差（平行・ガセは設定差なし）",fields:[["regN","狙え"],["regD","斜め"],["regP","平行"]],obs:function(){var n=num(S.n.regN);return n?["斜め "+(num(S.n.regD)/n*100).toFixed(1)+"%"]:[];},rows:[["斜め/狙え",U.RP.d.map(function(x){return (x*100).toFixed(1)+"%";})]],raw:true},
+ {id:"nb",t:"通常時ベル（共通ベル＋2択ベル正解）",st:2,rel:"m",how:"通常時G＝総G−ART中G。ちょんぼりすたの独自算出値（2択1/2前提）",fields:[["nBell","ベル"]],obs:function(){var g=Math.max(0,num(S.g)-num(S.ag)),k=num(S.n.nBell);return g&&k?["1/"+(g/k).toFixed(2)]:[];},rows:[["確率",D.nBell]]},
+ {id:"tk",t:"特定ボーナス（蝶ランプ・PUSHで契機確認）",st:2,rel:"h",how:"総G基準。確定役A（10枚払出）＝赤赤白BB確定。公式の表（qa/274・300）。0回でも使う場合は下のチェック",fields:[["kakA","確定役A＋赤赤白"],["c1","1枚役C＋赤赤赤"],["repR","リプレイ＋REG"]],zero:true,obs:function(){return [];},rows:[["確定役A",D.kakA],["1枚役C+赤赤赤",D.c1],["リプ+REG",D.repR]]},
+ {id:"lv2",t:"Lv2ナビ（運命分岐 中→左の成功時）",st:2,rel:"m",how:"内部的に中→左で成功する突入リプレイの一部で発生（DMM）。成功（中→左）回数と、そのうちLv2ナビの回数を契機別に",fields:[["lv2n_same","同色後 成功"],["lv2k_same","同色後 Lv2"],["lv2n_diff","異色後 成功"],["lv2k_diff","異色後 Lv2"],["lv2n_other","REG後他 成功"],["lv2k_other","REG後他 Lv2"]],obs:function(){return [];},rows:[["同色後",D.lv2.same],["異色後",D.lv2.diff],["REG後他",D.lv2.other]],p:true},
+ {id:"bb3",t:"BIG中ハズレ→真実pt 3pt",st:2,rel:"m",how:"BIG中ハズレの回数と、そのうち3pt獲得の回数",fields:[["bbN","ハズレ"],["bb3","3pt"]],obs:function(){var n=num(S.n.bbN);return n?[(num(S.n.bb3)/n*100).toFixed(1)+"%"]:[];},rows:[["3pt",D.bb3]],p:true},
+ {id:"hk",t:"CZ転落時 引継100G",st:2,rel:"m",how:"引継状態が分かった転落の回数と、そのうち100G。引継ランプは2コマ目押し成功時のみ表示",fields:[["hkN","転落(判明)"],["hk100","100G"]],obs:function(){var n=num(S.n.hkN);return n?[(num(S.n.hk100)/n*100).toFixed(1)+"%"]:[];},rows:[["100G",D.hiki]],p:true},
+ {id:"cy",t:"周期経由CZの初期真実pt",st:1,rel:"m",how:"周期（天井）経由の運命分岐モード開始時のpt。200pt＝スフィア赤スタート",fields:[["cy30","30pt"],["cy50","50pt"],["cy70","70pt"],["cy200","200pt"]],obs:function(){return [];},rows:[["30pt",D.cyc.p30],["50pt",D.cyc.p50],["200pt",D.cyc.p200]],p:true},
+ {id:"logo",t:"ステージチェンジ時のロゴ発光（奇偶示唆）",st:1,rel:"h",how:"連続演出失敗後は必ず発光。ロゴなしは数えない。公表の振り分けをそのまま使う（示唆込みのみ）。連続演出頻度ダウンカスタムでも影響なし（公式qa/286）",fields:[["logoS","小"],["logoB","大"]],obs:function(){var s=num(S.n.logoS),b=num(S.n.logoB);return s+b?["小 "+(s/(s+b)*100).toFixed(1)+"%"]:[];},rows:[["小",D.logoS],["大",D.logoS.map(function(x){return Math.round((100-x)*10)/10;})]],p:true}];
+function stars(n){return "★★★".slice(0,n)+"☆☆☆".slice(0,3-n);}
+function rowCells(r,isP,raw){return r[1].map(function(v){return raw?v:(isP?v+"%":"1/"+v);});}
+function renderStatic(){
+ // 示唆ボタン
+ var h="";GROUPS.forEach(function(g){var items=H.filter(function(x){return x.g===g[0];});
+  h+='<h3>'+esc(g[1])+' <span class="rel '+g[3]+'">信頼度 '+(g[3]==="h"?"高":g[3]==="m"?"中":"低")+'</span></h3>'+(g[2]?'<p class="cap">'+esc(g[2])+'</p>':"")+'<div class="hints">';
+  items.forEach(function(x){h+='<div class="hint'+(x.lv==="c"||x.lv==="n1"?" confirm":"")+'" data-hid="'+x.id+'"><div class="hd"><span>'+esc(x.n)+'</span>'+LV[x.lv]+'</div><div class="look"><b>'+esc(x.m)+'</b>'+(x.off?'<br>公式：'+esc(x.off.replace(/^公式(?=記載|Q&A|「)/,"").replace(/^記載なし/,"記載なし")):"")+(x.flag?'<br><span class="'+(/不一致|誤り/.test(x.flag)?"warnx":"")+'">'+esc(x.flag)+'</span>':"")+'</div><button class="sm p" data-h="'+x.id+'">＋記録 <span class="cnt" data-hc="'+x.id+'">0</span></button></div>';});
+  h+='</div>';});
+ h+='<h3>突アツフリーズ <span class="rel l">信頼度 低・調査中</span></h3><p class="cap">公式「当選契機によって設定示唆要素アリ」（qa/243）。契機は チェリー＋白同色BIG／単独の赤BIG／確定役A＋赤異色BIG／リプレイ＋白異色BIG の約1/3（ちょんぼ・DMM・1geki・P-WORLD。単独契機は ちょんぼ「赤同色」・他「赤異色」で<span class="warnx">不一致</span>）。設定差が公表されているのは確定役A＋赤異色だけなので、フリーズ時は蝶ランプ・PUSHで契機を見て、確定役Aなら上の「特定ボーナス」に数えてください（二重に数えない）。フリーズ自体の設定別振り分けは調査中。</p>';
+ $("hintBody").innerHTML=h;
+ // 強さ順
+ var R=[["S 濃厚・確定（除外）","設定6：1枚絵ミニキャラ（公式「設定6?!」）・終了画面⑧・REG全金・超パー66・CHECKMATE虹（DMMは高確率のみ）","6確定"],
+  ["S","設定5以上：超パー55・終了画面⑦・ボイス ベアト「あっひゃ」（公式「5以上濃厚?!」）・REG金GM戦人","高設定域確定"],
+  ["S","設定4以上：超パー44・終了画面⑥・確定画面ハロウィン・1枚絵 縁寿&七姉妹（公式「設定4以上?!」）・ボイス ベアト(雛)（公式「4以上濃厚?!」）・REG金ドレスヱリカ","高設定域確定"],
+  ["S","設定3以上：超パー33・ボイス ウィル／ベルンカステル（公式「3以上濃厚?!」）","1・2を除外"],
+  ["S","設定2・4・6：終了画面⑤","偶数確定（高設定域寄り）"],
+  ["A 設定1否定","1枚絵 朱志香／シエスタ姉妹／縁寿（公式「設定1否定?!」）・超パー88（公式「ボーナス+設定2以上濃厚?!」）・終了画面④・REG金ウィラード／金理御・全銀","設定1だけ除外（高設定域／低設定域にはほぼ中立）"],
+  ["B 強","REG 銀背景（高設定示唆）／CHECKMATE金（4以上の期待度アップ）","高設定域寄り（⚙ 1.2）"],
+  ["C 弱","超パー22（期待度アップ・公式記載なし）・1枚絵 譲治／叔母／ウィル&理御・ボイス 縁寿／ドラノール（公式「2以上示唆」）","設定1が少し下がるだけ（⚙ 1.1）"],
+  ["C 偶奇","偶数：真里亞・縁寿&ヱリカ・ベルン&ラムダ・ベアトサイン・夏妃・楼座／奇数：ゼパル&フルフル・ヱリカ・戦人サイン・南條・金蔵","偶数＝やや高設定域寄り、奇数＝やや低設定域寄り（⚙ 1.1）"],
+  ["振り分け","ステージチェンジのロゴ 小／大","小＝奇数（特に5）、大＝偶数。高設定域／低設定域にはほぼ中立"],
+  ["設定変更系","終了画面② 設定変更・③ 設定上げ","高低は動かさない（据え置き判断用）"],
+  ["示唆なし","超パー18/28/34/92/98/2/8・人形劇BGM・確定画面7人/魔女・夢想空間G数/魔女pt画面・転落画面・梁/蝶/薔薇ランプ・計数完了/音量/ビタ押しボイス・喫茶室（公式「設定に関わらず一律」）","計算に入れない"]];
+ $("rankBody").innerHTML=table(["強さ","示唆","高低への向き"],R)+'<p class="note">トロフィー・サブ液晶・ART中の設定示唆は、どの出典にも見当たりません（調査中）。</p>';
+ // spec
+ var sp="";
+ sp+=kv("機種","Lパチスロ うみねこのなく頃に2（オーイズミ・スマスロ）")+kv("導入","2026年2月2日・約5,000台")+kv("タイプ","A＋完走型ART（ART「幻想論戦」純増 約1.0枚/G）")+kv("コイン持ち","33.6G/50枚")+kv("ART 1セット","30G／50G／90G（公式小冊子）")+kv("天井","CZ間200G → CZ当選（ART確定ではない）");
+ sp+="<h3>設定別 <span class=\"rel h\">信頼度 高</span></h3>"+table(["設定","BIG","REG","合算","カウンター上","機械割"],[[1,"362.1","397.2","189.4","201.5","98.4%"],[2,"350.5","390.1","184.6","196.8","99.6%"],[3,"337.8","381.0","179.1","191.4","101.2%"],[4,"327.7","374.5","174.8","187.6","103.4%"],[5,"319.7","366.1","170.7","183.7","104.7%"],[6,"313.6","360.1","167.6","180.8","105.5%"]].map(function(r){return [String(r[0]),"1/"+r[1],"1/"+r[2],"1/"+r[3],"1/"+r[4],r[5]];}));
+ sp+='<p class="cap">ちょんぼりすた・1geki・DMMで一致。「カウンター上」は完走型ARTを加味したデータカウンター上の合算（推測はこちら）。完全攻略時の機械割は103.0%〜110.0%。</p>';
+ sp+="<h3>設定変更・据え置き</h3><ul><li>設定変更時：周期天井G数・RT状態は引継ぎ、内部状態はリセット、時計0時0分（初期時刻を抽選しステージチェンジ後に反映）、戦人ステージ（1geki）</li><li>電源OFF/ONだけでは見た目で判別困難。終了画面②（設定変更濃厚）・③（設定上げ濃厚）で判断</li><li>リセット後の天井短縮：<span class=\"warnx\">調査中</span></li><li>狙い目G数：パチナビのみ記載（CZ間100G〜など）で他の出典で確認できないため、<span class=\"warnx\">調査中</span>（載せていません）</li></ul>";
+ sp+="<h3>設定差なし（参考）</h3><p class=\"cap\">チェリー 1/287.4・スイカA 1/161.4・スイカB 1/250.1・1枚役A 1/130.5・確定役B 1/8192・2択ベル 1/4.5・BIG中の小役確率（公式qa/674）。1枚役B・Cは設定差が小さいので使いません。</p>";
+ $("specBody").innerHTML=sp;
+ var L=function(u,t){return '<a href="'+u+'" target="_blank" rel="noopener">'+t+'</a>';};
+ var src='<ul class="src">'+
+ '<li>'+L("https://oizumi-slot-dev-room.com/","オーイズミ スロ開発室（公式Q&A）")+'：'+L("https://oizumi-slot-dev-room.com/qa/283","1枚絵")+'・'+L("https://oizumi-slot-dev-room.com/qa/291","即転落ボイス")+'・'+L("https://oizumi-slot-dev-room.com/qa/713","超パー")+'・'+L("https://oizumi-slot-dev-room.com/qa/230","REG背景")+'・'+L("https://oizumi-slot-dev-room.com/qa/274","設定差ボーナス①")+'・'+L("https://oizumi-slot-dev-room.com/qa/300","②")+'・'+L("https://oizumi-slot-dev-room.com/qa/243","突アツ")+'・'+L("https://oizumi-slot-dev-room.com/qa/286","ロゴ")+'</li>'+
+ '<li>'+L("https://chonborista.com/slot/oizumi-slot/247637/","ちょんぼりすた")+'：スペック・設定差・示唆の画像（終了画面・キャラ紹介・1枚絵・超パー）</li>'+
+ '<li>'+L("https://1geki.jp/slot/l_umineko2/0/","1geki")+'（設定差）・'+L("https://1geki.jp/slot/l_umineko2/3/","天井・リセット")+'・'+L("https://1geki.jp/slot/l_umineko2/6/","終了画面")+'</li>'+
+ '<li>'+L("https://p-town.dmm.com/machines/4925","DMMぱちタウン")+'：Lv2ナビ・BIG中3pt・引継100G・周期pt・REG狙え</li>'+
+ '<li>'+L("https://pachimo.altema.jp/lumineko2settei","アルテマ")+'・'+L("https://nana-press.com/kaiseki/machine/1089/34702/","なな徹")+'・'+L("https://www.p-world.co.jp/machine/database/10387","P-WORLD")+'：文言の照合</li>'+
+ '<li>'+L("https://www.oizumi.co.jp/machine/umineko2/index.html","オーイズミ 機種サイト")+'：デジタル小冊子（ART 30/50/90G）</li></ul>'+
+ '<h3>不一致</h3><ul>'+
+ '<li><span class="warnx">不一致</span> 超パー22%：アルテマだけ「設定2以上濃厚」。ちょんぼ「期待度UP」・1geki「可能性アップ（濃厚ではない）」・DMM/P-WORLD/なな徹「示唆」→ <b>弱（期待度アップ）</b>で計算</li>'+
+ '<li><span class="warnx">不一致</span> CHECKMATE金・虹：ちょんぼ・1geki・P-WORLD・アルテマ「濃厚（高確率で出現）」／DMMは「高確率で発生」のみ → 金＝重み、虹＝濃厚（ユーザー判断）</li>'+
+ '<li><span class="warnx">解決</span> 初代BIG 2回目以降の2以上系：1gekiの「叔母／シエスタ」は誤り。公式qa/283でウィル&理御＝2以上示唆、縁寿＝設定1否定</li>'+
+ '<li><span class="warnx">不一致</span> 濃厚の有無：アルテマ（REG全銀）、アルテマ・なな徹（縁寿&七姉妹）、なな徹（超パー33以上）は「濃厚」の語なし。公式（七姉妹）は「設定4以上?!」</li>'+
+ '<li><span class="warnx">軽微</span> 超パー88%：公式「ボーナス+設定2以上濃厚?!」、アルテマは「+BB」</li>'+
+ '<li><span class="warnx">不一致</span> 突アツフリーズの単独契機：ちょんぼ「赤同色」／DMM・1geki・P-WORLD「赤異色」</li>'+
+ '<li><span class="warnx">解決</span> ART G数：公式小冊子で30/50/90G（P-WORLDの60Gは誤り）。確定役A・1枚役Cの設定6は公式で1/7281.8（ちょんぼの7281.3は誤植）</li>'+
+ '<li><span class="warnx">参考外</span> パチナビ（AI生成とみられる）だけの数値は使っていません</li></ul>'+
+ '<h3>調査中</h3><ul>'+
+ '<li>公式文言が見つからない示唆：終了画面・確定画面・REG各キャラの強さ・超パー22〜66・CHECKMATE</li>'+
+ '<li>示唆の出現率（ロゴ以外）は非公表 → ⚙の重みは仮の値</li>'+
+ '<li>突アツフリーズの設定別振り分け／リセット後の天井短縮／狙い目G数／マイスロ相当の履歴</li></ul>';
+ $("srcBody").innerHTML=src;
+}
+// ---------- 高低バー（enen2/lycorisと同じ） ----------
+function hlPct(x){return Math.round(x*100)+"%";}
+function hlHi(p){return p[3]+p[4]+p[5];}
+function hlRow(key,p){var hi=hlHi(p),lo=Math.max(0,1-hi),c=hi>0.7?" th":lo>0.7?" tl":"";
+ return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+hlPct(lo)+'</span></div>';}
+function hlBlock(rows,conf,note){if(!rows.length)return "";
+ return '<div class="hl"><div class="hll"><span>高設定域 4〜6</span><span>低設定域 1〜3</span></div>'+rows.map(function(r){return hlRow(r[0],r[1]);}).join("")+
+ '<div class="hlc'+(conf?" conf":"")+'">'+(conf?"確定・濃厚示唆あり":"あくまで予想です。様子見の判断材料に")+(note?'<span style="color:var(--sub);font-weight:400">　'+note+'</span>':"")+'</div></div>';}
+function cmpTable(rows){return '<table class="cmp"><thead><tr><th></th><th>4〜6</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>'+
+ rows.map(function(r){return '<tr><td>'+r[0]+'</td><td class="h">'+hlPct(hlHi(r[1]))+'</td>'+r[1].map(function(v){return '<td>'+Math.round(v*100)+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table><p class="note" style="margin:0">数字は各設定の％（四捨五入）。</p>';}
+function prevAny(){return S.mode==="mid"&&num(S.p.g)>0&&(S.p.big!==""||S.p.reg!=="");}
+function preEst(){if(!prevAny())return null;var r=est({own:false,prev:true,hints:false});return r.any?r:null;}
+function cmpBlock(){if(S.mode!=="mid"||!S.merge||!prevAny())return "";
+ var a=est({prev:false}),b=est();if(!a.any)return '<h3>自分の分だけ／前任者込み</h3><p class="note">自分の分を入れると、合算前との比較を表示します。</p>';
+ return '<h3>自分の分だけ／前任者込み</h3>'+cmpTable([["自分の分だけ",a.post],["前任者込み",b.post]]);}
+function seg(id,val){document.querySelectorAll("#"+id+" button").forEach(function(b){b.className=b.dataset.v===val?"on":"";});}
+function render(){
+ seg("modeSeg",S.mode);seg("scopeSeg",S.scope);
+ $("mid").hidden=S.mode!=="mid";$("navMid").style.display=S.mode==="mid"?"":"none";
+ document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f];});
+ document.querySelectorAll("[data-c]").forEach(function(el){if(document.activeElement!==el)el.value=S.c[el.dataset.c];});
+ document.querySelectorAll("[data-p]").forEach(function(el){if(document.activeElement!==el)el.value=S.p[el.dataset.p];});
+ document.querySelectorAll("[data-w]").forEach(function(el){el.value=S.W[el.dataset.w];});
+ $("wS").textContent=S.W.s.toFixed(1);$("wW").textContent=S.W.w.toFixed(1);$("wP").textContent=S.W.p.toFixed(1);$("wCm").textContent=S.W.cm.toFixed(1);
+ $("merge").checked=S.merge;
+ if(document.activeElement!==$("notes"))$("notes").value=S.notes;
+ $("savestate").textContent=canSave?"入力はこの端末に自動保存されます。":"⚠ 保存できません（プライベートブラウズ等）。";
+ document.querySelectorAll("[data-hc]").forEach(function(el){var id=el.dataset.hc;el.textContent=S.ev.filter(function(e){return e.v===id;}).length;});
+ document.querySelectorAll(".hint[data-hid]").forEach(function(el){el.classList.toggle("on",S.ev.some(function(e){return e.v===el.dataset.hid;}));});
+ $("hintLog").innerHTML=S.ev.map(function(e,i){var x=H.find(function(y){return y.id===e.v;});return x?'<span class="ev">'+esc(x.n.split("「")[0])+'<button data-del="'+i+'" aria-label="取り消し">✕</button></span>':"";}).join("");
+ $("qLog").innerHTML=S.q.slice(-12).map(function(x){return '<span class="ev" style="padding-right:8px">'+esc(x.t)+'</span>';}).join("")+(S.q.length?'<button class="sm" id="qUndo">↶ 最後の当たり記録を取り消し</button>':"");
+ renderCnt();renderCeil();renderEst();renderMid();renderMy();
+}
+function renderCnt(){var h="";
+ CN.forEach(function(c){var o=c.obs();
+  h+='<div class="box"><div class="hd"><span>'+esc(c.t)+' <span class="stars">'+stars(c.st)+'</span> <span class="rel '+c.rel+'">'+"信頼度 "+(c.rel==="h"?"高":"中")+'</span></span><span class="mono">'+esc(o.join(" / "))+'</span></div><div class="look">'+esc(c.how)+'</div>';
+  h+='<div class="btns">'+c.fields.map(function(f){return '<div style="display:flex;gap:4px;align-items:center"><button class="p" style="flex:1" data-inc="'+f[0]+'">'+esc(f[1])+' ＋1</button><input data-n="'+f[0]+'" inputmode="numeric" style="width:64px;font-size:16px;padding:0 6px" value="'+esc(S.n[f[0]]||"")+'"></div>';}).join("")+'</div>';
+  if(c.zero)h+='<div class="row" style="margin-top:4px">'+c.fields.map(function(f){return '<label class="chk" style="margin:0"><input type="checkbox" data-z="'+f[0]+'"'+(S.z[f[0]]?" checked":"")+'>'+esc(f[1])+' 0回でも使う</label>';}).join("")+'</div>';
+  h+='<div class="scroll"><table class="cmp"><thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>'+c.rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td>'+rowCells(r,c.p,c.raw).map(function(v){return '<td>'+esc(v)+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table></div></div>';});
+ $("cntBody").innerHTML=h;}
+function renderCeil(){var cz=num(S.c.cz),h="";
+ h+=kv("CZ天井まで","あと <b class=\"mono\">"+Math.max(0,200-cz)+"G</b>（CZ間200G → CZ当選・ART確定ではない）");
+ if(cz>=200)h+='<div class="okbox">天井到達：CZ当選</div>';
+ h+='<p class="note">CZ間＝運命分岐モードの転落リプレイ成立後からのG数。技術介入の失敗でも200Gは変わりません（1geki）。リセット後の短縮・狙い目G数は<span class="warnx">調査中</span>（パチナビのみの値は載せていません）。時計が12時に届くと魔女の喫茶室へ（公式qa/227）。</p>';
+ $("ceilBody").innerHTML=h;}
+function renderEst(){var r=est(),h="";
+ if(!r.any){$("estBody").innerHTML='<p class="note">総G＋BIG・REG回数、カウンター、または示唆を記録すると表示されます。</p>'+cmpBlock();statbar(null);return;}
+ var best=0;r.post.forEach(function(p,i){if(p>r.post[best])best=i;});
+ h+=r.post.map(function(p,i){return '<div class="r'+(i===best?" best":"")+'"><span class="l">設定'+(i+1)+'</span><span class="t"><span class="f" style="display:block;width:'+(p*100).toFixed(1)+'%"></span></span><span class="v">'+pct(p)+'</span></div>';}).join("");
+ var hi=r.post[3]+r.post[4]+r.post[5],ev=r.post[1]+r.post[3]+r.post[5];
+ h+='<div class="call">高設定域（4・5・6） '+pct(hi)+'　偶数 '+pct(ev)+'　最有力 設定'+(best+1)+'</div>';
+ if(r.conflict)h+='<div class="alert">濃厚・否定どうしが矛盾しています（見間違いの可能性）。濃厚系を無視して計算中。</div>';
+ h+=cmpBlock();
+ h+='<div class="used"><b>使った要素</b><ul>'+r.used.map(function(u){return "<li>"+esc(u.t)+' <span class="rel '+u.rel+'">'+"信頼度 "+(u.rel==="h"?"高":u.rel==="m"?"中":"低")+"</span></li>";}).join("")+r.masks.map(function(m){return '<li>'+esc(m)+' <span class="rel h">濃厚100%</span></li>';}).join("")+"</ul></div>";
+ if(r.masks.length){var al=[];r.allow.forEach(function(a,i){if(a)al.push(i+1);});h+='<p class="note">濃厚・否定で残った設定：'+al.join("・")+'</p>';}
+ h+='<p class="note">「信頼度」はその要素の数字がどこまで確かか（高＝公表されている設定差の数値、中＝解析サイト独自の値・データカウンター上の値、低＝⚙の仮の重み・前任者データ）で、高設定域か低設定域かを示すものではありません。「数字だけ」＝ボーナス合算・ART中ベル/ハズレ・REG狙え・通常時ベル・特定ボーナス・Lv2・BIG中3pt・引継100G・周期pt。「示唆込み」＝それに濃厚系（除外）、ロゴ（公表の振り分け）、強・弱・偶奇の仮の重み（⚙）を加えたもの。</p>';
+ $("estBody").innerHTML=h;statbar(r);}
+function statbar(r){var h="",G=num(S.g),B=num(S.big)+num(S.reg);
+ if(S.mode==="mid")h+="<span>途中から"+(S.merge?"・合算ON":"")+"</span>";
+ h+="<span>"+(S.mode==="mid"?"自分 ":"")+"総 "+G+"G</span>";if(B)h+="<span>合算 1/"+Math.round(G/B)+"</span>";
+ h+="<span>CZ間 "+num(S.c.cz)+"G</span>";
+ if(r){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});h+='<span>最有力 設定'+(b+1)+'</span>';}
+ $("statbar").innerHTML=h;
+ var rows=[],conf=false,note="";
+ if(r){var n=est({hints:false});if(n.any)rows.push(["数字だけ",n.post]);rows.push(["示唆込み",r.post]);conf=r.masks.length>0;}
+ else{var pe=preEst();if(pe){rows.push(["座る前",pe.post]);note="前任者分のみ・信頼度 低";}}
+ $("hlbar").innerHTML=hlBlock(rows,conf,note);}
+function renderMid(){if(S.mode!=="mid"){$("midBody").innerHTML="";return;}
+ var h="",g=num(S.p.g),b=num(S.p.big)+num(S.p.reg);
+ if(g&&b)h+=kv("前任 ボーナス合算","1/"+Math.round(g/b)+"（カウンター上 設定1 1/201.5〜設定6 1/180.8）");
+ var pe=preEst();
+ h+='<div class="pre"><h3 style="margin-top:0">座る前（前任者データだけ）の推測 <span class="rel l">信頼度 低</span></h3>';
+ if(pe)h+=hlBlock([["前任者",pe.post]],false,"")+cmpTable([["前任者",pe.post]])+'<p class="note" style="margin:4px 0 0">前任者のボーナス合算だけで計算（範囲「'+(S.scope==="today"?"当日":"不明")+'」→重み'+(S.scope==="today"?"100":"50")+'%）。合算だけなので差はとても小さく、ほぼ五分になります。</p>';
+ else h+='<p class="note" style="margin:0">前任者の総G・BIG・REGを入れると表示します。</p>';
+ h+='</div>';if(!S.merge)h+='<p class="note">合算OFF：設定推測は自分が打った分だけ。</p>';
+ $("midBody").innerHTML=h;}
+function renderMy(){$("myCnt").innerHTML=S.cnt.map(function(c,i){return '<div class="kv"><span>'+esc(c.n)+'</span><b><button class="sm" data-cm="'+i+'">−</button> <span class="mono">'+c.v+'</span> <button class="sm p" data-cp="'+i+'">＋</button> <button class="sm" data-cx="'+i+'">✕</button></b></div>';}).join("");}
+function commit(){if(S.q.length>40)S.q=S.q.slice(-40);save();render();}
+function q(t){var snap=JSON.stringify({big:S.big,reg:S.reg,c:S.c});
+ if(t==="bigS"||t==="bigD"){S.big=String(num(S.big)+1);S.q.push({t:t==="bigS"?"同色BIG":"異色BIG",s:snap});}
+ else if(t==="reg"){S.reg=String(num(S.reg)+1);S.q.push({t:"REG",s:snap});}
+ else if(t==="fall"){S.c.cz="0";S.q.push({t:"CZ転落",s:snap});}}
+function bind(){
+ document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+  if(d.set){S[d.set]=d.v;commit();return;}
+  if(d.q){q(d.q);commit();return;}
+  if(b.id==="qUndo"){var last=S.q.pop();if(last&&last.s){try{var o=JSON.parse(last.s);for(var k in o)S[k]=o[k];}catch(x){}}commit();return;}
+  if(d.h){S.ev.push({v:d.h});commit();return;}
+  if(d.del!==undefined){S.ev.splice(Number(d.del),1);commit();return;}
+  if(d.inc){S.n[d.inc]=String(num(S.n[d.inc])+1);commit();return;}
+  if(d.cinc){S.c.cz=String(num(S.c.cz)+Number(d.cinc));commit();return;}
+  if(d.cp!==undefined){S.cnt[d.cp].v++;commit();return;}
+  if(d.cm!==undefined){S.cnt[d.cm].v=Math.max(0,S.cnt[d.cm].v-1);commit();return;}
+  if(d.cx!==undefined){if(confirm("このカウンターを削除しますか？")){S.cnt.splice(Number(d.cx),1);commit();}return;}
+  if(b.id==="addCnt"){var n=$("newCnt").value.trim();if(n){S.cnt.push({n:n,v:0});$("newCnt").value="";commit();}return;}
+  if(b.id==="wReset"){S.W={s:U.WDEF.s,w:U.WDEF.w,p:U.WDEF.p,cm:U.WDEF.cm};commit();return;}
+  if(b.id==="resetAll"){if(confirm("この機種の入力をすべて消しますか？")){S=emptyS();commit();}return;}
+ });
+ document.addEventListener("input",function(e){var el=e.target,d=el.dataset;
+  if(d.f!==undefined){S[d.f]=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();restoreFocus(el);return;}
+  if(d.c!==undefined){S.c[d.c]=el.value.replace(/[^\d]/g,"");save();renderCeil();statbar(est().any?est():null);return;}
+  if(d.p!==undefined){S.p[d.p]=el.value.replace(/[^\d]/g,"");save();renderEst();renderMid();return;}
+  if(d.n!==undefined){S.n[d.n]=el.value.replace(/[^\d]/g,"");save();renderEst();return;}
+  if(d.w!==undefined){S.W[d.w]=Number(el.value);save();render();return;}
+  if(el.id==="notes"){S.notes=el.value;save();return;}
+ });
+ document.addEventListener("change",function(e){var el=e.target;
+  if(el.id==="merge"){S.merge=el.checked;commit();return;}
+  if(el.dataset.z!==undefined){S.z[el.dataset.z]=el.checked;commit();return;}
+  if(el.dataset.n!==undefined)render();
+ });
+}
+function restoreFocus(){}
+load();renderStatic();bind();render();
+})();
+</script>
+</body>
+</html>
