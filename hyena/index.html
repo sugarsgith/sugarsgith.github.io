@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<title>スロット実戦メモ（ハイエナ判定）</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:8px 12px}
+header h1{font-size:16px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:13px}
+.bar span{padding:2px 8px;border-radius:999px;background:var(--accentSoft)}
+.bar span.ok{background:var(--okSoft);color:var(--ok);font-weight:700}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+main{max-width:720px;margin:0 auto;padding:0 12px 80px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 4px}
+h3{font-size:15px;margin:14px 0 2px}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}
+button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.sm{min-height:36px;padding:4px 12px}
+button:active{transform:scale(.97)}
+.grow{flex:1 1 120px}
+input,select{font:inherit;font-size:18px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--sub);display:block;margin:8px 0 4px}
+.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;font-weight:700}
+.stars{color:var(--warn)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cell{flex:1 1 90px;text-align:center;font-size:12.5px;padding:4px;border-radius:6px;border:1px solid var(--border)}
+.cell.best{border-color:var(--accent);background:var(--accentSoft);font-weight:700}
+.hints{display:flex;flex-wrap:wrap;gap:8px}
+.hint{flex:1 1 260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.hint.on{background:var(--accentSoft)}
+.hint.on.confirm{border-color:var(--ok);background:var(--okSoft)}
+.hint .tap{all:unset;display:block;width:100%;cursor:pointer}
+.look{color:var(--sub);font-size:12.5px;margin:2px 0 6px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.tag.confirm{color:var(--ok);border-color:var(--ok);font-weight:700}
+.tag.strong{color:var(--accent);border-color:var(--accent);font-weight:700}
+.tag.weak{color:var(--warn);border-color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 8px;border:1px solid var(--border);border-radius:6px}
+.est .r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.est .l{width:46px}.est .v{width:52px;text-align:right}
+.est .t{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.est .f{height:100%;background:var(--accent);opacity:.55}
+.est .r.best .f{opacity:1}
+.call{border:1px solid var(--ok);background:var(--okSoft);color:var(--ok);border-radius:10px;padding:8px 10px;font-weight:700;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+th,td{border-bottom:1px solid var(--border);padding:6px 4px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+ul{padding-left:18px;margin:6px 0}
+.src li{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub)}
+textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.grid2 label{margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:8px}
+.chk input{width:22px;height:22px;min-height:0}
+details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
+.used{font-size:12.5px;color:var(--sub);margin-top:8px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:80px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.rel{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid;margin-left:6px;font-weight:700;vertical-align:middle}
+.rel.h{color:var(--ok);border-color:var(--ok)}.rel.m{color:var(--accent);border-color:var(--accent)}.rel.l{color:var(--warn);border-color:var(--warn)}
+.chk.big{font-size:15px;color:var(--text);font-weight:700;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+.alert{border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;border-bottom:1px solid var(--border);padding:5px 0}
+.kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
+.back{font-size:13px;color:var(--accent);text-decoration:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btns button{width:100%;font-size:14px;line-height:1.25}
+.btns button small{display:block;font-size:11.5px;color:var(--sub);font-weight:400}
+button.p small{color:#e6eeff}
+.cnt{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--accentSoft);font-weight:700;font-size:12.5px;margin-left:4px}
+.evs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ev{font-size:12px;padding:2px 4px 2px 8px;border:1px solid var(--border);border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.ev button{min-height:26px;padding:0 8px;border:none;background:transparent;color:var(--danger);font-size:14px}
+.ev.loop{border-color:var(--warn)}
+.badge{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--accentSoft);margin-left:4px}
+.badge.loop{background:#fdf0dc;color:#8a4b00}
+@media (prefers-color-scheme:dark){.badge.loop{background:#3a2a12;color:#f5c27a}}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input{flex:1;min-height:32px;padding:0}
+.rng b{width:48px;text-align:right}
+.zone{display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding:6px 0}
+.zone>b{width:52px}
+.zone .seg{flex:1}
+.zone .seg button{min-width:0;font-size:12.5px;min-height:36px;padding:2px 4px}
+.warnx{color:var(--warn);font-weight:700}
+.mono{font-variant-numeric:tabular-nums}
+button.p .cnt{background:#fff;color:#1d4ed8}
+.hl{margin-top:6px;font-size:12px;line-height:1.3}
+.hll{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:11px;padding:0 40px 0 100px;white-space:nowrap}
+.hlr{display:flex;align-items:center;gap:6px;margin:3px 0}
+.hlk{flex:none;width:54px;color:var(--sub);font-size:11.5px;white-space:nowrap;overflow:hidden}
+.hlv{flex:none;width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hlv.r{text-align:left}
+.hlb{flex:1;min-width:60px;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--border)}
+.hlb i{display:block;height:100%}
+.hlb i.hi{background:#8a93a3}.hlb i.lo{background:#d3d8df}
+@media (prefers-color-scheme:dark){.hlb i.hi{background:#7a8396}.hlb i.lo{background:#3b414e}}
+.hlr.th .hlb i.hi{background:var(--accent)}.hlr.th .hlv:not(.r){color:var(--accent)}
+.hlr.tl .hlb i.lo{background:var(--warn)}.hlr.tl .hlv.r{color:var(--warn)}
+.hlc{color:var(--sub);font-size:11.5px;margin-top:2px}
+.hlc.conf{color:var(--ok);font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:4px 2px;text-align:right;border-bottom:1px solid var(--border)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
+.cmp td.h{font-weight:700}
+.pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+
+.res{border-radius:12px;padding:12px;margin:10px 0;border:2px solid var(--border)}
+.res .rt{font-size:24px;font-weight:800}
+.res .rs{font-size:13px;margin-top:2px}
+.res.in{border-color:var(--ok);background:var(--okSoft);color:var(--ok)}
+.res.near{border-color:var(--warn);color:var(--warn)}
+.res.out,.res.none{color:var(--sub)}
+.res.over{border-color:var(--danger);color:var(--danger)}
+.res .rs{color:var(--text)}
+.oth{font-size:12.5px;color:var(--sub);margin:8px 0}
+.oth ul{margin:4px 0}
+.big2{display:flex;gap:8px;margin:6px 0}
+.big2>div{flex:1 1 0;border:1px solid var(--border);border-radius:12px;padding:8px 10px}
+.big2 small{display:block;font-size:12px;color:var(--sub)}
+.big2 b{display:block;font-size:24px}
+.big2 b.s{font-size:18px;color:var(--sub)}
+.tanka{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin-top:12px;font-size:13.5px}
+details.low{border:1px solid var(--warn);border-radius:10px;padding:6px 10px;margin:8px 0}
+details.low summary{font-size:14px}
+.gbtn{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px}
+.gbtn button{min-height:40px;padding:4px}
+#listBody .kv{display:block}#listBody .kv span{display:block;font-size:12.5px;color:var(--sub)}#listBody .kv b{display:block;text-align:left;max-width:none;font-weight:600}
+.warnbox{display:none;border:1px solid var(--danger);color:var(--danger);border-radius:10px;padding:8px;margin:8px 0;font-size:13px}
+</style>
+</head>
+<body>
+<noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
+<header><a class="back" href="../">← 機種メニュー</a><h1>ハイエナ判定（天井・ゾーン）</h1><div class="bar" id="bar"></div></header>
+<nav><a href="#set">設定</a><a href="#chk">台チェッカー</a><a href="#inv">投資の目安</a><a href="#close">閉店チェック</a><a href="#list">狙い目一覧</a><a href="#src">出典・不一致</a></nav>
+<main>
+<div class="warnbox" id="savewarn">この端末では入力を保存できません（プライベートブラウズ等）。</div>
+<section id="set"><h2>設定</h2><p class="cap">この端末に保存されます。</p>
+<label>交換率</label><div class="seg" id="rateSeg"></div>
+<label>貸出</label><div class="seg" id="lendSeg"></div>
+<label for="closeIn">閉店時刻（任意）</label><div class="row"><input id="closeIn" type="time" class="grow"><button type="button" class="sm" id="closeClr">クリア</button></div>
+</section>
+<section id="chk"><h2>台チェッカー</h2><p class="cap">機種・状況・現在のG数から、狙い目ラインとの位置を表示します。判断の目安で、収支を保証するものではありません。</p>
+<label>機種</label><div class="seg" id="mcSeg"></div>
+<label for="sit">状況</label><select id="sit"></select>
+<label for="gIn">現在のG数（その天井の数え方でのG数）</label><div class="row"><input id="gIn" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="例：520" class="grow"><button type="button" class="sm" id="clr">クリア</button></div>
+<div class="gbtn"><button type="button" data-add="-50">−50</button><button type="button" data-add="-10">−10</button><button type="button" data-add="10">+10</button><button type="button" data-add="50">+50</button></div>
+<div id="res" class="res none"></div>
+<div id="lineBox"></div>
+<div class="note">判定：判定ライン以上＝狙い目内（緑）／ラインまで100G以内＝あと○G（橙）／それより手前・ライン公表なし＝対象外（灰）。100Gの幅は当ページの決めです。</div>
+</section>
+<section id="inv"><h2>投資の目安</h2><p class="cap">台チェッカーで選んだ機種・状況・G数で計算します。</p><div id="invBody"></div></section>
+<section id="close"><h2>閉店チェック</h2><div id="closeBody"></div></section>
+<section id="list"><h2>狙い目一覧</h2><p class="cap">天井・恩恵・リセット時・ゾーン・ヤメ時。</p><div id="listBody"></div></section>
+<section id="src"><h2>出典・不一致・調査中</h2>
+<h3>不一致</h3><ul>
+<li>リコリス通常時の狙い目：DMM 500G〜（5.6現金550G〜）／ちょんぼ 480G〜／イチカツ 420G〜／公表機械割は400G〜で106.1%／slot-toolbox 400G前後〜（信頼度 低）。判定はDMMの値。</li>
+<li>リコリスの変更後・駆け抜け後：DMM 250G〜（駆け抜けで天井600G確定時）／イチカツ 170G〜／ちょんぼ 70G〜。判定はDMMの値（変更後にも準用）。</li>
+<li>リコリスの初当り平均獲得：TY約550枚（イチカツ）と約488.6枚（個人note）で不一致。</li>
+<li>炎炎2のボーナス間：ちょんぼ・ジャグラーズネット 670G〜／スロパチクエスト 等価630・5.6持ち640・5.6現金690G〜／DMM 600〜650G〜／なな徹 等価500・5.6枚600G〜。判定は最も深い値。</li>
+<li>炎炎2の炎炎ループ間：DMM・ちょんぼ 1500G〜／アルテマ（たられば氏引用）等価1100・5.6枚1400G〜。</li>
+<li>DMM炎炎2の時間表は「14G/分で算出」と注記がありますが、数値（850Gで51分）は約16.7G/分相当です。</li>
+</ul>
+<h3>調査中</h3><ul>
+<li>リコリス：大手解析サイトの円単位の期待値・天井到達率・平均投資（公表なし）</li>
+<li>AT・ボーナス1回あたりの消化時間（両機種）</li>
+<li>炎炎2の初当り後の平均獲得枚数、なな徹の平均投資の貸出単価前提、5.6枚列が持ちメダルか現金か</li>
+<li>炎炎ループ間・設定変更後（1500G）の狙い目ライン</li>
+</ul>
+<h3>除外した情報</h3><p class="note">AI生成の疑いがあるサイト（パチナビ）、「AIで補正」と明記された個人note、プレースホルダが残ったままのページは使っていません。slot-toolboxはサイト独自の算出なので「信頼度 低」と明記し、判定ラインには使っていません。</p>
+<h3>出典</h3><ul class="src" id="srcList"></ul>
+<p class="note">数値は2026/11/04時点の確認。「自前計算」はこのページで計算した値です。</p>
+</section>
+</main>
+<script>
+/* hyena core: pure logic (node testable) */
+var HY=(function(){
+var RATES={eq:'等価',m56:'5.6枚・持ちメダル',c56:'5.6枚・現金'};
+var LEND={46:1000/46,50:20};
+// sources
+var SRC={
+ dmmL:{n:'DMMぱちタウン（天井特集）',u:'https://p-town.dmm.com/specials/5388',d:'2026/09/11',r:'中',k:'管理人見解（時給2000円程度）'},
+ nanaL:{n:'なな徹（天井・やめどき）',u:'https://nana-press.com/kaiseki/machine/1166/38719/',d:'2026/10/26',r:'高',k:'公表機械割（設定1）'},
+ cbL:{n:'ちょんぼりすた',u:'https://chonborista.com/slot/sammy-slot/261631/',d:'2026/10/23',r:'中',k:'管理人見解'},
+ ichiL:{n:'イチカツ',u:'https://ichikatsu.com/lycorisrecoil/',d:'',r:'中',k:'サイト算出（時給2000円ライン）'},
+ shL:{n:'SLOT HACK（天井狙いまとめ）',u:'https://slothack.net/matome/202003/',d:'',r:'低',k:'算出根拠の記載なし'},
+ stL:{n:'スロッターの道具箱（slot-toolbox）',u:'https://slot-toolbox.com/lycoris-recoil-tenjo/',d:'',r:'低',k:'サイト独自算出（TY約550枚前提・Vストック除外）'},
+ flL:{n:'フリック7',u:'https://flick7.net/slot/lycoris_recoil/tenjo/',d:'',r:'中',k:'解析値の転載'},
+ kdL:{n:'回胴に散る。（天井まで何枚・いくら）',u:'https://kaidou.repop.jp/archives/15337',d:'',r:'中',k:'サイト計算（31.8G/50枚）'},
+ nanaE:{n:'なな徹（天井期待値）',u:'https://nana-press.com/kaiseki/machine/1088/34532/',d:'2026/03/17',r:'高',k:'サイト独自シミュレーション（設定1）'},
+ dmmE:{n:'DMMぱちタウン（天井特集）',u:'https://p-town.dmm.com/specials/4815',d:'2026/05/01',r:'中',k:'管理人見解（時給2000円程度）'},
+ cbE:{n:'ちょんぼりすた',u:'https://chonborista.com/slot/sankyo-slot/247643/',d:'',r:'中',k:'管理人見解（期待値はたられば氏noteの引用画像）'},
+ jnE:{n:'ジャグラーズネット',u:'https://jugglersnet.com/chumoku/enennosyobotai2',d:'',r:'中',k:'管理人見解'},
+ sqE:{n:'スロパチクエスト',u:'https://www.slopachi-quest.com/article/enennosyouboutai2-tenjou/',d:'',r:'中',k:'サイト見解'},
+ alE:{n:'アルテマ',u:'https://pachimo.altema.jp/lenen2tenjyo',d:'',r:'中',k:'たられば氏の期待値を引用'},
+ kdE:{n:'回胴に散る。（天井まで何枚・いくら）',u:'https://kaidou.repop.jp/archives/12800',d:'',r:'中',k:'サイト計算（33.1G/50枚）'},
+ tanka:{n:'なな徹コラム「コイン単価」',u:'https://nana-press.com/post/1565028',d:'',r:'高',k:'用語の定義'}
+};
+// line: {eq,m56,c56} G (null = 記載なし); all:true = 交換率の区別なし
+var M={
+ lyco:{name:'スマスロ リコリス・リコイル',short:'リコリス',maker:'サミー',coin:31.8,coinSrc:'約31.8G/50枚（設定1）ちょんぼりすた・DMM',tanka:'3.2円（設定1）',tankaSrc:'cbL',junzo:'AT純増 約8.4枚/G（ボーナス中）',
+  sits:{
+   normal:{label:'通常（AT間天井 850G+α）',ceil:850,ceilNote:'850G+α（内部で 850/750/600/400/250G に振り分け）',
+    lines:[
+     {s:'dmmL',v:{eq:500,m56:500,c56:550}},
+     {s:'cbL',v:{eq:480,m56:480,c56:480},all:true,note:'ST連チャン後。交換率の区別なし'},
+     {s:'ichiL',v:{eq:420,m56:420,c56:420},all:true,note:'交換率の区別なし'},
+     {s:'nanaL',v:{eq:400,m56:400,c56:400},all:true,note:'400G〜天井で機械割106.1%（300G〜は100.3%）'},
+     {s:'shL',v:{eq:470,m56:480,c56:550},low:true},
+     {s:'stL',v:{eq:400,m56:400,c56:500},low:true,note:'「400G前後〜／500G前後〜」'}],
+    pub:[['300G〜天井(850G)','機械割 100.3%'],['400G〜天井(850G)','機械割 106.1%'],['50G〜100Gゾーン','機械割 105.7%'],['150G〜250Gゾーン','機械割 101.0%']],
+    st:'normal'},
+   reset:{label:'設定変更後（AT間 600G+α／CZ間 250G）',ceil:600,ceilNote:'600G+α（液晶G数は内部でランダム加算されるため、実際の天井は表示より手前になりうる）',
+    lines:[
+     {s:'dmmL',v:{eq:250,m56:250,c56:250},all:true,note:'DMMは駆け抜け時の値。変更後も同じ天井G数とDMMが記載しているため準用（当ページの判断）'},
+     {s:'cbL',v:{eq:70,m56:70,c56:70},all:true,note:'設定変更後・ST駆け抜け後'},
+     {s:'ichiL',v:{eq:170,m56:170,c56:170},all:true,note:'AT間170G〜（CZ間40G〜）'},
+     {s:'stL',v:{eq:0,m56:0,c56:50},low:true,note:'表の0G・50G行がプラスになる位置（570G+α天井前提）'}],
+    pub:[['リセット時','機械割 100%超（なな徹。数値の記載なし）']],st:'reset'},
+   kakenuke:{label:'ST駆け抜け後（AT間 600G+α／CZ間 250G）',ceil:600,ceilNote:'600G+α（成功濃厚CZ経由）',
+    lines:[
+     {s:'dmmL',v:{eq:250,m56:250,c56:250},all:true,note:'天井600G確定時'},
+     {s:'cbL',v:{eq:70,m56:70,c56:70},all:true},
+     {s:'ichiL',v:{eq:170,m56:170,c56:170},all:true,note:'AT間170G〜（CZ間40G〜）'},
+     {s:'stL',v:{eq:0,m56:10,c56:160},low:true}],
+    pub:[],st:'kake'},
+   ucz:{label:'上位CZ失敗後（天井 250G+α）',ceil:250,ceilNote:'250G+α → 成功濃厚CZ',
+    lines:[{s:'dmmL',v:{eq:0,m56:0,c56:0},all:true,note:'ゲーム数不問'},{s:'cbL',v:{eq:0,m56:0,c56:0},all:true},{s:'nanaL',v:{eq:0,m56:0,c56:0},all:true,note:'0G〜250Gで機械割103.9%'}],
+    pub:[['上位CZ失敗後0G〜天井(250G)','機械割 103.9%']]},
+   uat:{label:'上位ST（リコリスラッシュW）終了後',ceil:850,ceilNote:'850G+α（100Gまでは引き戻し区間）',
+    lines:[{s:'cbL',v:{eq:0,m56:0,c56:0},all:true,note:'0G〜100G+α、またはSTまで'},{s:'nanaL',v:{eq:0,m56:0,c56:0},all:true,note:'0G〜天井で機械割105.1%'}],
+    pub:[['上位AT終了後0G〜天井(850G)','機械割 105.1%']]}
+  }},
+ enen:{name:'L炎炎ノ消防隊2',short:'炎炎2',maker:'SANKYO',coin:33.1,coinSrc:'33.1G/50枚（なな徹・DMMの算出前提）／ちょんぼは約33G',tanka:'3.2円',tankaSrc:'cbE',junzo:'AT純増 約5.8枚/G',
+  sits:{
+   normal:{label:'通常（ボーナス間天井 850G+α）',ceil:850,ceilNote:'850G+α（通常A。モード別 B650/C450/D250/E88G+α）',
+    lines:[
+     {s:'cbE',v:{eq:670,m56:670,c56:670},all:true,note:'交換率の区別なし（ジャグラーズネットも670G〜）'},
+     {s:'sqE',v:{eq:630,m56:640,c56:690}},
+     {s:'dmmE',v:{eq:600,m56:600,c56:650}},
+     {s:'nanaE',v:{eq:500,m56:600,c56:600},note:'1000円超えライン。5.6枚の持ち／現金の区別なし'}],
+    ev:'n',pub:[]},
+   reset:{label:'設定変更後（ボーナス間天井 650G+α）',ceil:650,ceilNote:'650G+α（モード再抽選：B24%/C4%/D39%/E33%）',
+    lines:[{s:'nanaE',v:{eq:350,m56:400,c56:400},note:'1000円超えライン。5.6枚の持ち／現金の区別なし'}],
+    ev:'r',pub:[],zone:'リセット時のゾーン狙い：45G〜88G＋前兆、155G〜250G＋前兆（ちょんぼ・ジャグラーズネット）'},
+   loop:{label:'炎炎ループ間（天井 2000G+α）',ceil:2000,ceilNote:'2000G+α → SPエピソードボーナス（炎炎激闘濃厚）。データカウンターとずれることが多い',
+    lines:[{s:'dmmE',v:{eq:1500,m56:1500,c56:1500},all:true},{s:'cbE',v:{eq:1500,m56:1500,c56:1500},all:true},{s:'alE',v:{eq:1100,m56:1400,c56:1400},note:'5.6枚の持ち／現金の区別なし'}],pub:[]},
+   loopR:{label:'炎炎ループ間・設定変更後（天井 1500G+α）',ceil:1500,ceilNote:'1500G+α',lines:[],pub:[]}
+  }}
+};
+// なな徹 tables (設定1) [G, 等価, 5.6, 到達率%, 実質初当り分母, 平均投資円]
+var NANA_N=[[0,-868,-1655,5.14,272,8220],[50,-783,-1571,6.12,269,8135],[100,-682,-1469,7.28,266,8034],[150,-561,-1349,8.67,262,7913],[200,-418,-1206,10.33,257,7770],[250,-247,-1035,12.30,252,7599],[300,-44,-831,14.65,245,7396],[350,198,-589,17.44,237,7154],[400,487,-301,20.77,227,6865],[450,830,42,24.73,216,6522],[500,1239,451,29.45,202,6113],[550,1726,938,35.07,186,5626],[600,2306,1518,41.76,167,5046],[650,2996,2208,49.73,144,4356],[700,3818,3031,59.22,117,3534],[750,4798,4010,70.52,85,2554],[800,5963,5176,83.98,46,1388]];
+var NANA_R_EV=[[0,-820,-1565],[50,-649,-1394],[100,-446,-1191],[150,-204,-949],[200,84,-660],[250,428,-317],[300,837,92],[350,1324,579],[400,1903,1159],[450,2594,1849],[500,3416,2671],[550,4395,3651],[600,5561,4817]];
+var NANA_R=NANA_R_EV.map(function(r){var n=NANA_N[r[0]/50+4];return [r[0],r[1],r[2],n[3],n[4],n[5]];});
+// slot-toolbox (信頼度 低) [G, 等価, 持ち, 現金]
+var ST={normal:[[300,190,170,-860],[350,830,740,-220],[400,1140,1020,80],[450,1880,1680,820],[500,2700,2410,1640],[550,3600,3220,2550],[650,4770,4260,3710],[700,5890,5260,4840],[750,7000,6250,5940],[800,8350,7460,7300]],
+ reset:[[0,718,636,-222],[50,972,870,32],[100,1278,1144,338],[150,1638,1464,698],[200,2060,1840,1120],[250,2564,2288,1624],[300,3191,2849,2251],[400,4726,4223,3786],[500,6646,5933,5706]],
+ kake:[[0,580,510,-360],[50,810,720,-130],[100,1080,970,140],[150,1410,1260,470],[200,1790,1600,850],[250,2240,2000,1300],[300,2780,2480,1840],[400,4150,3710,3210],[500,6070,5420,5130]]};
+
+function judgeLine(sit,rate){ // conservative = deepest among non-low sources
+ var best=null,bs=null;(sit.lines||[]).forEach(function(l){if(l.low)return;var v=l.v[rate];if(v==null)return;if(best===null||v>best){best=v;bs=l.s;}});
+ return best===null?null:{g:best,src:bs};}
+function others(sit,rate,line){var o=[];(sit.lines||[]).forEach(function(l){var v=l.v[rate];if(v==null)return;if(line&&l.s===line.src&&v===line.g&&!l.low)return;o.push({s:l.s,g:v,low:!!l.low,note:l.note||'',all:!!l.all});});return o;}
+function mismatch(sit,rate){var vs={};(sit.lines||[]).forEach(function(l){if(l.v[rate]!=null)vs[l.v[rate]]=1;});return Object.keys(vs).length>1;}
+var NEAR=100;
+function judge(g,sit,rate){
+ if(g===null||g===undefined||g===''||isNaN(g)||g<0)return {st:'none'};
+ g=Math.floor(+g);var line=judgeLine(sit,rate);
+ if(g>=sit.ceil)return {st:'over',g:g,line:line};
+ if(!line)return {st:'noline',g:g};
+ if(g>=line.g)return {st:'in',g:g,line:line,toCeil:sit.ceil-g};
+ var rest=line.g-g;return {st:rest<=NEAR?'near':'out',g:g,line:line,rest:rest};}
+function maxInvest(g,ceil,coin,lend){ // lend: 46 or 50
+ var rem=Math.max(0,ceil-g);var coins=rem/coin*50;var yen=coins*LEND[lend];
+ return {rem:rem,coins:coins,yen:yen,yenPerG:50/coin*LEND[lend],gPer1000:coin*(lend/50)};}
+function rowAt(tbl,g){var r=null;for(var i=0;i<tbl.length;i++){if(tbl[i][0]<=g)r=tbl[i];}return r;}
+function closing(g,ceil,nowMin,closeMin){ // minutes since 0:00
+ if(closeMin==null||isNaN(closeMin))return null;
+ var left=closeMin-nowMin;if(left<-180)left+=1440; // 日付またぎ：3時間以内の過去は閉店済み扱い
+ var need=Math.max(0,ceil-g);var lo=Math.max(0,left)*13.3,hi=Math.max(0,left)*14;
+ var st=left<=0?'closed':(need<=lo?'ok':(need<=hi?'tight':'ng'));
+ return {left:left,need:need,gLo:Math.floor(lo),gHi:Math.floor(hi),minLo:need/14,minHi:need/13.3,st:st};}
+function hm(s){var m=/^(\d{1,2}):(\d{2})$/.exec(s||'');if(!m)return null;var h=+m[1],mi=+m[2];if(h>29||mi>59)return null;return (h%24)*60+mi;}
+return {RATES:RATES,LEND:LEND,SRC:SRC,M:M,NANA_N:NANA_N,NANA_R:NANA_R,ST:ST,judgeLine:judgeLine,others:others,mismatch:mismatch,judge:judge,maxInvest:maxInvest,rowAt:rowAt,closing:closing,hm:hm,NEAR:NEAR};
+})();
+if(typeof module!=='undefined')module.exports=HY;
+
+</script>
+<script>
+(function(){
+var H=HY,KEY='slotmemo:v1:hyena',canSave=true;
+var S={rate:'eq',lend:46,close:'',mc:'lyco',sit:'normal',g:''};
+function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var p=JSON.parse(r);for(var k in S){if(p[k]!==undefined&&p[k]!==null&&typeof p[k]===typeof S[k])S[k]=p[k];}}catch(e){}
+ if(!H.M[S.mc])S.mc='lyco';if(!H.M[S.mc].sits[S.sit])S.sit='normal';if(!H.RATES[S.rate])S.rate='eq';if(S.lend!==46&&S.lend!==50)S.lend=46;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));canSave=true;}catch(e){canSave=false;}var w=document.getElementById('savewarn');if(w)w.style.display=canSave?'none':'block';}
+function $(i){return document.getElementById(i);}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function yen(v){return Math.round(v).toLocaleString('ja-JP')+'円';}
+function n0(v){return Math.round(v).toLocaleString('ja-JP');}
+function sgn(v){return (v>0?'+':v<0?'−':'')+Math.abs(v).toLocaleString('ja-JP')+'円';}
+function rel(r){return '<span class="rel '+(r==='高'?'h':r==='中'?'m':'l')+'">信頼度 '+r+'</span>';}
+function srcName(k){var s=H.SRC[k];return '<a href="'+s.u+'" target="_blank" rel="noopener">'+esc(s.n)+'</a>';}
+function seg(id,opts,cur,attr){$(id).innerHTML=opts.map(function(o){return '<button type="button" data-'+attr+'="'+o[0]+'" class="'+(String(o[0])===String(cur)?'on':'')+'">'+esc(o[1])+'</button>';}).join('');}
+function nowMin(){var d=new Date();return d.getHours()*60+d.getMinutes();}
+function pad(n){return (n<10?'0':'')+n;}
+function renderTop(){
+ seg('rateSeg',[['eq','等価'],['m56','5.6持ち'],['c56','5.6現金']],S.rate,'rate');
+ seg('lendSeg',[[46,'46枚貸'],[50,'50枚貸']],S.lend,'lend');
+ seg('mcSeg',[['lyco','リコリス'],['enen','炎炎2']],S.mc,'mc');
+ var m=H.M[S.mc];$('sit').innerHTML=Object.keys(m.sits).map(function(k){return '<option value="'+k+'"'+(k===S.sit?' selected':'')+'>'+esc(m.sits[k].label)+'</option>';}).join('');
+ $('closeIn').value=S.close;$('gIn').value=S.g;
+ $('bar').innerHTML='<span>'+esc(H.RATES[S.rate])+'</span><span>'+S.lend+'枚貸</span><span>閉店 '+(S.close||'未設定')+'</span>';
+}
+function render(){renderTop();var m=H.M[S.mc],sit=m.sits[S.sit],g=S.g===''?null:+S.g;
+ var j=H.judge(g,sit,S.rate),line=H.judgeLine(sit,S.rate),html='';
+ // ---- checker result
+ var cls={in:'res in',near:'res near',out:'res out',over:'res over',noline:'res out',none:'res none'}[j.st];
+ var t='',sub='';
+ if(j.st==='none'){t='現在のG数を入力してください';}
+ else if(j.st==='in'){t='狙い目内';sub=j.g+'G ／ 判定ライン '+line.g+'G〜（天井まで あと'+j.toCeil+'G）';}
+ else if(j.st==='near'){t='あと'+j.rest+'G';sub='判定ライン '+line.g+'G〜 まで あと'+j.rest+'G（現在 '+j.g+'G）';}
+ else if(j.st==='out'){t='対象外';sub='判定ライン '+line.g+'G〜 まで あと'+j.rest+'G（現在 '+j.g+'G）';}
+ else if(j.st==='noline'){t='対象外';sub='この状況の狙い目ラインは公表値なし';}
+ else if(j.st==='over'){t='天井G数以上';sub='表示G数が天井（'+sit.ceil+'G）以上です。前兆中かどうか、G数の数え方（カウンターとのずれ）を確認してください';}
+ $('res').className=cls;$('res').innerHTML='<div class="rt">'+t+'</div>'+(sub?'<div class="rs">'+esc(sub)+'</div>':'');
+ // line + others
+ var lh='';
+ if(line){var L=null;sit.lines.forEach(function(l){if(l.s===line.src&&!l.low&&l.v[S.rate]===line.g)L=L||l;});
+  lh+='<div class="kv"><span>判定ライン（'+esc(H.RATES[S.rate])+'）</span><b>'+line.g+'G〜</b></div><div class="note">採用：'+srcName(line.src)+'（'+esc(H.SRC[line.src].k)+'）'+(L&&L.note?' ※'+esc(L.note):'')+'<br>決め方：信頼度「低」を除いた出典のうち、最も深いG数（保守的）</div>';
+ }else lh+='<div class="kv"><span>判定ライン</span><b>公表値なし</b></div>';
+ var o=H.others(sit,S.rate,line);
+ if(o.length){lh+='<div class="oth">'+(H.mismatch(sit,S.rate)?'<span class="tag weak">不一致</span> ':'')+'他の出典：<ul>'+o.map(function(x){return '<li>'+x.g+'G〜 — '+srcName(x.s)+(x.low?rel('低'):'')+(x.note?' <span class="note">'+esc(x.note)+'</span>':'')+'</li>';}).join('')+'</ul></div>';}
+ lh+='<div class="kv"><span>天井</span><b>'+esc(sit.ceilNote)+'</b></div>';
+ if(sit.zone)lh+='<div class="note">'+esc(sit.zone)+'</div>';
+ if(S.mc==='lyco'&&S.sit==='normal'&&g!==null&&!isNaN(g)){if(g>=50&&g<100)lh+='<div class="note">参考（公表・設定1）：50G〜100Gのゾーン狙いは機械割105.7%</div>';else if(g>=150&&g<250)lh+='<div class="note">参考（公表・設定1）：150G〜250Gのゾーン狙いは機械割101.0%</div>';}
+ $('lineBox').innerHTML=lh;
+ // ---- invest
+ var gi=(g===null||isNaN(g))?0:Math.max(0,Math.floor(g));var mi=H.maxInvest(gi,sit.ceil,m.coin,S.lend),other=H.maxInvest(gi,sit.ceil,m.coin,S.lend===46?50:46);
+ var ih='<div class="big2"><div><small>天井まで最大</small><b>'+yen(mi.yen)+'</b><small>'+n0(mi.coins)+'枚 ／ '+mi.rem+'G</small></div><div><small>'+(S.lend===46?50:46)+'枚貸なら</small><b class="s">'+yen(other.yen)+'</b></div></div>';
+ ih+='<div class="note">自前計算：（天井 '+sit.ceil+'G − 現在 '+gi+'G）÷ '+m.coin+'G × 50枚 × '+(S.lend===46?'1000/46（≈21.74）':'20')+'円/枚。1000円で約'+mi.gPer1000.toFixed(1)+'G、1Gあたり約'+mi.yenPerG.toFixed(1)+'円。コイン持ち：'+esc(m.coinSrc)+'。天井の「+α」と前兆分は含まない。</div>';
+ // average
+ ih+='<h3>平均投資・天井到達率</h3>';
+ var tbl=S.mc==='enen'?(S.sit==='normal'?H.NANA_N:S.sit==='reset'?H.NANA_R:null):null;
+ if(tbl){var r=H.rowAt(tbl,gi);if(r&&gi<sit.ceil){ih+='<div class="kv"><span>平均投資（'+r[0]+'G行）</span><b>'+yen(r[5])+'</b></div><div class="kv"><span>天井到達率</span><b>'+r[3].toFixed(2)+'%</b></div><div class="kv"><span>実質初当り確率</span><b>1/'+r[4]+'</b></div><div class="kv"><span>期待値 等価（'+r[0]+'G行）</span><b>'+sgn(r[1])+'</b></div><div class="kv"><span>期待値 5.6枚（'+r[0]+'G行）</span><b>'+sgn(r[2])+'</b></div>'+
+  '<div class="note">出典：'+srcName('nanaE')+'（50G刻みの表で、現在G以下の最も近い行を表示）。条件：設定1／独自シミュ／33.1G/50枚・純増5.8枚固定／ヤメ＝伝導者の罠 or 炎炎激闘潜伏終了後／閉店欠損は考慮しない／非前兆／モード考慮なし／AT獲得枚数一定／天井'+sit.ceil+'G。平均投資の貸出単価は記載なし（調査中）。5.6枚の列が持ちメダルか現金かも記載なし（調査中）。</div>';}
+  else ih+='<div class="note">表の範囲外（公表値なし）</div>';}
+ else ih+='<div class="kv"><span>平均投資・天井到達率</span><b>公表値なし</b></div>';
+ // EV
+ ih+='<h3>公表されている期待値・機械割</h3>';
+ if(sit.pub&&sit.pub.length){ih+=sit.pub.map(function(p){return '<div class="kv"><span>'+esc(p[0])+'</span><b>'+esc(p[1])+'</b></div>';}).join('')+'<div class="note">出典：'+srcName('nanaL')+'・'+srcName('flL')+'（設定1の公表値。収支を保証するものではない）</div>';}
+ else if(!tbl)ih+='<div class="kv"><span>円の期待値</span><b>公表値なし</b></div>';
+ else ih+='<div class="note">上の表（なな徹）を参照。</div>';
+ if(S.mc==='lyco'&&sit.st&&H.ST[sit.st]){var sr=H.rowAt(H.ST[sit.st],gi);var col=S.rate==='eq'?1:S.rate==='m56'?2:3;
+  ih+='<details class="low"><summary>参考：slot-toolbox の期待値'+rel('低')+'</summary>'+(sr?'<div class="kv"><span>'+sr[0]+'G行（'+esc(H.RATES[S.rate])+'）</span><b>'+sgn(sr[col])+'</b></div>':'<div class="note">表の範囲外</div>')+'<div class="note">サイト独自の算出（TY約550枚前提・Vストック除外'+(sit.st==='reset'?'・設定変更後は570G+α天井前提':'')+'）。大手解析サイトは円単位の期待値を出していないため、参考扱い。'+srcName('stL')+'</div></details>';}
+ // tanka
+ ih+='<div class="tanka"><b>コイン単価 '+esc(m.tanka)+'</b>（荒さの参考）<br><span class="note">コイン単価＝台の売上 ÷ アウト（投入枚数）。波の荒さの目安で、<b>期待値ではありません</b>。上の投資額は貸出単価とコイン持ちから計算しています。出典：'+srcName(m.tankaSrc)+'・'+srcName('tanka')+'</span></div>';
+ $('invBody').innerHTML=ih;
+ // ---- closing
+ var ch='',cm=H.hm(S.close),nm=nowMin();
+ if(cm===null)ch='<div class="note">閉店時刻を上の設定で入れると判定します。</div>';
+ else{var c=H.closing(gi,sit.ceil,nm,cm);var lbl={ok:'天井G数まで通常時は回せる見込み',tight:'ぎりぎり（消化速度しだい）',ng:'天井到達前に閉店の可能性',closed:'閉店時刻を過ぎています'}[c.st];
+  ch='<div class="res '+(c.st==='ok'?'in':c.st==='tight'?'near':'out')+'"><div class="rt">'+lbl+'</div><div class="rs">現在 '+pad(Math.floor(nm/60))+':'+pad(nm%60)+' → 閉店 '+S.close+'（残り '+Math.max(0,c.left)+'分）</div></div>'+
+  '<div class="kv"><span>天井までの残りG</span><b>'+c.need+'G（約'+Math.ceil(c.minLo)+'〜'+Math.ceil(c.minHi)+'分）</b></div><div class="kv"><span>残り時間で回せるG数</span><b>約'+c.gLo+'〜'+c.gHi+'G</b></div>';}
+ ch+='<div class="alert">消化速度は13.3〜14G/分で計算（DMM 14G/分、回胴に散る。約800G/時）。<b>AT・ボーナスの消化時間は両機種とも公表値なし（調査中）</b>です。当たった後の消化と、閉店前の交換時間の分は余裕を見てください。</div>';
+ $('closeBody').innerHTML=ch;
+ save();
+}
+function bind(){
+ document.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  if(b.dataset.rate){S.rate=b.dataset.rate;render();}
+  else if(b.dataset.lend){S.lend=+b.dataset.lend;render();}
+  else if(b.dataset.mc){if(S.mc!==b.dataset.mc){S.mc=b.dataset.mc;S.sit='normal';}render();}
+  else if(b.dataset.add){var v=(S.g===''?0:+S.g)+(+b.dataset.add);S.g=String(Math.max(0,v));render();}
+  else if(b.id==='clr'){S.g='';render();}
+ });
+ $('sit').addEventListener('change',function(){S.sit=this.value;render();});
+ $('gIn').addEventListener('input',function(){var v=this.value.replace(/[^0-9]/g,'');S.g=v===''?'':String(Math.min(9999,+v));render();});
+ $('closeIn').addEventListener('change',function(){S.close=H.hm(this.value)===null?'':this.value;render();});
+ $('closeClr').addEventListener('click',function(){S.close='';render();});
+}
+function renderList(){
+ var h='';
+ h+='<div class="box"><div class="hd">スマスロ リコリス・リコイル<span class="note">サミー</span></div>'+
+ '<div class="kv"><span>天井</span><b>AT間 850G+α（AT＋Vストック抽選）／CZ間 600G+α（CZ）／上位CZ失敗後 250G+α（成功濃厚CZ）</b></div>'+
+ '<div class="kv"><span>短縮</span><b>設定変更後・ST駆け抜け後：AT間 600G+α・CZ間 250G。AT間天井は 850/750/600/400/250G に振り分け</b></div>'+
+ '<div class="kv"><span>リセット時</span><b>設定変更：非有利区間へ・天井G数リセット（短縮）・液晶G数を内部でランダム加算。電源OFF→ONはすべて引き継ぎ</b></div>'+
+ '<div class="kv"><span>ゾーン</span><b>100G（50G〜で機械割105.7%）、250G（150G〜で101.0%）※機械割は設定1の公表値。600GもCZ期待度◎（フリック7）</b></div>'+
+ '<div class="kv"><span>ヤメ時</span><b>AT後は引き戻し前兆の終了後（50Gの変換高確、100GのCZまでフォローも可）。AT後250G+α以内のCZ当選期待度 約90%。上位CZ失敗後はAT当選まで、上位AT後は100Gの引き戻し区間まで</b></div>'+
+ '<div class="kv"><span>数値</span><b>コイン持ち 約31.8G/50枚・AT純増 約8.4枚/G・出玉率 97.9%〜114.6%</b></div>'+
+ '<div class="note">出典：'+srcName('nanaL')+'・'+srcName('dmmL')+'・'+srcName('cbL')+'・'+srcName('flL')+'</div></div>';
+ h+='<div class="box"><div class="hd">L炎炎ノ消防隊2<span class="note">SANKYO</span></div>'+
+ '<div class="kv"><span>天井</span><b>ボーナス間 850G+α（ボーナス、基本はREG）／炎炎ループ間 2000G+α（SPエピソードボーナス→炎炎激闘）／伝導者の罠5回スルー→次回SPボーナス</b></div>'+
+ '<div class="kv"><span>モード別天井</span><b>A 850／B 650／C 450／D 250／E 88G+α</b></div>'+
+ '<div class="kv"><span>リセット時</span><b>ボーナス間 650G+α・炎炎ループ間 1500G+αに短縮。モード再抽選（A否定：B24%/C4%/D39%/E33%）。電源OFF→ONは引き継ぎ</b></div>'+
+ '<div class="kv"><span>ゾーン</span><b>88G+α（通常Eの天井）。リセット時は 45G〜88G、155G〜250G＋前兆</b></div>'+
+ '<div class="kv"><span>ヤメ時</span><b>RB後：伝導者の罠の終了後、または88G+αのゾーン確認後。炎炎激闘後：潜伏（最大28G・平均8G）を確認</b></div>'+
+ '<div class="kv"><span>数値</span><b>コイン持ち 33.1G/50枚（算出前提）・AT純増 約5.8枚/G・初当りRB 約85枚・出玉率 97.7%〜（設定1）</b></div>'+
+ '<div class="note">出典：'+srcName('nanaE')+'・'+srcName('dmmE')+'・'+srcName('cbE')+'</div></div>';
+ $('listBody').innerHTML=h;
+ var keys=['nanaL','dmmL','cbL','flL','ichiL','kdL','shL','stL','nanaE','dmmE','cbE','jnE','sqE','alE','kdE','tanka'];
+ $('srcList').innerHTML=keys.map(function(k){var s=H.SRC[k];return '<li><a href="'+s.u+'" target="_blank" rel="noopener">'+esc(s.n)+'</a>'+rel(s.r)+'<br><span class="note">'+esc(s.k)+(s.d?'（更新 '+s.d+'）':'')+'</span></li>';}).join('');
+}
+load();renderList();bind();render();
+})();
+
+</script>
+</body>
+</html>
