@@ -62,6 +62,13 @@ a{color:var(--accent)}
 ul{padding-left:18px;margin:6px 0}
 .src li{margin:6px 0}
 .note{font-size:12.5px;color:var(--sub)}
+textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.grid2 label{margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:8px}
+.chk input{width:22px;height:22px;min-height:0}
+details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
+.used{font-size:12.5px;color:var(--sub);margin-top:8px}
 </style>
 </head>
 <body>
@@ -71,7 +78,7 @@ ul{padding-left:18px;margin:6px 0}
   <div class="bar" id="statbar"></div>
 </header>
 <nav>
-  <a href="#base">台・G数</a><a href="#hits">当選履歴</a><a href="#est">設定推測</a><a href="#hintsec">確定・示唆</a><a href="#rates">直撃・設定差</a><a href="#trials">G数到達</a><a href="#ref">天井・狙い目</a><a href="#spec">スペック</a><a href="#src">出典</a>
+  <a href="#base">台・G数</a><a href="#bulk">マイスロ入力</a><a href="#hits">当選履歴</a><a href="#est">設定推測</a><a href="#hintsec">確定・示唆</a><a href="#rates">直撃・設定差</a><a href="#trials">G数到達</a><a href="#rushchar">RUSH種別</a><a href="#memo">メモ</a><a href="#extra">参考</a><a href="#ref">天井・狙い目</a><a href="#spec">スペック</a><a href="#src">出典</a>
 </nav>
 <main>
   <section id="base">
@@ -82,6 +89,22 @@ ul{padding-left:18px;margin:6px 0}
     <p class="cap" id="maker" style="margin-top:8px"></p>
     <p class="note" id="savestate"></p>
     <button id="reset">リセット</button>
+  </section>
+
+  <section id="bulk">
+    <h2>マイスロ一括入力</h2>
+    <p class="cap">マイスロの履歴画面の数字をそのまま入力。1回ごとのG数は不要です。ここの数字に、下の「当選履歴」でタップした分が足されて確率と設定推測に使われます（マイスロの数字を入れた後は、それ以降の当選だけタップしてください）。</p>
+    <label for="bulkG">通常ゲーム数（上の欄と同じ値）</label><input id="bulkG" data-bulk="normalG" inputmode="numeric" placeholder="例 3183">
+    <div class="grid2">
+      <div><label>OPPOSITE BATTLE 突入</label><input data-bulk="ob_in" inputmode="numeric" placeholder="0"></div>
+      <div><label>OPPOSITE BATTLE 成功</label><input data-bulk="ob_ok" inputmode="numeric" placeholder="0"></div>
+      <div><label>FIRST LYCORIS 突入</label><input data-bulk="fl_in" inputmode="numeric" placeholder="0"></div>
+      <div><label>FIRST LYCORIS 成功</label><input data-bulk="fl_ok" inputmode="numeric" placeholder="0"></div>
+      <div><label>Lycoris Rush 突入</label><input data-bulk="rush" inputmode="numeric" placeholder="0"></div>
+      <div><label>AFTER EPISODE（直撃候補）</label><input data-bulk="after" inputmode="numeric" placeholder="0"></div>
+    </div>
+    <p class="note">CZ回数＝OPPOSITE BATTLE＋FIRST LYCORIS、幼少期CZ＝FIRST LYCORIS、ラッシュ初当り＝Lycoris Rush、ラッシュ直撃＝AFTER EPISODE として計算します。AFTER EPISODEは解析上「ラッシュ直撃時など」に発生するため、直撃以外を含む可能性があります。</p>
+    <div id="bulkSummary" class="used"></div>
   </section>
 
   <section id="hits">
@@ -114,6 +137,26 @@ ul{padding-left:18px;margin:6px 0}
   <section id="trials">
     <h2>G数到達時の抽選</h2>
     <div id="trialBody"></div>
+  </section>
+
+  <section id="rushchar">
+    <h2>ラッシュ種別（たきな／千束）</h2>
+    <p class="cap">リコリスラッシュ開始時に千束RUSHかたきなRUSHのどちらかに突入（比率1:1、設定差なし）。終了画面の私服が逆キャラなら設定4以上濃厚なので、どちらのRUSHだったかの記録用です（上位ST終了後の私服は矛盾しても高設定示唆・弱）。</p>
+    <div id="rushBody"></div>
+  </section>
+
+  <section id="memo">
+    <h2>メモ・自分用カウンター</h2>
+    <p class="cap">解析で未確認の演出などを自由に数えられます。設定推測には使いません。</p>
+    <div class="row"><input id="cname" placeholder="名前（例 真島 街頭テレビ）" style="flex:1 1 180px;width:auto"><button id="cadd" class="p">追加</button></div>
+    <div id="customBody" style="margin-top:10px"></div>
+    <label for="notes">メモ</label><textarea id="notes" placeholder="気づいたことを自由に"></textarea>
+  </section>
+
+  <section id="extra">
+    <details id="extraDetails"><summary>参考カウント（設定推測には使わない）</summary>
+    <p class="cap">セッションの記録用。解析上、設定差の記載はありません。</p>
+    <div id="extraBody"></div></details>
   </section>
 
   <section id="ref">
@@ -168,6 +211,16 @@ var MACHINES=[{
     {id:"r50",label:"ラッシュ50終了時の天井短縮",how:"ウォールナットハック後のラッシュ終了を「終了」、短縮告知（CZ最終G告知・復活）を確認したら「短縮」",stars:2,pcts:[11.7,12.1,13.3,16.8,20.3,23.4],nLabel:"終了",kLabel:"短縮"},
     {id:"h150",label:"150G消化時の変換高確移行",how:"150G到達を「到達」、「変換高確率中」の帯が出たら「移行」。約10%は帯なしで移行するので低めに出る",stars:1,pcts:[50.0,50.0,50.0,54.7,58.6,62.5],nLabel:"到達",kLabel:"移行"},
     {id:"wlyco",label:"弱リコリス目→変換高確移行",how:"通常時の弱リコリス目を「成立」、帯が出たら「移行」。差は小さめ",stars:1,pcts:[38.3,38.3,39.1,41.0,43.0,44.9],nLabel:"成立",kLabel:"移行"}],
+  rushChars:[
+    {id:"rc_takina",label:"たきなRUSH",look:"スイカの才能LV2で開始。終了画面のデフォルトはたきな（制服）"},
+    {id:"rc_chisato",label:"千束RUSH",look:"チェリーの才能LV2で開始。終了画面のデフォルトは千束（制服）"}],
+  extraCounters:[
+    {id:"x_splash",label:"りこりすぷらっしゅボーナス"},
+    {id:"x_walnut",label:"ウォールナットハック"},
+    {id:"x_kakenuke",label:"ラッシュ駆け抜け"},
+    {id:"x_ptmax",label:"PTMAX到達"},
+    {id:"x_ending",label:"ENDING"}],
+  bulkMap:{cz:["ob_in","fl_in"],youshou:["fl_in"],at:["rush"],direct:["after"]},
   hintGroups:[
     {id:"end",title:"ラッシュ終了画面",when:"ラッシュ終了時（上位ST中はポイントMAX後の前半パート終了時も有効）",link:ENDING,items:[
       {id:"e_dress",label:"千束＆たきな ドレスコード",look:"ドレス姿の2人",meaning:"高設定示唆（強）",level:"strong"},
@@ -190,11 +243,15 @@ var MACHINES=[{
       {id:"p_ep3",label:"Repay evil with evil",look:"真島がモニターをハッキングして演説",meaning:"高設定示唆（弱）",level:"weak"},
       {id:"p_ep1",label:"Time will tell ①",look:"真島が車内で通話",meaning:"デフォルト",level:"default"},
       {id:"p_ep2",label:"The more the merrier",look:"ロボ太とウォールナットが電脳空間で会話",meaning:"デフォルト",level:"default"}]},
-    {id:"epbonus",title:"エピソードボーナス",when:"ラッシュ中のエピソードボーナス。名前は液晶左上に表示",link:CHONBO,items:[
+    {id:"epbonus",title:"エピソードボーナス",when:"ラッシュ中のエピソードボーナス。名前は液晶左上に表示。EP1〜EP3は同一ラッシュ内で3種すべて出るまで同じものは出ない",link:CHONBO,items:[
       {id:"b_r_ep4",label:"Recoil of Lycoris -side 千束＆真島-",look:"リコリスラッシュ中・液晶左上に表示",meaning:"高設定示唆（強）いつ出ても有効",level:"strong"},
       {id:"b_r_ep3",label:"Opposites attract",look:"リコリスラッシュ中・液晶左上に表示",meaning:"高設定示唆（弱）そのラッシュ1回目のみ有効",level:"weak"},
       {id:"b_w_ep4",label:"Recoil of Lycoris -side ハワイ-",look:"リコリスラッシュW中・液晶左上に表示",meaning:"高設定示唆（強）いつ出ても有効",level:"strong"},
-      {id:"b_w_ep3",label:"Recoil of Lycoris -side リコリコ-",look:"リコリスラッシュW中・液晶左上に表示",meaning:"高設定示唆（弱）そのラッシュ1回目のみ有効",level:"weak"}]},
+      {id:"b_w_ep3",label:"Recoil of Lycoris -side リコリコ-",look:"リコリスラッシュW中・液晶左上に表示",meaning:"高設定示唆（弱）そのラッシュ1回目のみ有効",level:"weak"},
+      {id:"b_r_ep1",label:"Easy does it",look:"リコリスラッシュ中・液晶左上に表示",meaning:"デフォルト",level:"default"},
+      {id:"b_r_ep2",label:"Nothing seek, nothing find",look:"リコリスラッシュ中・液晶左上に表示",meaning:"デフォルト",level:"default"},
+      {id:"b_w_ep1",label:"More haste, less speed",look:"リコリスラッシュW中・液晶左上に表示",meaning:"デフォルト",level:"default"},
+      {id:"b_w_ep2",label:"So far, so good",look:"リコリスラッシュW中・液晶左上に表示",meaning:"デフォルト",level:"default"}]},
     {id:"lamp",title:"筐体上部ランプ",when:"エンディング中、または後半パートで1000pt到達後のボーナス中のレア役成立時",link:ENDING,items:[
       {id:"l_red",label:"赤ランプ",look:"筐体上部ランプが赤く発光",meaning:"高設定示唆（強）",level:"strong"},
       {id:"l_green",label:"緑ランプ",look:"筐体上部ランプが緑に発光",meaning:"高設定示唆（弱）",level:"weak"},
@@ -225,10 +282,10 @@ var MACHINES=[{
 }];
 
 // ===== 状態と保存 =====
-var curId=MACHINES[0].id, S=null, armed=false, canSave=true;
-function empty(){return {normalG:"",hits:[],taps:{},trials:{}};}
+var curId=MACHINES[0].id, S=null, armed=false, canSave=true, delArmed=-1;
+function empty(){return {normalG:"",hits:[],taps:{},trials:{},bulk:{},notes:"",custom:[],enabled:{}};}
 function key(id){return "slotmemo:v1:"+id;}
-function load(id){try{var r=localStorage.getItem(key(id));if(r){var p=JSON.parse(r);var e=empty();for(var k in e){if(p[k]!==undefined)e[k]=p[k];}return e;}}catch(e){}return empty();}
+function load(id){try{var r=localStorage.getItem(key(id));if(r){var p=JSON.parse(r);var e=empty();for(var k in e){if(p[k]!==undefined&&p[k]!==null)e[k]=p[k];}if(!Array.isArray(e.custom))e.custom=[];if(typeof e.bulk!=="object")e.bulk={};if(typeof e.enabled!=="object")e.enabled={};if(typeof e.notes!=="string")e.notes="";return e;}}catch(e){}return empty();}
 function save(){try{localStorage.setItem(key(curId),JSON.stringify(S));canSave=true;}catch(e){canSave=false;}}
 function M(){for(var i=0;i<MACHINES.length;i++)if(MACHINES[i].id===curId)return MACHINES[i];return MACHINES[0];}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -236,11 +293,15 @@ function $(id){return document.getElementById(id);}
 
 // ===== 計算 =====
 function hitCount(m,flag){return S.hits.filter(function(h){var t=m.hitTypes.find(function(x){return x.id===h.type;});return t?t.flags.indexOf(flag)>=0:false;}).length;}
-function rateCount(m,r){return r.fromHits?hitCount(m,r.fromHits):(S.taps[r.id]||0);}
+function num(x){return Number(x)||0;}
+function bulkCount(m,flag){var keys=(m.bulkMap&&m.bulkMap[flag])||[];return keys.reduce(function(a,k){return a+num(S.bulk[k]);},0);}
+function totalCount(m,flag){return hitCount(m,flag)+bulkCount(m,flag);}
+function rateCount(m,r){return r.fromHits?totalCount(m,r.fromHits):(S.taps[r.id]||0);}
+function rateUsed(m,r){return r.fromHits?true:((S.taps[r.id]||0)>0||S.enabled[r.id]===true);}
 function minSetting(m){var mn=1;m.hintGroups.forEach(function(g){g.items.forEach(function(h){if((S.taps[h.id]||0)>0&&h.min&&h.min>mn)mn=h.min;});});return mn;}
 function estimate(m){
   var n=Number(S.normalG)||0, ll=m.settings.map(function(){return 0;}), used=false;
-  m.rates.forEach(function(r){var k=rateCount(m,r);if(n>0&&k<=n){used=true;r.denoms.forEach(function(d,i){var p=1/d;ll[i]+=k*Math.log(p)+(n-k)*Math.log(1-p);});}});
+  m.rates.forEach(function(r){if(!rateUsed(m,r))return;var k=rateCount(m,r);if(n>0&&k<=n){used=true;r.denoms.forEach(function(d,i){var p=1/d;ll[i]+=k*Math.log(p)+(n-k)*Math.log(1-p);});}});
   m.trials.forEach(function(t){var v=S.trials[t.id];if(v&&v.n>0&&v.k<=v.n){used=true;t.pcts.forEach(function(pc,i){var p=pc/100;ll[i]+=v.k*Math.log(p)+(v.n-v.k)*Math.log(1-p);});}});
   var mn=minSetting(m); if(mn>1)used=true; if(!used)return null;
   var masked=ll.map(function(v,i){return i+1<mn?-Infinity:v;});
@@ -278,7 +339,7 @@ function render(){
   var avg=S.hits.length?S.hits.reduce(function(a,h){return a+h.g;},0)/S.hits.length:0;
   var cz=S.hits.filter(function(h){return h.type.indexOf("cz")===0||h.type.indexOf("ys")===0;});
   var czAvg=cz.length?cz.reduce(function(a,h){return a+h.g;},0)/cz.length:0;
-  var atN=hitCount(m,"at");
+  var atN=totalCount(m,"at");
   $("hitSummary").textContent="当選 "+S.hits.length+"回　平均 "+(avg?avg.toFixed(0)+"G":"—")+"　CZ平均 "+(czAvg?czAvg.toFixed(0)+"G":"—")+"　ラッシュ初当り "+atN+"回"+(atN&&n?"（1/"+(n/atN).toFixed(1)+"）":"");
   $("hitList").innerHTML=S.hits.map(function(h,i){var t=m.hitTypes.find(function(x){return x.id===h.type;});return '<span class="chip">'+(i+1)+". "+h.g+"G "+esc(t?t.label:h.type)+"</span>";}).join("");
   // 推測
@@ -289,6 +350,10 @@ function render(){
   if(mn>1)eh+='<div class="call">設定'+mn+'以上濃厚（確定系の示唆が出ています）</div>';
   var seen=[];m.hintGroups.forEach(function(g){g.items.forEach(function(h){if((h.level==="strong"||h.level==="weak")&&(S.taps[h.id]||0)>0)seen.push(h.label+"（"+h.meaning+"）×"+S.taps[h.id]);});});
   if(seen.length)eh+='<p style="margin:8px 0 0">見えた高設定示唆：'+esc(seen.join("、"))+'</p>';
+  var usedL=[];m.rates.forEach(function(r){if(rateUsed(m,r)&&n>0)usedL.push(r.label.replace(/（.*$/,"")+" "+rateCount(m,r)+"回");});
+  m.trials.forEach(function(t){var v=S.trials[t.id];if(v&&v.n>0)usedL.push(t.label+" "+v.k+"/"+v.n);});
+  var unused=m.rates.filter(function(r){return !rateUsed(m,r);}).map(function(r){return r.label.replace(/（.*$/,"");});
+  if(est)eh+='<p class="used">推測に使った項目：'+esc(usedL.join("、")||"確定系示唆のみ")+(unused.length?'<br>未使用（0回のため除外）：'+esc(unused.join("、")):"")+'</p>';
   $("estBody").innerHTML=eh;
   // 示唆
   $("hintBody").innerHTML=m.hintGroups.map(function(g){
@@ -300,7 +365,7 @@ function render(){
     var k=rateCount(m,r), obs=k>0&&n>0?n/k:0, best=obs>0?closest(r.denoms,obs,true):-1;
     return '<div class="box"><div class="hd"><span>'+esc(r.label)+' <span class="stars">'+stars(r.stars)+'</span></span><span>'+k+'回 / '+(obs?"1/"+obs.toFixed(1):"—")+'</span></div><div class="look">'+esc(r.how)+'</div><div class="cells">'+
       r.denoms.map(function(d,i){return '<div class="cell'+(i===best?" best":"")+'">設定'+m.settings[i]+' 1/'+d+'</div>';}).join("")+'</div>'+
-      (r.fromHits?"":'<div class="row"><button class="p grow" data-tap="'+r.id+'" data-d="1">＋1 タップ</button><button data-tap="'+r.id+'" data-d="-1">−1</button></div>')+'</div>';
+      (r.fromHits?'<div class="note">内訳：マイスロ入力 '+bulkCount(m,r.fromHits)+'回＋当選履歴 '+hitCount(m,r.fromHits)+'回</div>':'<div class="row"><button class="p grow" data-tap="'+r.id+'" data-d="1">＋1 タップ</button><button data-tap="'+r.id+'" data-d="-1">−1</button></div><label class="chk"><input type="checkbox" data-en="'+r.id+'"'+(S.enabled[r.id]?" checked":"")+'>0回でも推測に使う（数えている時はON）</label><div class="note">'+(rateUsed(m,r)?"設定推測に使用中":"まだ0回なので設定推測には使っていません")+'</div>')+'</div>';
   }).join("");
   // 到達抽選
   $("trialBody").innerHTML=m.trials.map(function(t){
@@ -310,6 +375,20 @@ function render(){
       '<button class="grow" data-trial="'+t.id+'" data-f="n" data-d="1">＋'+t.nLabel+'</button><button class="p grow" data-trial="'+t.id+'" data-f="k" data-d="1">＋'+t.kLabel+'</button>'+
       '<button class="sm" data-trial="'+t.id+'" data-f="n" data-d="-1">'+t.nLabel+'−1</button><button class="sm" data-trial="'+t.id+'" data-f="k" data-d="-1">'+t.kLabel+'−1</button></div></div>';
   }).join("");
+  // マイスロ入力
+  document.querySelectorAll("[data-bulk]").forEach(function(inp){if(document.activeElement===inp)return;var k=inp.dataset.bulk;inp.value=k==="normalG"?S.normalG:(S.bulk[k]||"");});
+  var b=S.bulk;
+  $("bulkSummary").textContent="計算に使う値：CZ "+bulkCount(m,"cz")+"回（OB "+num(b.ob_in)+"＋FL "+num(b.fl_in)+"）、幼少期CZ "+bulkCount(m,"youshou")+"回、ラッシュ "+bulkCount(m,"at")+"回、直撃候補 "+bulkCount(m,"direct")+"回"+(num(b.ob_in)?"／OB成功率 "+num(b.ob_ok)+"/"+num(b.ob_in):"")+(num(b.fl_in)?"／FL成功率 "+num(b.fl_ok)+"/"+num(b.fl_in):"");
+  // RUSH種別
+  var rsum=0;
+  $("rushBody").innerHTML='<div class="hints">'+m.rushChars.map(function(h){var c=S.taps[h.id]||0;rsum+=c;return '<div class="hint'+(c>0?" on":"")+'"><button class="tap" data-tap="'+h.id+'" data-d="1"><div class="hd"><span>'+esc(h.label)+'</span><span>'+c+'回</span></div><div class="look">'+esc(h.look)+'</div></button><div class="row" style="margin-top:8px"><button class="p sm" data-tap="'+h.id+'" data-d="1">＋1</button><button class="sm" data-tap="'+h.id+'" data-d="-1">−1</button></div></div>';}).join("")+'</div>';
+  var rushAll=totalCount(m,"at");
+  $("rushBody").innerHTML+='<p class="note">記録 '+rsum+'回 ／ ラッシュ初当り '+rushAll+'回'+(rushAll&&rsum!==rushAll?'（差 '+(rushAll-rsum)+'回）':'')+'。出典：<a href="'+CHONBO+'" target="_blank" rel="noopener">ちょんぼりすた</a>・<a href="'+ENDING+'" target="_blank" rel="noopener">P-Slot Life</a></p>';
+  // 自分用カウンター
+  $("customBody").innerHTML=S.custom.map(function(c,i){return '<div class="box"><div class="hd"><span>'+esc(c.name)+'</span><span>'+c.count+'回</span></div><div class="row" style="margin-top:6px"><button class="p sm grow" data-cinc="'+i+'" data-d="1">＋1</button><button class="sm" data-cinc="'+i+'" data-d="-1">−1</button><button class="sm" data-cdel="'+i+'">'+(delArmed===i?"もう一度で削除":"削除")+'</button></div></div>';}).join("");
+  if(document.activeElement!==$("notes"))$("notes").value=S.notes||"";
+  // 参考
+  $("extraBody").innerHTML=m.extraCounters.map(function(h){var c=S.taps[h.id]||0;return '<div class="box"><div class="hd"><span>'+esc(h.label)+'</span><span>'+c+'回</span></div><div class="row" style="margin-top:6px"><button class="p sm grow" data-tap="'+h.id+'" data-d="1">＋1</button><button class="sm" data-tap="'+h.id+'" data-d="-1">−1</button></div></div>';}).join("");
   // 上部バー
   var bar='<span>通常 '+(n||0)+'G</span><span>当選 '+S.hits.length+'</span>';
   if(est){var bi2=est.indexOf(Math.max.apply(null,est));bar+='<span>推測 設定'+m.settings[bi2]+'寄り</span>';}
@@ -325,10 +404,18 @@ document.addEventListener("click",function(e){
   if(el.dataset.hit){var g=$("hitG").value.replace(/[^0-9]/g,"");if(!g){$("hitG").focus();return;}S.hits.push({g:Number(g),type:el.dataset.hit});$("hitG").value="";commit();return;}
   if(el.dataset.tap){var id=el.dataset.tap,d=Number(el.dataset.d);S.taps[id]=Math.max(0,(S.taps[id]||0)+d);commit();return;}
   if(el.dataset.trial){var tid=el.dataset.trial,f=el.dataset.f,dd=Number(el.dataset.d),cur=S.trials[tid]||{n:0,k:0};cur[f]=Math.max(0,cur[f]+dd);if(f==="k"&&dd>0&&cur.k>cur.n)cur.n=cur.k;S.trials[tid]=cur;commit();return;}
+  if(el.dataset.cinc!==undefined){var ci=Number(el.dataset.cinc);if(S.custom[ci]){S.custom[ci].count=Math.max(0,S.custom[ci].count+Number(el.dataset.d));}delArmed=-1;commit();return;}
+  if(el.dataset.cdel!==undefined){var di=Number(el.dataset.cdel);if(delArmed===di){S.custom.splice(di,1);delArmed=-1;commit();}else{delArmed=di;render();}return;}
+  if(el.id==="cadd"){var nm=$("cname").value.trim();if(!nm){$("cname").focus();return;}S.custom.push({name:nm,count:0});$("cname").value="";commit();return;}
+  delArmed=-1;
   if(el.id==="undo"){S.hits.pop();commit();return;}
   if(el.id==="reset"){if(armed){S=empty();armed=false;commit();}else{armed=true;render();}return;}
   render();
 });
+document.addEventListener("input",function(e){var t=e.target;if(t.dataset&&t.dataset.bulk){var v=t.value.replace(/[^0-9]/g,"");t.value=v;if(t.dataset.bulk==="normalG"){S.normalG=v;}else{S.bulk[t.dataset.bulk]=v;}commit();}});
+document.addEventListener("change",function(e){var t=e.target;if(t.dataset&&t.dataset.en){S.enabled[t.dataset.en]=t.checked;commit();}});
+$("notes").addEventListener("input",function(e){S.notes=e.target.value;save();});
+$("cname").addEventListener("keydown",function(e){if(e.key==="Enter")$("cadd").click();});
 $("normalG").addEventListener("input",function(e){S.normalG=e.target.value.replace(/[^0-9]/g,"");e.target.value=S.normalG;commit();});
 $("machine").addEventListener("change",function(e){curId=e.target.value;S=load(curId);armed=false;renderStatic();render();});
 
