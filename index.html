@@ -3,8 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#111318">
-<title>スロット実戦メモ</title>
+<title>SLOTSENSE</title>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb}
 @media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff}}
@@ -18,20 +17,35 @@ a.m:active{transform:scale(.98)}
 a.m b{display:block;font-size:19px;margin-bottom:2px}
 a.m span{display:block;font-size:13px;color:var(--sub)}
 a.m i{font-style:normal;color:var(--accent);font-weight:700;font-size:13px}
+h1.brand{display:flex;align-items:center;gap:10px;font-family:Georgia,"Times New Roman",serif;letter-spacing:.14em;font-size:24px;color:#c9a227}
+h1.brand img{border-radius:8px}
+.sub{font-size:12px;color:var(--sub);letter-spacing:.06em;margin:0 0 10px}
+#a2hs{font-size:12px;color:var(--sub);border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:0 0 14px}
 .note{font-size:12px;color:var(--sub);margin-top:20px}
 </style>
+<meta name="theme-color" content="#0b0b0f">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SLOTSENSE">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){})})}</script>
 </head>
 <body>
 <noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
 <main>
-<h1>スロット実戦メモ</h1>
+<h1 class="brand"><img src="icons/icon-192.png" alt="" width="34" height="34">SLOTSENSE</h1>
+<div class="sub">スロット実戦メモ</div>
 <p>機種を選んでください。入力は機種ごとにこの端末に保存されます。</p>
+<div id="a2hs">Safariの共有→『ホーム画面に追加』でアプリとして使えます</div>
+<script>if((window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone){document.getElementById("a2hs").style.display="none"}</script>
 <a class="m" id="go-lycoris" href="lycoris/"><b>スマスロ リコリス・リコイル</b><span>サミー ・ 朝イチ／途中から ・ マイスロ入力</span><i>開く →</i></a>
 <a class="m" id="go-enen2" href="enen2/"><b>L炎炎ノ消防隊2</b><span>SANKYO ・ 朝イチ／途中から ・ 終了画面／キャラ紹介</span><i>開く →</i></a>
 <a class="m" id="go-umineko2" href="umineko2/"><b>Lうみねこのなく頃に2</b><span>オーイズミ ・ 朝イチ／途中から ・ 示唆の強さ順／設定差カウンター</span><i>開く →</i></a>
 <a class="m" id="go-magireco" href="magireco/"><b>スマスロ マギアレコード</b><span>ミズホ ・ 示唆の強さ順／設定差カウンター</span><i>開く →</i></a>
 <a class="m" id="go-hyena" href="hyena/"><b>ハイエナ判定（天井・ゾーン）</b><span>リコリス・リコイル／炎炎ノ消防隊2／マギレコ ・ 狙い目判定／投資の目安／閉店チェック</span><i>開く →</i></a>
-<div class="note">ホーム画面に追加する場合は、各機種のページを開いてから追加すると直接開けます。</div>
 </main>
 </body>
 </html>
