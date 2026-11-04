@@ -149,7 +149,7 @@ details.low summary{font-size:14px}
 <body>
 <noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
 <header><a class="back" href="../">← 機種メニュー</a><h1>ハイエナ判定（天井・ゾーン）</h1><div class="bar" id="bar"></div></header>
-<nav><a href="#set">設定</a><a href="#chk">台チェッカー</a><a href="#inv">投資の目安</a><a href="#close">閉店チェック</a><a href="#list">狙い目一覧</a><a href="#src">出典・不一致</a></nav>
+<nav><a href="#set">設定</a><a href="#chk">台チェッカー</a><a href="#mr">マギレコ</a><a href="#inv">投資の目安</a><a href="#close">閉店チェック</a><a href="#list">狙い目一覧</a><a href="#src">出典・不一致</a></nav>
 <main>
 <div class="warnbox" id="savewarn">この端末では入力を保存できません（プライベートブラウズ等）。</div>
 <section id="set"><h2>設定</h2><p class="cap">この端末に保存されます。</p>
@@ -166,6 +166,12 @@ details.low summary{font-size:14px}
 <div id="lineBox"></div>
 <div class="note">判定：判定ライン以上＝狙い目内（緑）／ラインまで100G以内＝あと○G（橙）／それより手前・ライン公表なし＝対象外（灰）。100Gの幅は当ページの決めです。</div>
 </section>
+<section id="mr"><h2>マギレコ（pt管理）</h2><p class="cap">スマスロ マギアレコード 魔法少女まどか☆マギカ外伝（ミズホ）。天井がG数ではなくpt（液晶右下）なので、ptとスルー回数で判定します。</p>
+<label for="mrPt">現在のpt（ボーナス間・液晶右下）</label><div class="row"><input id="mrPt" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="例：560" class="grow"><button type="button" class="sm" id="mrClr">クリア</button></div>
+<div class="gbtn"><button type="button" data-padd="-50">−50</button><button type="button" data-padd="-10">−10</button><button type="button" data-padd="10">+10</button><button type="button" data-padd="50">+50</button></div>
+<label for="mrThru">スルー回数（AT非当選のボーナス連続）</label><input id="mrThru" type="text" inputmode="numeric" pattern="[0-9]*" placeholder="例：4">
+<label class="chk big"><input type="checkbox" id="mrReset">朝イチリセット台（設定変更）</label>
+<div id="mrRes" class="res none"></div><div id="mrBox"></div></section>
 <section id="inv"><h2>投資の目安</h2><p class="cap">台チェッカーで選んだ機種・状況・G数で計算します。</p><div id="invBody"></div></section>
 <section id="close"><h2>閉店チェック</h2><div id="closeBody"></div></section>
 <section id="list"><h2>狙い目一覧</h2><p class="cap">天井・恩恵・リセット時・ゾーン・ヤメ時。</p><div id="listBody"></div></section>
@@ -177,8 +183,10 @@ details.low summary{font-size:14px}
 <li>炎炎2のボーナス間：ちょんぼ・ジャグラーズネット 670G〜／スロパチクエスト 等価630・5.6持ち640・5.6現金690G〜／DMM 600〜650G〜／なな徹 等価500・5.6枚600G〜。判定は最も深い値。</li>
 <li>炎炎2の炎炎ループ間：DMM・ちょんぼ 1500G〜／アルテマ（たられば氏引用）等価1100・5.6枚1400G〜。</li>
 <li>DMM炎炎2の時間表は「14G/分で算出」と注記がありますが、数値（850Gで51分）は約16.7G/分相当です。</li>
+<li>マギレコのAT後引き戻し：ちょんぼ 約60G（実戦上）／DMM 100G以内。狙い目ptはちょんぼのみ（管理人予想）。</li>
 </ul>
 <h3>調査中</h3><ul>
+<li>マギレコ：天井期待値・平均投資（公表なし）、pt→G数の換算（出典なし）</li>
 <li>リコリス：大手解析サイトの円単位の期待値・天井到達率・平均投資（公表なし）</li>
 <li>AT・ボーナス1回あたりの消化時間（両機種）</li>
 <li>炎炎2の初当り後の平均獲得枚数、なな徹の平均投資の貸出単価前提、5.6枚列が持ちメダルか現金か</li>
@@ -189,8 +197,7 @@ details.low summary{font-size:14px}
 <p class="note">数値は2026/11/04時点の確認。「自前計算」はこのページで計算した値です。</p>
 </section>
 </main>
-<script>
-/* hyena core: pure logic (node testable) */
+<script>/* hyena core: pure logic (node testable) */
 var HY=(function(){
 var RATES={eq:'等価',m56:'5.6枚・持ちメダル',c56:'5.6枚・現金'};
 var LEND={46:1000/46,50:20};
@@ -274,6 +281,25 @@ var ST={normal:[[300,190,170,-860],[350,830,740,-220],[400,1140,1020,80],[450,18
  reset:[[0,718,636,-222],[50,972,870,32],[100,1278,1144,338],[150,1638,1464,698],[200,2060,1840,1120],[250,2564,2288,1624],[300,3191,2849,2251],[400,4726,4223,3786],[500,6646,5933,5706]],
  kake:[[0,580,510,-360],[50,810,720,-130],[100,1080,970,140],[150,1410,1260,470],[200,1790,1600,850],[250,2240,2000,1300],[300,2780,2480,1840],[400,4150,3710,3210],[500,6070,5420,5130]]};
 
+
+// ---- マギレコ（pt管理・スルー回数）----
+var MR={name:'スマスロ マギアレコード 魔法少女まどか☆マギカ外伝',short:'マギレコ',maker:'ミズホ（販売：ユニバーサル）',coin:32.6,
+ coinSrc:'32.6G/50枚（ちょんぼりすたのみ＝単一出典）',tanka:'3.2円',ceil:950,ceilReset:[600,699],near:100,
+ lines:{reset:350,normal:550,thru4:150,thru5:0},
+ src:{n:'ちょんぼりすた（マギレコ）',u:'https://chonborista.com/slot/universal-slot/228995/',k:'管理人予想'},
+ dmm:{n:'DMMぱちタウン（マギレコ）',u:'https://p-town.dmm.com/machines/4745'},
+ nana:{n:'なな徹（マギレコ）',u:'https://nana-press.com/kaiseki/machine/914/28425/'}};
+function mrLine(reset,thru){thru=Math.max(0,Math.floor(+thru||0));
+ var c=[{pt:reset?MR.lines.reset:MR.lines.normal,why:reset?'朝イチリセット台 350pt〜ボーナスまで':'朝イチ以外 550pt〜ボーナスまで'}];
+ if(thru>=5)c.push({pt:MR.lines.thru5,why:'5スルー 0pt〜ATまで'});else if(thru===4)c.push({pt:MR.lines.thru4,why:'4スルー 150pt〜ATまで'});
+ c.sort(function(a,b){return a.pt-b.pt;});return c[0];}
+function judgeMR(pt,reset,thru){
+ if(pt===null||pt===undefined||pt===''||isNaN(pt)||pt<0)return {st:'none'};
+ pt=Math.floor(+pt);var line=mrLine(reset,thru);
+ if(pt>=MR.ceil)return {st:'over',pt:pt,line:line};
+ if(pt>=line.pt)return {st:'in',pt:pt,line:line,toCeil:MR.ceil-pt};
+ var rest=line.pt-pt;return {st:rest<=MR.near?'near':'out',pt:pt,line:line,rest:rest};}
+function gPer1000(coin,lend){return coin*(lend/50);}
 function judgeLine(sit,rate){ // conservative = deepest among non-low sources
  var best=null,bs=null;(sit.lines||[]).forEach(function(l){if(l.low)return;var v=l.v[rate];if(v==null)return;if(best===null||v>best){best=v;bs=l.s;}});
  return best===null?null:{g:best,src:bs};}
@@ -298,15 +324,13 @@ function closing(g,ceil,nowMin,closeMin){ // minutes since 0:00
  var st=left<=0?'closed':(need<=lo?'ok':(need<=hi?'tight':'ng'));
  return {left:left,need:need,gLo:Math.floor(lo),gHi:Math.floor(hi),minLo:need/14,minHi:need/13.3,st:st};}
 function hm(s){var m=/^(\d{1,2}):(\d{2})$/.exec(s||'');if(!m)return null;var h=+m[1],mi=+m[2];if(h>29||mi>59)return null;return (h%24)*60+mi;}
-return {RATES:RATES,LEND:LEND,SRC:SRC,M:M,NANA_N:NANA_N,NANA_R:NANA_R,ST:ST,judgeLine:judgeLine,others:others,mismatch:mismatch,judge:judge,maxInvest:maxInvest,rowAt:rowAt,closing:closing,hm:hm,NEAR:NEAR};
+return {RATES:RATES,LEND:LEND,SRC:SRC,M:M,NANA_N:NANA_N,NANA_R:NANA_R,ST:ST,judgeLine:judgeLine,others:others,mismatch:mismatch,judge:judge,maxInvest:maxInvest,rowAt:rowAt,closing:closing,hm:hm,NEAR:NEAR,MR:MR,mrLine:mrLine,judgeMR:judgeMR,gPer1000:gPer1000};
 })();
 if(typeof module!=='undefined')module.exports=HY;
-
 </script>
-<script>
-(function(){
+<script>(function(){
 var H=HY,KEY='slotmemo:v1:hyena',canSave=true;
-var S={rate:'eq',lend:46,close:'',mc:'lyco',sit:'normal',g:''};
+var S={rate:'eq',lend:46,close:'',mc:'lyco',sit:'normal',g:'',mrPt:'',mrThru:'',mrReset:false};
 function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var p=JSON.parse(r);for(var k in S){if(p[k]!==undefined&&p[k]!==null&&typeof p[k]===typeof S[k])S[k]=p[k];}}catch(e){}
  if(!H.M[S.mc])S.mc='lyco';if(!H.M[S.mc].sits[S.sit])S.sit='normal';if(!H.RATES[S.rate])S.rate='eq';if(S.lend!==46&&S.lend!==50)S.lend=46;}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));canSave=true;}catch(e){canSave=false;}var w=document.getElementById('savewarn');if(w)w.style.display=canSave?'none':'block';}
@@ -380,8 +404,33 @@ function render(){renderTop();var m=H.M[S.mc],sit=m.sits[S.sit],g=S.g===''?null:
   '<div class="kv"><span>天井までの残りG</span><b>'+c.need+'G（約'+Math.ceil(c.minLo)+'〜'+Math.ceil(c.minHi)+'分）</b></div><div class="kv"><span>残り時間で回せるG数</span><b>約'+c.gLo+'〜'+c.gHi+'G</b></div>';}
  ch+='<div class="alert">消化速度は13.3〜14G/分で計算（DMM 14G/分、回胴に散る。約800G/時）。<b>AT・ボーナスの消化時間は両機種とも公表値なし（調査中）</b>です。当たった後の消化と、閉店前の交換時間の分は余裕を見てください。</div>';
  $('closeBody').innerHTML=ch;
+ renderMR();
  save();
 }
+
+function renderMR(){var M=H.MR,pt=S.mrPt===''?null:+S.mrPt,th=S.mrThru===''?0:+S.mrThru;
+ $('mrPt').value=S.mrPt;$('mrThru').value=S.mrThru;$('mrReset').checked=S.mrReset;
+ var j=H.judgeMR(pt,S.mrReset,th),t='',sub='';
+ if(j.st==='none')t='現在のptを入力してください';
+ else if(j.st==='in'){t='狙い目内';sub=j.pt+'pt ／ 判定ライン '+j.line.pt+'pt〜（'+j.line.why+'）／ 天井まで あと'+j.toCeil+'pt';}
+ else if(j.st==='near'){t='あと'+j.rest+'pt';sub='判定ライン '+j.line.pt+'pt〜（'+j.line.why+'）まで あと'+j.rest+'pt';}
+ else if(j.st==='out'){t='対象外';sub='判定ライン '+j.line.pt+'pt〜（'+j.line.why+'）まで あと'+j.rest+'pt';}
+ else if(j.st==='over'){t='天井pt以上';sub='表示ptが天井（950pt+α）以上です。前兆中かどうか確認してください';}
+ var cls={in:'res in',near:'res near',out:'res out',over:'res over',none:'res none'}[j.st];
+ $('mrRes').className=cls;$('mrRes').innerHTML='<div class="rt">'+t+'</div>'+(sub?'<div class="rs">'+esc(sub)+'</div>':'');
+ var h='';
+ if(S.mrReset&&pt!==null&&!isNaN(pt)&&pt>=600&&pt<950)h+='<div class="alert">設定変更時の天井は600〜699pt+αです。リセット台なら天井付近の可能性があります。</div>';
+ h+='<div class="kv"><span>狙い目（'+rel('中')+'）</span><b>朝イチリセット 350pt〜／通常 550pt〜（ボーナスまで）／4スルー 150pt〜／5スルー 0pt〜（ATまで）</b></div>';
+ h+='<div class="note">出典：<a href="'+M.src.u+'" target="_blank" rel="noopener">'+esc(M.src.n)+'</a>のみ。ページ上の表記は<b>「管理人予想」</b>（解析値ではない）。スルー＝AT非当選のボーナス連続回数。スルー条件のラインと通常ラインのうち浅い方で判定。ラインまで100pt以内＝あと○pt（100ptの幅は当ページの決め）。</div>';
+ h+='<div class="kv"><span>天井</span><b>ボーナス間 950pt+α → <u>ボーナス</u>（ATではない）。設定変更時は600〜699pt+α</b></div>';
+ h+='<div class="kv"><span>スルー天井</span><b>AT非当選ボーナス8回目以降は毎回穢れ30pt以上 → ほぼ10回以内にAT</b></div>';
+ h+='<div class="kv"><span>ゾーン（DMM・設定1）</span><b>◎ 200〜299／400〜499／600〜699pt、○ 1〜199／800pt〜</b></div>';
+ h+='<div class="kv"><span>天井期待値</span><b><span class="warnx">調査中</span>（どの出典にも数値なし）</b></div>';
+ h+='<div class="kv"><span>投資の目安</span><b>1000円で約'+H.gPer1000(M.coin,S.lend).toFixed(1)+'G（'+S.lend+'枚貸）</b></div>';
+ h+='<div class="note">目安・自前計算：32.6G × '+S.lend+'/50。コイン持ち '+esc(M.coinSrc)+'。<b>ptはG数と同じではない</b>（1Gで最低1pt＋レア役・倍率で加算）ため、天井までの金額は出していません（pt→Gの換算は出典なし）。コイン単価 3.2円（荒さの目安で期待値ではない・ちょんぼ）。</div>';
+ h+='<div class="kv"><span>ヤメ時</span><b><span class="tag weak">不一致</span> AT後の引き戻し：約60G（ちょんぼ・実戦上）／100G以内（DMM・頻度は高くない）</b></div>';
+ h+='<div class="note">ボーナス後は状態を確認してヤメ（ちょんぼ）。出典：<a href="'+M.dmm.u+'" target="_blank" rel="noopener">'+esc(M.dmm.n)+'</a>・<a href="'+M.nana.u+'" target="_blank" rel="noopener">'+esc(M.nana.n)+'</a></div>';
+ $('mrBox').innerHTML=h;}
 function bind(){
  document.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
   if(b.dataset.rate){S.rate=b.dataset.rate;render();}
@@ -393,6 +442,10 @@ function bind(){
  $('sit').addEventListener('change',function(){S.sit=this.value;render();});
  $('gIn').addEventListener('input',function(){var v=this.value.replace(/[^0-9]/g,'');S.g=v===''?'':String(Math.min(9999,+v));render();});
  $('closeIn').addEventListener('change',function(){S.close=H.hm(this.value)===null?'':this.value;render();});
+ $('mrPt').addEventListener('input',function(){var v=this.value.replace(/[^0-9]/g,'');S.mrPt=v===''?'':String(Math.min(9999,+v));render();});
+ $('mrThru').addEventListener('input',function(){var v=this.value.replace(/[^0-9]/g,'');S.mrThru=v===''?'':String(Math.min(99,+v));render();});
+ $('mrReset').addEventListener('change',function(){S.mrReset=this.checked;render();});
+ document.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.dataset.padd){var v=(S.mrPt===''?0:+S.mrPt)+(+b.dataset.padd);S.mrPt=String(Math.max(0,v));render();}else if(b.id==='mrClr'){S.mrPt='';S.mrThru='';render();}});
  $('closeClr').addEventListener('click',function(){S.close='';render();});
 }
 function renderList(){
@@ -419,7 +472,6 @@ function renderList(){
 }
 load();renderList();bind();render();
 })();
-
 </script>
 </body>
 </html>

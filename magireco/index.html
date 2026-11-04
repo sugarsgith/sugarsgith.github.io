@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<title>スロット実戦メモ（スマスロ マギアレコード）</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:8px 12px}
+header h1{font-size:16px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:13px}
+.bar span{padding:2px 8px;border-radius:999px;background:var(--accentSoft)}
+.bar span.ok{background:var(--okSoft);color:var(--ok);font-weight:700}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+main{max-width:720px;margin:0 auto;padding:0 12px 80px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 4px}
+h3{font-size:15px;margin:14px 0 2px}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}
+button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.sm{min-height:36px;padding:4px 12px}
+button:active{transform:scale(.97)}
+.grow{flex:1 1 120px}
+input,select{font:inherit;font-size:18px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--sub);display:block;margin:8px 0 4px}
+.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;font-weight:700}
+.stars{color:var(--warn)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cell{flex:1 1 90px;text-align:center;font-size:12.5px;padding:4px;border-radius:6px;border:1px solid var(--border)}
+.cell.best{border-color:var(--accent);background:var(--accentSoft);font-weight:700}
+.hints{display:flex;flex-wrap:wrap;gap:8px}
+.hint{flex:1 1 260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.hint.on{background:var(--accentSoft)}
+.hint.on.confirm{border-color:var(--ok);background:var(--okSoft)}
+.hint .tap{all:unset;display:block;width:100%;cursor:pointer}
+.look{color:var(--sub);font-size:12.5px;margin:2px 0 6px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.tag.confirm{color:var(--ok);border-color:var(--ok);font-weight:700}
+.tag.strong{color:var(--accent);border-color:var(--accent);font-weight:700}
+.tag.weak{color:var(--warn);border-color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 8px;border:1px solid var(--border);border-radius:6px}
+.est .r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.est .l{width:46px}.est .v{width:52px;text-align:right}
+.est .t{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.est .f{height:100%;background:var(--accent);opacity:.55}
+.est .r.best .f{opacity:1}
+.call{border:1px solid var(--ok);background:var(--okSoft);color:var(--ok);border-radius:10px;padding:8px 10px;font-weight:700;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+th,td{border-bottom:1px solid var(--border);padding:6px 4px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+ul{padding-left:18px;margin:6px 0}
+.src li{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub)}
+textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.grid2 label{margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:8px}
+.chk input{width:22px;height:22px;min-height:0}
+details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
+.used{font-size:12.5px;color:var(--sub);margin-top:8px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:80px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.rel{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid;margin-left:6px;font-weight:700;vertical-align:middle}
+.rel{white-space:nowrap;display:inline-block;width:max-content;flex:none;box-sizing:content-box}
+.rel.h{color:var(--ok);border-color:var(--ok)}.rel.m{color:var(--accent);border-color:var(--accent)}.rel.l{color:var(--warn);border-color:var(--warn)}
+.chk.big{font-size:15px;color:var(--text);font-weight:700;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+.alert{border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;border-bottom:1px solid var(--border);padding:5px 0}
+.kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
+.back{font-size:13px;color:var(--accent);text-decoration:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btns button{width:100%;font-size:14px;line-height:1.25}
+.btns button small{display:block;font-size:11.5px;color:var(--sub);font-weight:400}
+button.p small{color:#e6eeff}
+.cnt{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--accentSoft);font-weight:700;font-size:12.5px;margin-left:4px}
+.evs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ev{font-size:12px;padding:2px 4px 2px 8px;border:1px solid var(--border);border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.ev button{min-height:26px;padding:0 8px;border:none;background:transparent;color:var(--danger);font-size:14px}
+.ev.loop{border-color:var(--warn)}
+.badge{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--accentSoft);margin-left:4px}
+.badge.loop{background:#fdf0dc;color:#8a4b00}
+@media (prefers-color-scheme:dark){.badge.loop{background:#3a2a12;color:#f5c27a}}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input{flex:1;min-height:32px;padding:0}
+.rng b{width:48px;text-align:right}
+.zone{display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding:6px 0}
+.zone>b{width:52px}
+.zone .seg{flex:1}
+.zone .seg button{min-width:0;font-size:12.5px;min-height:36px;padding:2px 4px}
+.warnx{color:var(--warn);font-weight:700}
+.mono{font-variant-numeric:tabular-nums}
+button.p .cnt{background:#fff;color:#1d4ed8}
+.hl{margin-top:6px;font-size:12px;line-height:1.3}
+.hll{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:11px;padding:0 40px 0 100px;white-space:nowrap}
+.hlr{display:flex;align-items:center;gap:6px;margin:3px 0}
+.hlk{flex:none;width:54px;color:var(--sub);font-size:11.5px;white-space:nowrap;overflow:hidden}
+.hlv{flex:none;width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hlv.r{text-align:left}
+.hlb{flex:1;min-width:60px;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--border)}
+.hlb i{display:block;height:100%}
+.hlb i.hi{background:#8a93a3}.hlb i.lo{background:#d3d8df}
+@media (prefers-color-scheme:dark){.hlb i.hi{background:#7a8396}.hlb i.lo{background:#3b414e}}
+.hlr.th .hlb i.hi{background:var(--accent)}.hlr.th .hlv:not(.r){color:var(--accent)}
+.hlr.tl .hlb i.lo{background:var(--warn)}.hlr.tl .hlv.r{color:var(--warn)}
+.hlc{color:var(--sub);font-size:11.5px;margin-top:2px}
+.hlc.conf{color:var(--ok);font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:4px 2px;text-align:right;border-bottom:1px solid var(--border)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
+.cmp td.h{font-weight:700}
+.pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+</style>
+</head>
+<body>
+<noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
+<header>
+  <a href="../" class="back">← メニュー</a>
+  <h1>スロット実戦メモ（スマスロ マギアレコード）</h1>
+  <div class="bar" id="statbar"></div>
+  <div id="hlbar"></div>
+</header>
+<nav><a href="#base">台・G数</a><a href="#est">設定推測</a><a href="#cnt">設定差カウンター</a><a href="#hint">示唆</a><a href="#wt">⚙重み</a><a href="#rank">示唆の強さ順</a><a href="#memo">メモ</a><a href="#spec">概要</a><a href="#src">出典</a><a href="../hyena/#mr">ハイエナ（pt）</a></nav>
+<main>
+  <section id="base">
+    <h2>台と総ゲーム数</h2>
+    <label>総ゲーム数（データカウンター・自分が打った分）</label><input data-f="g" inputmode="numeric" placeholder="例 3000">
+    <p class="cap" style="margin-top:6px">AT初当り・弱チェリーはこの総G数で計算します。設定は1〜6、低＝1〜3／高＝4〜6。</p>
+    <p class="note" id="savestate"></p>
+    <button id="resetAll">リセット</button>
+  </section>
+  <section id="est">
+    <h2>設定推測</h2>
+    <p class="cap">使った要素だけで計算（入力のない要素は無視）。事前は各設定同じ確率。濃厚・否定は常に100%で反映（該当しない設定を0に）。</p>
+    <div id="estBody" class="est"></div>
+  </section>
+  <section id="cnt">
+    <h2>設定差カウンター</h2>
+    <p class="cap">★が多いほど判別に効きます。ワンタップで＋1、数字は直接書き換えもできます。</p>
+    <div id="cntBody"></div>
+  </section>
+  <section id="hint">
+    <h2>設定示唆（出たらタップ）</h2>
+    <p class="cap">各グループ内は強い順。緑＝濃厚・否定（該当しない設定を除外）、青＝強、橙＝弱・特定設定示唆（⚙の仮の重み）、灰＝デフォルト（計算に入れない）。<b>「示唆」「期待度UP」は濃厚ではありません。</b></p>
+    <div id="hintBody"></div>
+    <div class="evs" id="hintLog"></div>
+  </section>
+  <section id="wt">
+    <details id="wtDet"><summary>⚙ 示唆の重み（仮の値）</summary>
+    <p class="cap"><b>仮の値（出現率は未公表）</b>。示唆を1回見るごとに、対象の設定の見込みを何倍にするか。<b>1.0＝計算に入れない</b>。濃厚・否定はこの重みと別です。</p>
+    <label>強：高設定示唆（強）・奇数／偶数示唆（強）→ 対象の設定を</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-w="s"><b id="wS"></b></div>
+    <label>弱：高設定示唆（弱）・奇偶（弱）・3・5・6／2・4・6示唆・否定＋高示唆の高示唆分 → 対象の設定を</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-w="w"><b id="wW"></b></div>
+    <label>スイカ→CZの効き目（さな中の混入対策で弱め。1.0＝そのまま）</label><div class="rng"><input type="range" min="0.1" max="1" step="0.1" data-w="sw"><b id="wSw"></b></div>
+    <button class="sm" id="wReset">初期値に戻す（強 1.2 / 弱 1.1 / スイカ 0.5）</button>
+    </details>
+  </section>
+  <section id="rank">
+    <h2>示唆の強さ順（高低への向き）</h2>
+    <div id="rankBody"></div>
+  </section>
+  <section id="memo">
+    <h2>自分用カウンター・メモ</h2>
+    <div class="row"><input id="newCnt" placeholder="カウンター名" style="flex:1 1 160px"><button class="sm" id="addCnt">追加</button></div>
+    <div id="myCnt" style="margin-top:8px"></div>
+    <label for="notes">メモ</label>
+    <textarea id="notes" placeholder="台番号・ユニメモの状況など"></textarea>
+  </section>
+  <section id="spec"><h2>概要・スペック</h2><div id="specBody"></div></section>
+  <section id="src"><h2>出典・不一致・調査中</h2><div id="srcBody"></div></section>
+</main>
+<script id="core">
+(function(root){
+"use strict";
+// 数値は /workspace/magireco_research.md（ちょんぼ・なな徹・DMM・スロパチクエストで一致）
+var D={
+ at:[654.6,633.4,571.8,516.6,456.5,416.7],      // AT初当り
+ bon:[240.6,236.1,222.8,208.5,195.1,184.3],     // ボーナス初当り（参考）
+ wari:[97.6,98.9,102.0,106.0,110.4,114.9],
+ jc:[60.0,57.7,55.5,53.5,51.7,50.0],            // 弱チェリー
+ bigK:[33.7,33.7,36.4,40.6,45.3,50.0],          // BIG終了時 高確移行（合計）
+ suika:[19.9,22.3,24.6,27.3,30.1,32.8],         // スイカ→マギアチャレンジ（さな以外）
+ lv2:[0.8,1.2,2.3,4.7,6.3,7.8],                 // みたま ウワサ発展 Lv2 AT当選
+ lv3:[5.1,6.3,7.8,9.4,10.9,12.5],               // Lv3
+ kuroe:[0.1,0.1,1.6,null,6.3,6.3]               // エピソード黒江（設定4は調査中）→計算に入れない
+};
+var A2=[2,3,4,5,6],A4=[4,5,6],A5=[5,6],A6=[6],ODD=[1,3,5],EVN=[2,4,6],S356=[3,5,6],S246=[2,4,6];
+// lv: c=濃厚（allow）, n=否定（deny）, nh=否定＋高示唆, s/w=強/弱（eff）, k=特定設定示唆, d=デフォ
+var CB="ちょんぼ",NN="なな徹",DM="DMM";
+var H=[
+ // ユニバプレート（AT終了時のサブ液晶）
+ {id:"plN",g:"pl",n:"虹",lv:"c",allow:A6,m:"設定6濃厚",src:"ちょんぼ・DMM"},
+ {id:"plH",g:"pl",n:"花火柄",lv:"c",allow:A5,m:"設定5以上濃厚",src:"ちょんぼ・DMM"},
+ {id:"plG",g:"pl",n:"金",lv:"c",allow:A4,m:"設定4以上濃厚",src:"ちょんぼ・DMM"},
+ {id:"plS",g:"pl",n:"銀",lv:"c",allow:[3,4,5,6],m:"設定3以上濃厚",src:"ちょんぼ・DMM"},
+ {id:"plC",g:"pl",n:"銅",lv:"c",allow:A2,m:"設定2以上濃厚",src:"ちょんぼ・DMM"},
+ // BIG終了画面
+ {id:"bgQ",g:"bg",n:"小さいキュゥべえ",lv:"c",allow:A6,m:"設定6濃厚",src:"なな徹「設定6」・DMM「設定6濃厚」・1GAME「設定6濃厚!?」"},
+ {id:"bg1",g:"bg",n:"1st Season キービジュアル",lv:"c",allow:A5,m:"設定5以上濃厚",src:"なな徹「設定5以上」・DMM「設定5以上濃厚」"},
+ {id:"bg2",g:"bg",n:"2nd Season キービジュアル",lv:"c",allow:A4,m:"設定4以上濃厚",src:"なな徹「設定4以上」・DMM「設定4以上濃厚」"},
+ {id:"bgM",g:"bg",n:"水着みかづき荘（DMM：みかづき荘バケーション）",lv:"n",deny:[1],m:"設定2以上濃厚＝設定1否定のみ",src:"なな徹「設定2以上」・DMM「設定2以上濃厚」",flag:"設定1を消すだけで、高設定の根拠にはなりません"},
+ {id:"bgYM",g:"bg",n:"いろは＆やちよ＆ももこチーム",lv:"s",eff:[[A4,"s"]],m:"高設定示唆（強）",src:"なな徹・DMM「高設定示唆（強）」",flag:"不一致：DMM特集(4157)は強弱の区別なし→機種ページ・なな徹の（強）を採用"},
+ {id:"bgF",g:"bg",n:"いろは＆フェリシア",lv:"k",eff:[[S356,"w"]],m:"設定3・5・6示唆",src:"なな徹・DMM"},
+ {id:"bgS",g:"bg",n:"いろは＆さな",lv:"k",eff:[[S246,"w"]],m:"設定2・4・6示唆",src:"なな徹・DMM"},
+ {id:"bgYT",g:"bg",n:"いろは＆やちよ＆鶴乃",lv:"w",eff:[[A4,"w"]],m:"高設定示唆（弱）",src:"なな徹・DMM「高設定示唆（弱）」"},
+ {id:"bgD",g:"bg",n:"神浜市（昼）／神浜市（夜）／万年桜／蝶",lv:"d",m:"デフォルト（選んだ楽曲で変化）",src:"なな徹・DMM",flag:"この「万年桜」はBIG終了画面＝デフォルト。エンディングカードの「万年桜のウワサ」（強）とは別物"},
+ // AT終了画面
+ {id:"atMI",g:"at",n:"まどか＆いろは",lv:"c",allow:A6,m:"設定6濃厚",src:"なな徹「設定6」・DMM「設定6濃厚」"},
+ {id:"atMG",g:"at",n:"マギウスメンバー",lv:"k",eff:[[S356,"w"]],m:"設定3・5・6示唆",src:"なな徹・DMM"},
+ {id:"atMK",g:"at",n:"みかづき荘メンバー",lv:"k",eff:[[S246,"w"]],m:"設定2・4・6示唆",src:"なな徹・DMM"},
+ {id:"atD",g:"at",n:"デフォルト（背景）",lv:"d",m:"示唆なし",src:"なな徹・DMM"},
+ // キャラ紹介
+ {id:"ch9",g:"ch",n:"⑨ 最後に小さいキュゥべえ",lv:"c",allow:A5,m:"設定5以上濃厚",src:"なな徹「設定5以上」・ちょんぼ「設定5以上濃厚」"},
+ {id:"ch6",g:"ch",n:"⑥ ももこ→やちよ→鶴乃→みふゆ→みたま",lv:"s",eff:[[A4,"s"]],m:"高設定示唆（強）",src:"なな徹「高設定示唆（強）」・ちょんぼ「高設定期待度UP（強）」"},
+ {id:"ch7",g:"ch",n:"⑦ いろは→うい→灯花→ねむ→アリナ",lv:"s",eff:[[A4,"s"]],m:"高設定示唆（強）",src:"なな徹・ちょんぼ・DMM"},
+ {id:"ch8",g:"ch",n:"⑧ まどか→さやか→マミ→杏子（4人）",lv:"s",eff:[[A4,"s"]],m:"高設定示唆（強）",src:"なな徹・ちょんぼ・DMM"},
+ {id:"ch5",g:"ch",n:"⑤ ①〜④の逆順",lv:"w",eff:[[A4,"w"]],m:"高設定示唆（弱）",src:"なな徹「高設定示唆（弱）」・ちょんぼ「高設定期待度UP（弱）」"},
+ {id:"chD",g:"ch",n:"①〜④（いろは〜／ももこ〜／灯花〜／まどか〜の5人）",lv:"d",m:"デフォルト",src:"なな徹・ちょんぼ"},
+ // エンディングカード
+ {id:"edB",g:"ed",n:"舞台装置の魔女",lv:"c",allow:A4,m:"設定4以上濃厚",src:"なな徹「設定4以上」・ちょんぼ「設定4以上濃厚」"},
+ {id:"edI",g:"ed",n:"委員長の魔女",lv:"nh",deny:[1],eff:[[A4,"w"]],m:"設定1否定＆高設定示唆",src:"なな徹・DMM／ちょんぼ「高設定期待度UP」"},
+ {id:"edY",g:"ed",n:"ヨダカの魔女",lv:"nh",deny:[4],eff:[[A4,"w"]],m:"設定4否定＆高設定示唆",src:"なな徹・ちょんぼ・DMM"},
+ {id:"edS",g:"ed",n:"石中魚の魔女",lv:"n",deny:[2],m:"設定2否定",src:"なな徹・ちょんぼ・DMM"},
+ {id:"edT",g:"ed",n:"立ち耳の魔女",lv:"n",deny:[3],m:"設定3否定",src:"なな徹・ちょんぼ・DMM"},
+ {id:"edP",g:"ed",n:"振子の魔女",lv:"n",deny:[4],m:"設定4否定",src:"なな徹・ちょんぼ・DMM",flag:"舞台装置の後に出れば設定5・6濃厚（なな徹の例。両方押せば自動でそうなります）"},
+ {id:"edM",g:"ed",n:"万年桜のウワサ",lv:"s",eff:[[A4,"s"]],m:"高設定示唆（強）",src:"なな徹・DMM／ちょんぼ「期待度UP(強)」",flag:"BIG終了画面の「万年桜」（デフォルト）とは別物"},
+ {id:"edF",g:"ed",n:"フクロウの幸運水のウワサ",lv:"s",eff:[[ODD,"s"]],m:"奇数示唆（強）",src:"なな徹・DMM／ちょんぼ「期待度UP(強)」"},
+ {id:"edH",g:"ed",n:"ひとりぼっちの最果てのウワサ",lv:"s",eff:[[EVN,"s"]],m:"偶数示唆（強）",src:"なな徹・DMM／ちょんぼ「期待度UP(強)」"},
+ {id:"edK",g:"ed",n:"記憶ミュージアムのウワサ",lv:"w",eff:[[A4,"w"]],m:"高設定示唆（弱）",src:"なな徹・DMM／ちょんぼ「期待度UP(弱)」"},
+ {id:"edZ",g:"ed",n:"絶交階段のウワサ",lv:"w",eff:[[ODD,"w"]],m:"奇数示唆（弱）",src:"なな徹・DMM／ちょんぼ「期待度UP(弱)」"},
+ {id:"edU",g:"ed",n:"マチビト馬のウワサ",lv:"w",eff:[[EVN,"w"]],m:"偶数示唆（弱）",src:"なな徹・DMM／ちょんぼ「期待度UP(弱)」"},
+ // ストーリーの順番（ちょんぼ・DMMの全順。なな徹は5話スタート分）
+ {id:"s54321",g:"st",n:"5→4→3→2→1",lv:"c",allow:A5,m:"設定5以上濃厚",src:"ちょんぼ・DMM「設定5以上濃厚」・なな徹「設定5 or 6濃厚」（同じ意味）"},
+ {id:"s54312",g:"st",n:"5→4→3→1→2",lv:"nh",deny:[1],eff:[[A4,"w"]],m:"設定1否定＋高設定示唆",src:"ちょんぼ「設定1否定かつ高設定期待度UP」・DMM・なな徹"},
+ {id:"s51234",g:"st",n:"5→1→2→3→4",lv:"n",deny:[1],m:"設定1否定",src:"ちょんぼ・DMM・なな徹"},
+ {id:"s52134",g:"st",n:"5→2→1→3→4",lv:"n",deny:[2],m:"設定2否定",src:"ちょんぼ・DMM・なな徹"},
+ {id:"s53124",g:"st",n:"5→3→1→2→4",lv:"n",deny:[3],m:"設定3否定",src:"ちょんぼ・DMM・なな徹"},
+ {id:"s54213",g:"st",n:"5→4→2→1→3",lv:"n",deny:[2],m:"設定2否定",src:"ちょんぼ・DMM・なな徹"},
+ {id:"s12354",g:"st",n:"1→2→3→5→4",lv:"w",eff:[[ODD,"w"],[A4,"w"]],m:"奇数かつ高設定示唆",src:"DMM／ちょんぼ「奇数かつ高設定期待度UP」"},
+ {id:"s13254",g:"st",n:"1→3→2→5→4",lv:"w",eff:[[ODD,"w"],[A4,"w"]],m:"奇数かつ高設定示唆",src:"DMM・ちょんぼ"},
+ {id:"s31254",g:"st",n:"3→1→2→5→4",lv:"w",eff:[[ODD,"w"],[A4,"w"]],m:"奇数かつ高設定示唆",src:"DMM・ちょんぼ"},
+ {id:"s21354",g:"st",n:"2→1→3→5→4",lv:"w",eff:[[EVN,"w"],[A4,"w"]],m:"偶数かつ高設定示唆",src:"DMM・ちょんぼ"},
+ {id:"s24153",g:"st",n:"2→4→1→5→3",lv:"w",eff:[[EVN,"w"],[A4,"w"]],m:"偶数かつ高設定示唆",src:"DMM・ちょんぼ"},
+ {id:"s41253",g:"st",n:"4→1→2→5→3",lv:"w",eff:[[EVN,"w"],[A4,"w"]],m:"偶数かつ高設定示唆",src:"DMM・ちょんぼ"},
+ {id:"s12345",g:"st",n:"1→2→3→4→5",lv:"w",eff:[[ODD,"w"]],m:"奇数示唆（DMM「やや奇数設定示唆」）",src:"DMM「やや」／ちょんぼ「奇数設定期待度UP」",flag:"強さの表記ゆれ（DMMは「やや」）→弱で計算"},
+ {id:"s13245",g:"st",n:"1→3→2→4→5",lv:"w",eff:[[ODD,"w"]],m:"奇数示唆",src:"DMM・ちょんぼ"},
+ {id:"s31245",g:"st",n:"3→1→2→4→5",lv:"w",eff:[[ODD,"w"]],m:"奇数示唆",src:"DMM・ちょんぼ"},
+ {id:"s21345",g:"st",n:"2→1→3→4→5",lv:"w",eff:[[EVN,"w"]],m:"偶数示唆（DMM「やや偶数設定示唆」）",src:"DMM「やや」／ちょんぼ「偶数設定期待度UP」",flag:"強さの表記ゆれ（DMMは「やや」）→弱で計算"},
+ {id:"s24135",g:"st",n:"2→4→1→3→5",lv:"w",eff:[[EVN,"w"]],m:"偶数示唆",src:"DMM・ちょんぼ"},
+ {id:"s41235",g:"st",n:"4→1→2→3→5",lv:"w",eff:[[EVN,"w"]],m:"偶数示唆",src:"DMM・ちょんぼ"}
+];
+var WDEF={s:1.2,w:1.1,sw:0.5};
+function num(x){var n=Number(String(x==null?"":x).replace(/[^\d.]/g,""));return isFinite(n)?n:0;}
+function binom(k,n,p){return p.map(function(q){return k*Math.log(q)+(n-k)*Math.log(1-q);});}
+function inv(a){return a.map(function(d){return 1/d;});}
+function pc(a){return a.map(function(x){return x/100;});}
+function hintById(id){for(var i=0;i<H.length;i++)if(H[i].id===id)return H[i];return null;}
+function estimate(S,o){o=o||{};var HNT=o.hints!==false;
+ var L=[0,0,0,0,0,0],allow=[1,1,1,1,1,1],used=[],masks=[],W=S.W||WDEF,c=S.n||{};
+ function add(a,w){w=w==null?1:w;for(var i=0;i<6;i++)L[i]+=w*a[i];}
+ var G=num(S.g);
+ if(G>0&&c.at!==undefined&&c.at!==""){var k=num(c.at);add(binom(k,G,inv(D.at)));used.push({t:"AT初当り "+k+"回/"+G+"G",rel:"h"});}
+ if(G>0&&num(c.jc)>0){add(binom(num(c.jc),G,inv(D.jc)));used.push({t:"弱チェリー "+num(c.jc)+"回/"+G+"G",rel:"h"});}
+ var bn=num(c.bigN),bk=Math.min(num(c.bigK),bn);if(bn>0){add(binom(bk,bn,pc(D.bigK)));used.push({t:"BIG終了後の高確移行 "+bk+"/"+bn,rel:"h"});}
+ var sn=num(c.suN),sk=Math.min(num(c.suK),sn),zn=Math.min(num(c.saN),sn),zk=Math.min(num(c.saK),sk,zn);
+ var en=sn-zn,ek=sk-zk;if(en>0){var sw=W.sw==null?WDEF.sw:W.sw;add(binom(Math.min(ek,en),en,pc(D.suika)),sw);used.push({t:"スイカ→マギアチャレンジ "+ek+"/"+en+(zn?"（さな中 "+zn+"回を除外）":"")+"　×"+sw.toFixed(1)+"（弱め）",rel:"m"});}
+ [["lv2","みたま Lv2(主に発展青)",D.lv2],["lv3","みたま Lv3(主に発展緑)",D.lv3]].forEach(function(r){var n=num(c[r[0]+"N"]),k=Math.min(num(c[r[0]+"K"]),n);if(n>0){add(binom(k,n,pc(r[2])));used.push({t:r[1]+" AT "+k+"/"+n,rel:"h"});}});
+ if(HNT){var ls=Math.log(W.s),lw=Math.log(W.w);
+  (S.ev||[]).forEach(function(e){var h=hintById(e.v);if(!h)return;
+   if(h.allow){for(var i=0;i<6;i++)if(h.allow.indexOf(i+1)<0)allow[i]=0;masks.push(h.n+"（"+h.m+"）");}
+   if(h.deny){h.deny.forEach(function(d){allow[d-1]=0;});if(!h.allow)masks.push(h.n+"（"+h.m+"）");}
+   (h.eff||[]).forEach(function(ef){for(var i=0;i<6;i++)if(ef[0].indexOf(i+1)>=0)L[i]+=ef[1]==="s"?ls:lw;});});
+  var ns=0,nw=0;(S.ev||[]).forEach(function(e){var h=hintById(e.v);if(!h||!h.eff)return;h.eff.forEach(function(ef){if(ef[1]==="s")ns++;else nw++;});});
+  if(ns)used.push({t:"強の示唆 "+ns+"件 ×"+W.s.toFixed(1),rel:"l"});if(nw)used.push({t:"弱の示唆 "+nw+"件 ×"+W.w.toFixed(1),rel:"l"});}
+ var conflict=allow.every(function(a){return !a;});if(conflict)allow=[1,1,1,1,1,1];
+ var mx=-Infinity;for(var j=0;j<6;j++)if(allow[j]&&L[j]>mx)mx=L[j];
+ var post=L.map(function(l,i){return allow[i]?Math.exp(l-mx):0;}),sum=post.reduce(function(a,b){return a+b;},0);post=post.map(function(x){return x/sum;});
+ return {post:post,used:used,masks:masks,conflict:conflict,allow:allow,any:used.length>0||masks.length>0};}
+root.MR={D:D,H:H,WDEF:WDEF,estimate:estimate,num:num};
+})(typeof window!=="undefined"?window:globalThis);
+</script>
+<script>
+(function(){
+"use strict";
+var U=window.MR,D=U.D,H=U.H,num=U.num,KEY="slotmemo:v1:magireco";
+function emptyS(){return {g:"",n:{},ev:[],W:{s:U.WDEF.s,w:U.WDEF.w,sw:U.WDEF.sw},cnt:[],notes:""};}
+var S=emptyS(),canSave=true;
+function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var p=JSON.parse(r),e=emptyS();for(var k in e){if(p[k]!==undefined&&p[k]!==null&&typeof p[k]===typeof e[k])e[k]=p[k];}
+ for(var q in U.WDEF){if(typeof e.W[q]!=="number")e.W[q]=U.WDEF[q];}["ev","cnt"].forEach(function(k){if(!Array.isArray(e[k]))e[k]=[];});S=e;}catch(x){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));canSave=true;}catch(x){canSave=false;}}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function pct(x){return (Math.round(x*1000)/10).toFixed(1)+"%";}
+function kv(k,v){return '<div class="kv"><span>'+k+'</span><b>'+v+'</b></div>';}
+function table(cols,rows){return '<div class="scroll"><table><thead><tr>'+cols.map(function(c){return "<th>"+esc(c)+"</th>";}).join("")+'</tr></thead><tbody>'+rows.map(function(r){return "<tr>"+r.map(function(c){return "<td>"+esc(c)+"</td>";}).join("")+"</tr>";}).join("")+"</tbody></table></div>";}
+function est(o){return U.estimate(S,o);}
+var LV={c:'<span class="tag confirm">濃厚</span>',n:'<span class="tag confirm">否定</span>',nh:'<span class="tag confirm">否定＋高示唆</span>',s:'<span class="tag strong">強</span>',w:'<span class="tag weak">弱</span>',k:'<span class="tag weak">特定設定示唆</span>',d:'<span class="tag">デフォルト</span>'};
+var ORD={c:0,n:1,nh:1,s:2,k:3,w:4,d:5};
+var GROUPS=[
+ ["pl","ユニバプレート（AT終了時のサブ液晶）","出現時は効果音も発生（DMM）。","m"],
+ ["bg","ビッグボーナス終了画面","デフォルト4種は選んだ楽曲で変化。","h"],
+ ["at","AT終了画面","「まどか＆いろは」が出るまでは、マギウス／みかづき荘の回数を数えて偶奇の判別に（なな徹）。","h"],
+ ["ch","AT中ストーリーのキャラ紹介","ストーリーコンプリート後、またはエンブリオ・イブ覚醒中のストーリーで流れる。","h"],
+ ["ed","エンディング中のカード（レア役成立時）","強レア役（チャンス目・強チェリー）成立時は精度アップ（なな徹）。","h"],
+ ["st","ストーリーの順番（話数）","1・3話スタート＝奇数系、2・4話スタート＝偶数系、5話スタート＝降順が崩れた話数の設定を否定。SPストーリーを挟んでも有効（DMM）。最後まで見てから1回だけ押す。","h"]];
+var CN=[
+ {t:"AT初当り",st:3,rel:"h",how:"総G数（上の入力）あたりのAT初当り回数。0回でも入力すれば使います。",fields:[["at","AT初当り"]],rows:[["AT",D.at.map(function(v){return "1/"+v;})]],obs:function(){var g=num(S.g),k=num(S.n.at);return g&&k?["1/"+(g/k).toFixed(1)]:[];}},
+ {t:"BIG終了後の高確移行",st:2,rel:"h",how:"BIG終了時に高確（10/20/30G）へ移行したか。みたまボーナス後は高確濃厚なので数えない。小役契機の高確は全設定共通。",fields:[["bigN","BIG終了"],["bigK","高確へ"]],rows:[["高確",D.bigK.map(function(v){return v+"%";})]],obs:function(){var n=num(S.n.bigN);return n?[(num(S.n.bigK)/n*100).toFixed(1)+"%"]:[];}},
+ {t:"スイカ→マギアチャレンジ",st:2,rel:"m",how:"スイカ回数とそのうちマギアチャレンジ当選。魔法少女モード「さな」中は全設定48.4%（ちょんぼ）。さな確定中の分は下の「さな中」に入れると除外。",fields:[["suN","スイカ"],["suK","CZ当選"],["saN","さな中スイカ"],["saK","さな中CZ"]],rows:[["CZ",D.suika.map(function(v){return v+"%";})]],obs:function(){var n=num(S.n.suN)-num(S.n.saN);return n>0?[((num(S.n.suK)-num(S.n.saK))/n*100).toFixed(1)+"%"]:[];},extra:'<p class="warnx" style="font-size:12.5px;margin:4px 0">さな中が混ざると高めに出ます。計算の効き目は⚙で弱め（初期 0.5・仮の値）。</p>'},
+ {t:"みたまボーナス ウワサ発展→AT",st:2,rel:"h",how:"最終ジャッジでウワサ発展した回数とAT当選。発展青＝主にLv2、発展緑＝主にLv3（見た目と完全リンクではない）。調整屋選択は設定差なし。",fields:[["lv2N","Lv2 発展"],["lv2K","Lv2 AT"],["lv3N","Lv3 発展"],["lv3K","Lv3 AT"]],rows:[["Lv2",D.lv2.map(function(v){return v+"%";})],["Lv3",D.lv3.map(function(v){return v+"%";})]],obs:function(){return [];}},
+ {t:"弱チェリー",st:1,rel:"h",how:"総G数あたり。差は小さい（設定1と6で1.2倍）。",fields:[["jc","弱チェリー"]],rows:[["確率",D.jc.map(function(v){return "1/"+v;})]],obs:function(){var g=num(S.g),k=num(S.n.jc);return g&&k?["1/"+(g/k).toFixed(1)]:[];}},
+ {t:"エピソードボーナスの黒江選択（計算に入れない）",st:0,rel:"m",how:"設定1・2 0.1%／3 1.6%／4 調査中／5・6 6.3%（ちょんぼの表がセル結合で一部読めないため）。黒江チャレンジ経由（必ず黒江）・ドッペル（いろは）・フリーズ（うい）は除外。",fields:[["epN","エピソード"],["epK","黒江"]],rows:[["黒江",["0.1%","0.1%","1.6%","調査中","6.3%","6.3%"]]],obs:function(){var n=num(S.n.epN);return n?[(num(S.n.epK)/n*100).toFixed(1)+"%"]:[];}}];
+function stars(n){return n?"★★★".slice(0,n)+"☆☆☆".slice(0,3-n):"調査中";}
+function renderStatic(){
+ var h="";GROUPS.forEach(function(g){var items=H.filter(function(x){return x.g===g[0];}).slice().sort(function(a,b){return ORD[a.lv]-ORD[b.lv];});
+  h+='<h3>'+esc(g[1])+' <span class="rel '+g[3]+'">信頼度 '+(g[3]==="h"?"高":g[3]==="m"?"中":"低")+'</span></h3><p class="cap">'+esc(g[2])+'</p><div class="hints">';
+  items.forEach(function(x){h+='<div class="hint'+(/^(c|n|nh)$/.test(x.lv)?" confirm":"")+'" data-hid="'+x.id+'"><div class="hd"><span>'+esc(x.n)+'</span>'+LV[x.lv]+'</div><div class="look"><b>'+esc(x.m)+'</b><br>出典：'+esc(x.src)+(x.flag?'<br><span class="'+(/不一致|別物|ゆれ/.test(x.flag)?"warnx":"")+'">'+esc(x.flag)+'</span>':"")+'</div>'+(x.lv==="d"?'<button class="sm" data-h="'+x.id+'">記録のみ（計算に入れない） <span class="cnt" data-hc="'+x.id+'">0</span></button>':'<button class="sm p" data-h="'+x.id+'">＋記録 <span class="cnt" data-hc="'+x.id+'">0</span></button>')+'</div>';});
+  h+='</div>';});
+ h+='<p class="note">ボーナス終了時のボイス（スマホ型液晶タッチ）は規定pt・G数の示唆で、設定示唆ではありません。</p>';
+ $("hintBody").innerHTML=h;
+ var R=[["濃厚 設定6","ユニバプレート虹・BIG終了 小さいキュゥべえ・AT終了 まどか＆いろは","6だけ残す"],
+  ["濃厚 5以上","ユニバプレート花火柄・BIG終了 1st Season・キャラ紹介⑨・ストーリー 5→4→3→2→1","5・6だけ残す"],
+  ["濃厚 4以上","ユニバプレート金・BIG終了 2nd Season・ED 舞台装置の魔女","4〜6だけ残す（高設定域確定）"],
+  ["濃厚 3以上","ユニバプレート銀","1・2を消す"],
+  ["濃厚 2以上","ユニバプレート銅・BIG終了 水着みかづき荘","設定1を消すだけ（高低にはほぼ中立）"],
+  ["否定＋高示唆","ED 委員長（1否定）・ヨダカ（4否定）・ストーリー 5→4→3→1→2（1否定）","その設定を消す＋4〜6に弱の重み"],
+  ["否定","ED 石中魚（2）・立ち耳（3）・振子（4）・ストーリー 5→1…（1）／5→2…・5→4→2…（2）／5→3…（3）","その設定だけ消す"],
+  ["強","キャラ紹介⑥⑦⑧・BIG終了 いろは＆やちよ＆ももこチーム・ED 万年桜のウワサ（高）／ED フクロウの幸運水（奇数）・ひとりぼっちの最果て（偶数）","⚙ 強 1.2"],
+  ["特定設定示唆","いろは＆フェリシア・マギウスメンバー（3・5・6）／いろは＆さな・みかづき荘メンバー（2・4・6）","⚙ 弱 1.1"],
+  ["弱","キャラ紹介⑤・BIG終了 いろは＆やちよ＆鶴乃・ED 記憶ミュージアム（高）／ED 絶交階段（奇数）・マチビト馬（偶数）／ストーリー 1〜4話スタート（奇偶、末尾逆順は＋高）","⚙ 弱 1.1"],
+  ["デフォルト","BIG終了 神浜市（昼・夜）・<万年桜>・蝶／AT終了 背景／キャラ紹介①〜④","計算に入れない"]];
+ $("rankBody").innerHTML=table(["強さ","示唆","計算での扱い"],R)+'<p class="note">「万年桜」（BIG終了画面）はデフォルト、「万年桜のウワサ」（エンディングカード）は強の高設定示唆。名前が似ていますが別物です。</p>';
+ var sp=kv("機種","スマスロ マギアレコード 魔法少女まどか☆マギカ外伝（ミズホ・販売ユニバーサル）")+kv("導入","2025年4月7日（後継・別バージョンなし）")+kv("タイプ","AT「マギアラッシュ」純増 約2.6枚/G（ゲーム数管理）")+kv("コイン持ち","32.6G/50枚（ちょんぼのみ）・コイン単価 3.2円")+kv("1000円で","約32.6G（50枚貸）／約30.0G（46枚貸）<br><span class=\"note\">自前計算：32.6×貸出枚数/50</span>")+kv("天井","ボーナス間 950pt+α → ボーナス（変更時 600〜699pt+α）");
+ sp+='<h3>設定別 <span class="rel h">信頼度 高</span></h3>'+table(["設定","ボーナス初当り","AT初当り","機械割"],D.at.map(function(v,i){return [String(i+1),"1/"+D.bon[i],"1/"+v,D.wari[i]+"%"];}))+'<p class="cap">ちょんぼ・なな徹・スロパチクエストで一致。低＝1〜3、高＝4〜6。</p>';
+ sp+='<h3>設定差なし（参考）</h3><p class="cap">リプレイ 1/7.3・共通ベルA 1/8.2・共通ベルB 1/39.7・スイカ 1/79.9・強チェリー 1/327.7・チャンス目 1/256.0（ちょんぼ・DMM）。</p>';
+ $("specBody").innerHTML=sp;
+ var L=function(u,t){return '<a href="'+u+'" target="_blank" rel="noopener">'+t+'</a>';};
+ $("srcBody").innerHTML='<ul class="src"><li>'+L("https://nana-press.com/kaiseki/machine/914/28425/","なな徹（設定判別）")+'・'+L("https://nana-press.com/kaiseki/machine/914/28458/","BIG終了画面")+' <span class="rel h">信頼度 高</span></li><li>'+L("https://p-town.dmm.com/machines/4745","DMMぱちタウン")+'・'+L("https://p-town.dmm.com/specials/4157","特集") +' <span class="rel h">信頼度 高</span></li><li>'+L("https://chonborista.com/slot/universal-slot/228995/","ちょんぼりすた")+' <span class="rel h">信頼度 高</span></li><li>'+L("https://1geki.jp/slot/l_magireco/0/","1GAME")+'（BIG終了画面の照合）<span class="rel m">信頼度 中</span></li><li>'+L("https://www.slopachi-quest.com/article/magireco-settei/","スロパチクエスト")+'（数値の照合）</li><li>'+L("https://www.universal-777.com/product/slot/magireco/","ユニバーサル公式")+'（機種情報）</li></ul>'+
+ '<h3>不一致</h3><ul><li><span class="warnx">不一致</span> BIG終了 いろは＆やちよ＆鶴乃／ももこチーム：DMM特集は両方「高設定示唆」（強弱なし）、DMM機種ページ・なな徹は（弱）（強）→後者を採用</li><li><span class="warnx">不一致</span> ストーリー 1→2→3→4→5・2→1→3→4→5：DMM「やや」、ちょんぼ「期待度UP」→弱で計算</li><li><span class="warnx">不一致</span> スイカCZ：pacnk（20.3〜33.6%）は他と合わず不採用</li><li><span class="warnx">参考外</span> パチナビは使っていません</li></ul>'+
+ '<h3>調査中</h3><ul><li>エピソード黒江選択率の設定4（計算に入れていない）</li><li>AT直撃・引き戻し・ゾーン当選率の設定差（実戦値のみ）</li><li>示唆の出現率 → ⚙の重みは仮の値</li><li>マイスロ（ユニメモ）の判別に使える項目</li></ul>';
+}
+function hlPct(x){return Math.round(x*100)+"%";}
+function hlHi(p){return p[3]+p[4]+p[5];}
+function hlRow(key,p){var hi=hlHi(p),lo=Math.max(0,1-hi),c=hi>0.7?" th":lo>0.7?" tl":"";
+ return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+hlPct(lo)+'</span></div>';}
+function hlBlock(rows,conf){if(!rows.length)return "";
+ return '<div class="hl"><div class="hll"><span>高設定域 4〜6</span><span>低設定域 1〜3</span></div>'+rows.map(function(r){return hlRow(r[0],r[1]);}).join("")+'<div class="hlc'+(conf?" conf":"")+'">'+(conf?"濃厚・否定の示唆あり":"あくまで予想です。様子見の判断材料に")+'</div></div>';}
+function render(){
+ document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f];});
+ document.querySelectorAll("[data-w]").forEach(function(el){el.value=S.W[el.dataset.w];});
+ $("wS").textContent=S.W.s.toFixed(1);$("wW").textContent=S.W.w.toFixed(1);$("wSw").textContent=S.W.sw.toFixed(1);
+ if(document.activeElement!==$("notes"))$("notes").value=S.notes;
+ $("savestate").textContent=canSave?"入力はこの端末に自動保存されます。":"⚠ 保存できません（プライベートブラウズ等）。";
+ document.querySelectorAll("[data-hc]").forEach(function(el){var id=el.dataset.hc;el.textContent=S.ev.filter(function(e){return e.v===id;}).length;});
+ document.querySelectorAll(".hint[data-hid]").forEach(function(el){el.classList.toggle("on",S.ev.some(function(e){return e.v===el.dataset.hid;}));});
+ $("hintLog").innerHTML=S.ev.map(function(e,i){var x=H.find(function(y){return y.id===e.v;});return x?'<span class="ev">'+esc(x.n.split("（")[0])+'<button data-del="'+i+'" aria-label="取り消し">✕</button></span>':"";}).join("");
+ renderCnt();renderEst();renderMy();}
+function renderCnt(){var h="";
+ CN.forEach(function(c){var o=c.obs();
+  h+='<div class="box"><div class="hd"><span>'+esc(c.t)+' <span class="stars">'+stars(c.st)+'</span> <span class="rel '+c.rel+'">信頼度 '+(c.rel==="h"?"高":"中")+'</span></span><span class="mono">'+esc(o.join(" / "))+'</span></div><div class="look">'+esc(c.how)+'</div>'+(c.extra||"");
+  h+='<div class="btns">'+c.fields.map(function(f){return '<div style="display:flex;gap:4px;align-items:center"><button class="p" style="flex:1" data-inc="'+f[0]+'">'+esc(f[1])+' ＋1</button><input data-n="'+f[0]+'" inputmode="numeric" style="width:64px;font-size:16px;padding:0 6px" value="'+esc(S.n[f[0]]||"")+'"></div>';}).join("")+'</div>';
+  h+='<div class="scroll"><table class="cmp"><thead><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>'+c.rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td>'+r[1].map(function(v){return '<td>'+esc(v)+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table></div></div>';});
+ $("cntBody").innerHTML=h;}
+function renderEst(){var r=est(),h="";
+ if(!r.any){$("estBody").innerHTML='<p class="note">総G＋AT初当り、カウンター、または示唆を記録すると表示されます。</p>';statbar(null);return;}
+ var best=0;r.post.forEach(function(p,i){if(p>r.post[best])best=i;});
+ h+=r.post.map(function(p,i){return '<div class="r'+(i===best?" best":"")+'"><span class="l">設定'+(i+1)+'</span><span class="t"><span class="f" style="display:block;width:'+(p*100).toFixed(1)+'%"></span></span><span class="v">'+pct(p)+'</span></div>';}).join("");
+ h+='<div class="call">高設定域（4・5・6） '+pct(r.post[3]+r.post[4]+r.post[5])+'　偶数 '+pct(r.post[1]+r.post[3]+r.post[5])+'　最有力 設定'+(best+1)+'</div>';
+ if(r.conflict)h+='<div class="alert">濃厚・否定どうしが矛盾しています（見間違いの可能性）。濃厚・否定を無視して計算中。</div>';
+ h+='<div class="used"><b>使った要素</b><ul>'+r.used.map(function(u){return "<li>"+esc(u.t)+' <span class="rel '+u.rel+'">信頼度 '+(u.rel==="h"?"高":u.rel==="m"?"中":"低")+"</span></li>";}).join("")+r.masks.map(function(m){return '<li>'+esc(m)+' <span class="rel h">濃厚100%</span></li>';}).join("")+"</ul></div>";
+ if(r.masks.length){var al=[];r.allow.forEach(function(a,i){if(a)al.push(i+1);});h+='<p class="note">濃厚・否定で残った設定：'+al.join("・")+'</p>';}
+ h+='<p class="note">「信頼度」はその要素の数字がどこまで確かか（高＝公表の設定差、中＝補正が必要な値、低＝⚙の仮の重み）で、高設定域か低設定域かを示すものではありません。「数字だけ」＝AT初当り・BIG後高確・スイカCZ・みたまウワサ発展・弱チェリー。「示唆込み」＝それに濃厚・否定（除外）と強・弱の仮の重み（⚙）を加えたもの。</p>';
+ $("estBody").innerHTML=h;statbar(r);}
+function statbar(r){var h="",G=num(S.g),k=num(S.n.at);h+="<span>総 "+G+"G</span>";if(G&&k)h+="<span>AT 1/"+Math.round(G/k)+"</span>";
+ if(r){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});h+='<span>最有力 設定'+(b+1)+'</span>';}
+ $("statbar").innerHTML=h;var rows=[];
+ if(r){var n=est({hints:false});if(n.any)rows.push(["数字だけ",n.post]);rows.push(["示唆込み",r.post]);}
+ $("hlbar").innerHTML=hlBlock(rows,r&&r.masks.length>0);}
+function renderMy(){$("myCnt").innerHTML=S.cnt.map(function(c,i){return '<div class="kv"><span>'+esc(c.n)+'</span><b><button class="sm" data-cm="'+i+'">−</button> <span class="mono">'+c.v+'</span> <button class="sm p" data-cp="'+i+'">＋</button> <button class="sm" data-cx="'+i+'">✕</button></b></div>';}).join("");}
+function commit(){save();render();}
+function bind(){
+ document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+  if(d.h){S.ev.push({v:d.h});commit();return;}
+  if(d.del!==undefined){S.ev.splice(Number(d.del),1);commit();return;}
+  if(d.inc){S.n[d.inc]=String(num(S.n[d.inc])+1);commit();return;}
+  if(d.cp!==undefined){S.cnt[d.cp].v++;commit();return;}
+  if(d.cm!==undefined){S.cnt[d.cm].v=Math.max(0,S.cnt[d.cm].v-1);commit();return;}
+  if(d.cx!==undefined){if(confirm("このカウンターを削除しますか？")){S.cnt.splice(Number(d.cx),1);commit();}return;}
+  if(b.id==="addCnt"){var n=$("newCnt").value.trim();if(n){S.cnt.push({n:n,v:0});$("newCnt").value="";commit();}return;}
+  if(b.id==="wReset"){S.W={s:U.WDEF.s,w:U.WDEF.w,sw:U.WDEF.sw};commit();return;}
+  if(b.id==="resetAll"){if(confirm("この機種の入力をすべて消しますか？")){S=emptyS();commit();}return;}});
+ document.addEventListener("input",function(e){var el=e.target,d=el.dataset;
+  if(d.f!==undefined){S[d.f]=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();return;}
+  if(d.n!==undefined){S.n[d.n]=el.value.replace(/[^\d]/g,"");save();renderEst();return;}
+  if(d.w!==undefined){S.W[d.w]=Number(el.value);save();render();return;}
+  if(el.id==="notes"){S.notes=el.value;save();return;}});
+ document.addEventListener("change",function(e){if(e.target.dataset.n!==undefined)render();});}
+load();renderStatic();bind();render();
+})();
+</script>
+</body>
+</html>
