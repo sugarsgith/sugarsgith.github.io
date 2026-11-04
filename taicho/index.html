@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>体調ログ（テスト版）</title>
+<style>
+:root{--bg:#EDF1F3;--panel:#fff;--ink:#1E2A32;--muted:#5B6B76;--line:#D3DCE1;--accent:#2F6F83;--energy:#C27A1E;--on:#fff;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12181C;--panel:#1A2227;--ink:#E4EBEF;--muted:#9AAAB5;--line:#2C3841;--accent:#6BB3C7;--energy:#E0A24F;--on:#10181C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12181C;--panel:#1A2227;--ink:#E4EBEF;--muted:#9AAAB5;--line:#2C3841;--accent:#6BB3C7;--energy:#E0A24F;--on:#10181C;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Hiragino Sans","Yu Gothic UI","Noto Sans JP",sans-serif}
+main{max-width:520px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.35rem;margin:0}h2{font-size:1rem;margin:0 0 8px}
+.sub,.note{color:var(--muted);font-size:.85rem;margin:2px 0 12px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.row{margin-bottom:16px}
+button{font:inherit}
+.calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.calh button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;width:40px;height:36px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal i{font-style:normal;color:var(--muted);font-size:.8rem}
+.cal button{aspect-ratio:1;border:1px solid transparent;background:transparent;color:var(--ink);border-radius:8px;font-size:.9rem;padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.cal button.td{border-color:var(--accent)}.cal button.sel{background:var(--accent);color:var(--on)}.cal button:disabled{opacity:.3}
+.cal em{display:flex;gap:2px;height:6px}
+.cal u{width:5px;height:5px;border-radius:50%;display:block}
+.cal u.a{background:var(--energy)}.cal u.p{background:var(--accent)}.cal u.n{background:var(--muted)}.cal .sel u{box-shadow:0 0 0 1px var(--on)}
+.tabs{display:flex;gap:6px;margin-bottom:8px}
+.tabs button{flex:1;padding:10px 4px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:10px}
+.tabs button.on{background:var(--accent);color:var(--on);border-color:var(--accent)}
+.scale{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.scale button,.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:10px 0}
+.scale button.on,.chip.on{background:var(--accent);color:var(--on);border-color:var(--accent)}
+.ends{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{padding:8px 14px;border-radius:999px}
+.times{display:flex;gap:12px;flex-wrap:wrap}
+label{font-size:.88rem;color:var(--muted);display:block}
+input[type=time],input[type=text],textarea{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:8px;padding:8px}
+textarea{width:100%}
+.add{display:flex;gap:6px;margin-top:8px}.add input{flex:1;min-width:0}
+.btn{border:0;background:var(--accent);color:var(--on);border-radius:10px;padding:12px 16px;font-weight:600}
+.btn.o{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+#save{width:100%}#msg{min-height:1.5em;color:var(--accent);font-size:.9rem;margin:8px 0 0}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem;color:var(--muted);margin-bottom:4px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+svg{width:100%;height:auto;display:block}
+.hist{list-style:none;margin:8px 0 0;padding:0}
+.hist li{display:flex;gap:8px;justify-content:space-between;border-top:1px solid var(--line);padding:8px 0;font-size:.88rem}
+.hist small{color:var(--muted)}.hist button{border:0;background:none;color:var(--muted);font-size:1.1rem}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=date],select{font:inherit;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:8px;padding:8px}
+.stats{display:flex;flex-wrap:wrap;gap:4px 16px;margin:4px 0 8px}.stats b{font-size:1.2rem}
+.bar{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:.92rem}.bar i{display:block;height:10px;border-radius:5px;background:var(--accent);opacity:.7}
+.chg{border-top:1px solid var(--line);padding:8px 0}.ba{display:grid;grid-template-columns:3.4em 1fr 1fr 1fr;gap:4px;font-size:.85rem}.ba span:first-child{color:var(--muted)}
+details summary{color:var(--accent);padding:6px 0}details p{margin:4px 0;font-size:.88rem}
+#per button{font-size:.8rem;padding:8px 2px}#ov button{padding:6px 4px;font-size:.85rem}
+.tg{display:inline-flex}.tg .chip{border-radius:999px 0 0 999px;padding:8px 8px 8px 14px}
+.x{border:1px solid var(--line);border-left:0;background:transparent;color:var(--muted);border-radius:0 999px 999px 0;padding:8px 12px}
+</style>
+<!-- PWA:START -->
+<link rel="manifest" href="/taicho/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/taicho/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/taicho/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="体調ログ">
+<meta name="theme-color" content="#EDF1F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12181C" media="(prefers-color-scheme: dark)">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/taicho/sw.js',{scope:'/taicho/'}).catch(function(){})})}</script>
+<!-- PWA:END -->
+</head>
+<body>
+<main>
+<h1>体調ログ</h1>
+<p class="sub">テスト版 v3</p>
+<div class="tabs" id="vt"><button type="button" data-view="rec" class="on">記録</button><button type="button" data-view="sum">まとめ</button></div>
+
+<div id="recv">
+<section class="panel"><div id="cal"></div>
+<div class="legend" style="margin-top:8px"><span><i class="dot" style="background:var(--energy)"></i>朝</span><span><i class="dot" style="background:var(--accent)"></i>夜</span><span><i class="dot" style="background:var(--muted)"></i>気づいた時</span></div></section>
+
+<section class="panel">
+<h2 id="dlabel"></h2>
+<div class="tabs" id="tabs"></div>
+<p class="note" id="stat"></p>
+<div class="row"><h2>気分</h2><div class="scale" id="mood"></div><div class="ends"><span>低い</span><span>いつも通り</span><span>高い</span></div></div>
+<div class="row"><h2>エネルギー（動ける感じ）</h2><div class="scale" id="energy"></div><div class="ends"><span>低い</span><span>いつも通り</span><span>高い</span></div></div>
+<div class="row" id="sleep" hidden><h2>昨夜の睡眠</h2>
+<div class="times"><div><label for="bed">寝た時刻</label><input type="time" id="bed"></div><div><label for="wake">起きた時刻</label><input type="time" id="wake"></div></div>
+<div class="chips" style="margin-top:8px"><button type="button" class="chip" id="lowneed">あまり眠らなくても元気だった</button></div><label style="margin-top:8px">中途覚醒</label><div class="chips" id="wk"></div></div>
+<div class="row"><h2>できたこと</h2><div class="chips" id="done"></div></div>
+<div class="row"><h2>最近飲んだ薬</h2><p class="note" style="margin:0 0 6px">タップで入力。×は候補から消すだけで、過去の記録は残ります。</p><div class="chips" id="meds"></div>
+<div class="add"><input type="text" id="newmed" placeholder="薬の名前を追加" aria-label="薬の名前"><button type="button" class="btn o" id="addmed">追加</button></div></div>
+<div class="row"><h2>副作用</h2><div class="chips" id="se"></div></div>
+<div class="row"><h2>ひとこと</h2><textarea id="note" rows="2" placeholder="眠気、ふらつき、気になったことなど"></textarea></div>
+<button class="btn" id="save" type="button">保存する</button>
+<p id="msg" role="status"></p>
+<button class="btn o" id="del" type="button" hidden>この枠の記録を削除</button>
+<ul class="hist" id="hist"></ul>
+</section>
+
+<section class="panel"><h2>薬の変更を記録</h2>
+<div class="times"><div><label for="cdate">日付</label><input type="date" id="cdate"></div><div><label for="ckind">内容</label><select id="ckind"><option>開始</option><option>増量</option><option>減量</option><option>中止</option></select></div></div>
+<div class="add"><input type="text" id="cmed" list="medl" placeholder="薬の名前" aria-label="変更した薬の名前"><datalist id="medl"></datalist></div>
+<div class="add"><input type="text" id="cmemo" placeholder="量のメモ（例：5mg→10mg）" aria-label="量のメモ"><button type="button" class="btn o" id="cadd">追加</button></div>
+<ul class="hist" id="clist"></ul></section>
+
+
+<section class="panel"><h2>診察用まとめ</h2>
+<button class="btn o" id="copy" type="button">直近30日をコピー</button>
+<p class="note" id="copymsg" style="white-space:pre-wrap"></p>
+<h2 style="margin-top:16px">データの書き出し・取り込み</h2>
+<p class="note">バージョンや端末が変わっても、書き出した文字列を取り込めば同じ記録は重複せずにまとまります。</p>
+<div class="add" style="margin:0 0 8px"><button class="btn o" id="exp" type="button">書き出す</button><button class="btn o" id="imp" type="button">取り込む</button></div>
+<textarea id="io" rows="4" placeholder="ここに書き出し／貼り付け" aria-label="データ"></textarea>
+<p class="note" id="iomsg"></p></section>
+
+</div>
+<div id="sumv" hidden>
+<div class="tabs" id="per"><button type="button" data-p="7">1週間</button><button type="button" data-p="14">2週間</button><button type="button" data-p="30" class="on">1か月</button><button type="button" data-p="90">3か月</button><button type="button" data-p="180">半年</button><button type="button" data-p="365">1年</button></div>
+<section class="panel"><h2>気分の波</h2><div class="tabs" id="ov"><button type="button" data-o="sep">分けて表示</button><button type="button" data-o="mix">重ねて表示</button></div><div id="s1"></div></section>
+<section class="panel"><h2>睡眠</h2><div id="s2"></div></section>
+<section class="panel"><h2>できたこと</h2><div id="s5"></div></section>
+<section class="panel"><h2>飲んだ薬</h2><div id="s6"></div></section>
+<section class="panel"><h2>薬の変更後</h2><div id="s3"></div></section>
+<section class="panel"><h2>副作用</h2><div id="s4"></div></section>
+</div>
+<p class="note">診断や判定はしません。記録は医師に相談する時の材料です。データはこの端末のブラウザ内に保存されます。</p>
+</main>
+<script>
+const K2='taicho-log-v2',K1='taicho-log-v1',MN={am:'朝',pm:'夜',any:'気づいた時'},DONE=['入浴','食事','外出'],V=[-3,-2,-1,0,1,2,3],RK={am:0,pm:1,any:2},SE=["眠気","ふらつき","吐き気","食欲の変化","口の渇き","手の震え","その他"];
+let S={v:2,meds:[],items:[]},mode,sel,vy,vm,mood=null,energy=null,lowneed=false,done=new Set(),taken=new Set(),wn=null,se=new Set(),per=30;
+const $=s=>document.querySelector(s),sg=v=>v>0?'+'+v:''+v,p2=n=>String(n).padStart(2,'0');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dk=d=>{d=new Date(d);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())},hm=t=>{const d=new Date(t);return p2(d.getHours())+':'+p2(d.getMinutes())};
+const today=dk(new Date()),avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+function persist(){try{localStorage.setItem(K2,JSON.stringify(S))}catch(e){$('#msg').textContent='この環境では保存できません。書き出しで控えを取ってください。'}}
+function migrate(o){const m={};
+  (o.entries||[]).forEach(e=>{const date=dk(e.t),slot=e.mode==='wake'?'am':e.mode==='bath'?'pm':'any',id=slot==='any'?'m-'+e.t:date+'-'+slot;
+    const it={id,date,slot,mood:e.mood,energy:e.energy,sleep:e.sleep||null,lowneed:!!e.lowneed,done:e.done||[],meds:e.meds||[],note:e.note||'',savedAt:e.t,updatedAt:e.t};
+    if(!m[id]||m[id].updatedAt<it.updatedAt)m[id]=it});
+  return{v:2,meds:o.meds||[],items:Object.values(m)}}
+function merge(o){if(o.entries)o=migrate(o);let a=0,u=0;
+  (o.meds||[]).forEach(x=>{if(!S.meds.includes(x))S.meds.push(x)});(o.changes||[]).forEach(c=>{if(!S.changes.some(y=>y.id===c.id)){S.changes.push(c);a++}});
+  (o.items||[]).forEach(it=>{const i=S.items.findIndex(x=>x.id===it.id);
+    if(i<0){S.items.push(it);a++}else if(it.slot!=='any'&&it.updatedAt>S.items[i].updatedAt){S.items[i]=it;u++}});
+  persist();return[a,u]}
+try{let r=localStorage.getItem(K2);if(r)S=JSON.parse(r);else{r=localStorage.getItem(K1);if(r){S=migrate(JSON.parse(r));persist()}}}catch(e){}
+S.changes=S.changes||[];const rec=(d,s)=>S.items.find(x=>x.id===d+'-'+s);
+const msg=t=>$('#msg').textContent=t;
+
+function scale(id,get,set){const el=$(id);
+  el.innerHTML=V.map(v=>`<button type="button" data-v="${v}" class="${get()===v?'on':''}">${sg(v)}</button>`).join('');
+  el.onclick=e=>{const b=e.target.closest('button');if(!b)return;set(get()===+b.dataset.v?null:+b.dataset.v);scale(id,get,set)}}
+function chips(){
+  $('#done').innerHTML=DONE.map(d=>`<button type="button" class="chip ${done.has(d)?'on':''}" data-k="${d}">${d}</button>`).join('');
+  $('#meds').innerHTML=S.meds.length?S.meds.map(m=>`<span class="tg"><button type="button" class="chip ${taken.has(m)?'on':''}" data-k="${esc(m)}">${esc(m)}</button><button type="button" class="x" data-x="${esc(m)}" aria-label="候補から削除">×</button></span>`).join(''):'<span class="note">まだ薬が登録されていません</span>';
+  $('#lowneed').classList.toggle('on',lowneed);
+  $('#wk').innerHTML=[['なし',0],['1回',1],['2回',2],['3回以上',3]].map(([t,v])=>`<button type="button" class="chip ${wn===v?'on':''}" data-w="${v}">${t}</button>`).join('');
+  $('#se').innerHTML=SE.map(d=>`<button type="button" class="chip ${se.has(d)?'on':''}" data-k="${d}">${d}</button>`).join('')}
+$('#done').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;const k=b.dataset.k;done.has(k)?done.delete(k):done.add(k);chips()};
+$('#meds').onclick=e=>{const x=e.target.closest('.x');if(x){const k=x.dataset.x;S.meds=S.meds.filter(v=>v!==k);taken.delete(k);persist();chips();return}const b=e.target.closest('.chip');if(!b)return;const k=b.dataset.k;taken.has(k)?taken.delete(k):taken.add(k);chips()};
+$('#lowneed').onclick=()=>{lowneed=!lowneed;chips()};
+$('#wk').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;const v=+b.dataset.w;wn=wn===v?null:v;chips()};
+$('#se').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;const k=b.dataset.k;se.has(k)?se.delete(k):se.add(k);chips()};
+$('#addmed').onclick=()=>{const v=$('#newmed').value.trim();if(!v)return;if(!S.meds.includes(v))S.meds.push(v);taken.add(v);$('#newmed').value='';persist();chips()};
+function hours(b,w){if(!b||!w)return null;const[b1,b2]=b.split(':').map(Number),[w1,w2]=w.split(':').map(Number);let h=(w1*60+w2-(b1*60+b2))/60;if(h<=0)h+=24;return Math.round(h*10)/10}
+
+function cal(){const first=new Date(vy,vm,1),n=new Date(vy,vm+1,0).getDate();
+  let h=`<div class="calh"><button type="button" id="pv" aria-label="前の月">‹</button><b>${vy}年${vm+1}月</b><button type="button" id="nx" aria-label="次の月">›</button></div><div class="cal">`+'日月火水木金土'.split('').map(w=>`<i>${w}</i>`).join('');
+  for(let i=0;i<first.getDay();i++)h+='<span></span>';
+  for(let d=1;d<=n;d++){const k=vy+'-'+p2(vm+1)+'-'+p2(d),has=s=>S.items.some(x=>x.date===k&&x.slot===s);
+    h+=`<button type="button" data-d="${k}" class="${k===sel?'sel':''} ${k===today?'td':''}" ${k>today?'disabled':''}>${d}<em>${has('am')?'<u class="a"></u>':''}${has('pm')?'<u class="p"></u>':''}${has('any')?'<u class="n"></u>':''}</em></button>`}
+  $('#cal').innerHTML=h+'</div>'}
+$('#cal').onclick=e=>{
+  if(e.target.closest('#pv')){vm--;if(vm<0){vm=11;vy--}cal();return}
+  if(e.target.closest('#nx')){vm++;if(vm>11){vm=0;vy++}cal();return}
+  const b=e.target.closest('[data-d]');if(b){sel=b.dataset.d;msg('');loadForm();cal()}};
+
+function tabs(){$('#tabs').innerHTML=['am','pm','any'].map(m=>`<button type="button" data-m="${m}" class="${m===mode?'on':''}">${MN[m]}${m!=='any'&&rec(sel,m)?' ✓':''}</button>`).join('')}
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(b){mode=b.dataset.m;msg('');loadForm()}};
+
+function loadForm(){
+  const r=mode!=='any'?rec(sel,mode):null;
+  mood=r?r.mood:null;energy=r?r.energy:null;lowneed=r?!!r.lowneed:false;wn=r&&r.wn!=null?r.wn:null;se=new Set(r&&r.se?r.se:[]);done=new Set(r?r.done:[]);taken=new Set(r?r.meds:[]);
+  $('#note').value=r?r.note:'';
+  $('#bed').value=(r&&r.sleepBed)||'23:00';$('#wake').value=(r&&r.sleepWake)||'07:00';
+  $('#sleep').hidden=mode!=='am';
+  const wd='日月火水木金土'[new Date(sel+'T00:00').getDay()];
+  $('#dlabel').textContent=Number(sel.slice(5,7))+'月'+Number(sel.slice(8))+'日（'+wd+'）'+(sel===today?' 今日':'');
+  $('#stat').textContent=mode==='any'?'何度でも追加できます。':r?'入力済み（'+hm(r.updatedAt)+'に保存）。保存すると上書きされます。':'未入力';
+  $('#save').textContent=r?'更新する':'保存する';$('#del').hidden=!r;
+  scale('#mood',()=>mood,v=>mood=v);scale('#energy',()=>energy,v=>energy=v);chips();tabs();hist();chg()}
+
+$('#save').onclick=()=>{
+  if(mood===null&&energy===null){msg('気分かエネルギーのどちらかを選んでください。');return}
+  const now=new Date().toISOString(),ex=mode!=='any'?rec(sel,mode):null;
+  const it={id:mode==='any'?'m-'+now+'-'+Math.random().toString(36).slice(2,6):sel+'-'+mode,date:sel,slot:mode,mood,energy,done:[...done],meds:[...taken],se:[...se],note:$('#note').value.trim(),savedAt:ex?ex.savedAt:now,updatedAt:now};
+  if(mode==='am'){it.sleepBed=$('#bed').value;it.sleepWake=$('#wake').value;it.sleep=hours(it.sleepBed,it.sleepWake);it.lowneed=lowneed;it.wn=wn}
+  if(ex)S.items[S.items.indexOf(ex)]=it;else S.items.push(it);
+  persist();
+  if(mode==='any'){mood=null;energy=null;lowneed=false;done=new Set();taken=new Set();$('#note').value=''}
+  const m=MN[mode]+'を'+(ex?'更新':'保存')+'しました（'+hm(now)+'）';
+  loadForm();cal();msg(m)};
+$('#del').onclick=()=>{const r=rec(sel,mode);if(!r)return;S.items.splice(S.items.indexOf(r),1);persist();loadForm();cal();msg('削除しました')};
+
+function hist(){const r=S.items.filter(x=>x.date===sel&&x.slot==='any').sort((a,b)=>a.savedAt.localeCompare(b.savedAt));
+  $('#hist').innerHTML=r.length?'<li><small>この日の「気づいた時」の記録</small></li>'+r.map(e=>`<li><div>${hm(e.savedAt)}　気分${e.mood===null?'-':sg(e.mood)} 活力${e.energy===null?'-':sg(e.energy)}<br><small>${[...e.done,...e.meds].map(esc).join('、')}${e.note?' ／ '+esc(e.note):''}</small></div><button type="button" data-id="${esc(e.id)}" aria-label="この記録を削除">×</button></li>`).join(''):''}
+$('#hist').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=S.items.findIndex(x=>x.id===b.dataset.id);if(i>=0){S.items.splice(i,1);persist();loadForm();cal()}};
+
+function chart(){
+  const m={};S.items.forEach(e=>{const d=m[e.date]||(m[e.date]={mo:[],en:[],sl:null});if(e.mood!==null)d.mo.push(e.mood);if(e.energy!==null)d.en.push(e.energy);if(e.sleep)d.sl=e.sleep});
+  if(!S.items.length){$('#chart').innerHTML='<p class="note">まだ記録がありません。</p>';return}
+  const days=[];for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(dk(d))}
+  const W=340,H=130,L=24,R=8,T=8,B=16,x=i=>L+i*(W-L-R)/13,y=v=>T+(3-v)/6*(H-T-B);
+  const line=(key,col,dash)=>{let p='',pts='',pen=false;
+    days.forEach((k,i)=>{const d=m[k],v=d?avg(d[key]):null;if(v===null){pen=false;return}
+      p+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1);pen=true;pts+=`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3" fill="${col}"/>`});
+    return `<path d="${p}" fill="none" stroke="${col}" stroke-width="2" ${dash?'stroke-dasharray="5 3"':''}/>${pts}`};
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="気分とエネルギーの推移">`;
+  [-3,0,3].forEach(v=>g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" ${v===0?'stroke-dasharray="3 3"':''}/><text x="${L-4}" y="${y(v)+4}" font-size="10" text-anchor="end" fill="var(--muted)">${sg(v)}</text>`);
+  g+=line('mo','var(--accent)',false)+line('en','var(--energy)',true)+`<text x="${L}" y="${H-3}" font-size="10" fill="var(--muted)">${days[0].slice(5).replace('-','/')}</text><text x="${W-R}" y="${H-3}" font-size="10" text-anchor="end" fill="var(--muted)">${days[13].slice(5).replace('-','/')}</text></svg>`;
+  let s=`<svg viewBox="0 0 ${W} 54" role="img" aria-label="睡眠時間">`;
+  days.forEach((k,i)=>{const h=m[k]&&m[k].sl;if(h){const bh=Math.min(h,12)/12*44;s+=`<rect x="${x(i)-6}" y="${50-bh}" width="12" height="${bh}" rx="2" fill="var(--accent)" opacity=".55"><title>${k.slice(5).replace('-','/')} ${h}時間</title></rect>`}});
+  $('#chart').innerHTML=g+s+`<line x1="${L}" x2="${W-R}" y1="50" y2="50" stroke="var(--line)"/></svg>`}
+
+$('#copy').onclick=async()=>{
+  const ds=[...new Set(S.items.map(i=>i.date))].sort().slice(-30),f=v=>v===null?'-':sg(v);
+  const t='日付 / 区分(保存時刻) / 気分 / エネルギー / 睡眠 / できたこと / 薬 / メモ\n'+ds.flatMap(d=>S.items.filter(i=>i.date===d).sort((a,b)=>RK[a.slot]-RK[b.slot]||a.savedAt.localeCompare(b.savedAt)).map(i=>`${d.slice(5).replace('-','/')} / ${MN[i.slot]}(${hm(i.updatedAt)}${dk(i.updatedAt)!==i.date?'・'+dk(i.updatedAt).slice(5).replace('-','/')+'入力':''}) / ${f(i.mood)} / ${f(i.energy)} / ${i.sleep?i.sleep+'h':'-'} / ${i.done.join('、')||'-'} / ${i.meds.join('、')||'-'} / ${i.note||'-'}`)).join('\n');
+  try{await navigator.clipboard.writeText(t);$('#copymsg').textContent='コピーしました。'}catch(e){$('#copymsg').textContent='コピーできませんでした。手動で選択してください：\n'+t}};
+$('#exp').onclick=async()=>{const t=JSON.stringify(S);$('#io').value=t;try{await navigator.clipboard.writeText(t);$('#iomsg').textContent='書き出してコピーしました。大事に保管してください。'}catch(e){$('#iomsg').textContent='上の欄の文字列を全選択してコピーしてください。'}};
+$('#imp').onclick=()=>{try{const o=JSON.parse($('#io').value);const[a,u]=merge(o);$('#iomsg').textContent=`取り込みました：追加${a}件、更新${u}件`;loadForm();cal()}catch(e){$('#iomsg').textContent='取り込めませんでした。書き出した文字列をそのまま貼り付けてください。'}};
+
+function chg(){$('#cdate').value=sel;$('#medl').innerHTML=S.meds.map(m=>`<option value="${esc(m)}">`).join('');
+  $('#clist').innerHTML=[...S.changes].sort((a,b)=>a.date<b.date?1:-1).slice(0,8).map(c=>`<li><div>${c.date.slice(5).replace('-','/')} ${esc(c.med)} ${c.kind}${c.memo?'<br><small>'+esc(c.memo)+'</small>':''}</div><button type="button" data-id="${esc(c.id)}" aria-label="この変更を削除">×</button></li>`).join('')}
+$('#cadd').onclick=()=>{const med=$('#cmed').value.trim(),date=$('#cdate').value;if(!med||!date){msg('薬の名前と日付を入れてください。');return}
+  S.changes.push({id:'c-'+Date.now()+Math.random().toString(36).slice(2,6),date,med,kind:$('#ckind').value,memo:$('#cmemo').value.trim()});persist();$('#cmed').value='';$('#cmemo').value='';chg();msg('薬の変更を記録しました')};
+$('#clist').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.changes=S.changes.filter(c=>c.id!==b.dataset.id);persist();chg()};
+$('#vt').onclick=e=>{const b=e.target.closest('button');if(!b)return;const v=b.dataset.view;document.querySelectorAll('#vt button').forEach(x=>x.classList.toggle('on',x===b));$('#recv').hidden=v!=='rec';$('#sumv').hidden=v!=='sum';if(v==='sum')renderSum()};
+$('#per').onclick=e=>{const b=e.target.closest('button');if(!b)return;per=+b.dataset.p;document.querySelectorAll('#per button').forEach(x=>x.classList.toggle('on',x===b));renderSum()};
+
+const f1=v=>v==null?'-':sg(Math.round(v*10)/10),ad=(s,k)=>{const t=new Date(s+'T00:00');t.setDate(t.getDate()+k);return dk(t)};
+let ov='sep';try{ov=localStorage.getItem('taicho-ov')||'sep'}catch(e){}
+$('#ov').onclick=e=>{const b=e.target.closest('button');if(!b)return;ov=b.dataset.o;try{localStorage.setItem('taicho-ov',ov)}catch(x){}renderSum()};
+function renderSum(){
+  document.querySelectorAll('#ov button').forEach(b=>b.classList.toggle('on',b.dataset.o===ov));
+  const days=[];for(let i=per-1;i>=0;i--)days.push(ad(today,-i));
+  const bs=per>=180?7:1,G=[];for(let i=0;i<days.length;i+=bs)G.push(days.slice(i,i+bs));
+  const m={};S.items.forEach(e=>{const d=m[e.date]||(m[e.date]={mo:[],en:[],sl:null,wn:null,low:false,se:new Set(),dn:new Set(),md:new Set()});if(e.mood!=null)d.mo.push(e.mood);if(e.energy!=null)d.en.push(e.energy);if(e.sleep){d.sl=e.sleep;d.wn=e.wn!=null?e.wn:null;d.low=!!e.lowneed}(e.se||[]).forEach(k=>d.se.add(k));(e.done||[]).forEach(k=>d.dn.add(k));(e.meds||[]).forEach(k=>d.md.add(k))});
+  const n=G.length,x=i=>24+(n>1?i*308/(n-1):0),md=t=>t.slice(5).replace('-','/');
+  const gv=(g,k)=>{const a=[];g.forEach(d=>{if(m[d])a.push(...m[d][k])});return a.length?avg(a):null};
+  const ax=H=>`<text x="24" y="${H-3}" font-size="10" fill="var(--muted)">${md(days[0])}</text><text x="332" y="${H-3}" font-size="10" text-anchor="end" fill="var(--muted)">${md(days[days.length-1])}</text>`;
+  const cl=(T,Bt,H)=>S.changes.filter(c=>days.includes(c.date)).map(c=>{const X=x(G.findIndex(g=>g.includes(c.date)));return `<line x1="${X}" x2="${X}" y1="${T}" y2="${H-Bt}" stroke="var(--muted)" stroke-dasharray="2 3"/>`}).join('');
+  const LC=(sers,H)=>{const T=10,B=16,y=v=>T+(3-v)/6*(H-T-B);let h=`<svg viewBox="0 0 340 ${H}" role="img">`;
+    [-3,0,3].forEach(t=>h+=`<line x1="24" x2="332" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" ${t===0?'stroke-dasharray="3 3"':''}/><text x="20" y="${y(t)+4}" font-size="10" text-anchor="end" fill="var(--muted)">${sg(t)}</text>`);
+    h+=cl(T,B,H);
+    sers.forEach(([a,c,dash])=>{let p='',q='',pen=false;a.forEach((v,i)=>{if(v===null){pen=false;return}p+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1);pen=true;q+=`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${n>45?1.6:3}" fill="${c}"/>`});h+=`<path d="${p}" fill="none" stroke="${c}" stroke-width="2" ${dash?'stroke-dasharray="5 3" opacity=".7"':''}/>${q}`});
+    return h+ax(H)+'</svg>'};
+  const wk=bs>1?'<p class="note">1週間ごとの平均で表示しています。</p>':'';
+  {const mo=G.map(g=>gv(g,'mo')),en=G.map(g=>gv(g,'en')),v=days.map(d=>[m[d]&&m[d].mo.length?avg(m[d].mo):null,d]).filter(a=>a[0]!==null);let h='';
+   if(!v.length)h='<p class="note">この期間の記録がありません。</p>';
+   else{const hi=v.reduce((a,b)=>b[0]>a[0]?b:a),lo=v.reduce((a,b)=>b[0]<a[0]?b:a);
+    h=`<div class="stats"><span>最高 <b>${f1(hi[0])}</b>（${md(hi[1])}）</span><span>最低 <b>${f1(lo[0])}</b>（${md(lo[1])}）</span><span>平均 <b>${f1(avg(v.map(a=>a[0])))}</b></span></div>`;
+    h+=ov==='mix'?LC([[en,'var(--energy)',true],[mo,'var(--accent)',false]],150)+'<div class="legend"><span><i class="dot" style="background:var(--accent)"></i>気分</span><span><i class="dot" style="background:var(--energy)"></i>エネルギー（点線）</span></div>'
+      :'<small class="note">気分</small>'+LC([[mo,'var(--accent)',false]],110)+'<small class="note">エネルギー</small>'+LC([[en,'var(--energy)',false]],110);
+    h+='<p class="note">縦の点線：薬の変更日</p>'+wk}
+   $('#s1').innerHTML=h}
+  {const SL=G.map(g=>{const a=g.map(d=>m[d]&&m[d].sl).filter(Boolean);return{v:a.length?avg(a):null,wn:g.some(d=>m[d]&&m[d].wn>0),low:g.some(d=>m[d]&&m[d].low)}});
+   const v=days.map(d=>[m[d]&&m[d].sl,d]).filter(a=>a[0]);let h='';
+   if(!v.length)h='<p class="note">この期間に睡眠の記録がありません。</p>';
+   else{const hi=v.reduce((a,b)=>b[0]>a[0]?b:a),lo=v.reduce((a,b)=>b[0]<a[0]?b:a),av=avg(v.map(a=>a[0])),ws=days.filter(d=>m[d]&&m[d].sl&&m[d].wn!==null),wy=ws.filter(d=>m[d].wn>0).length,lw=days.filter(d=>m[d]&&m[d].low).length;
+    h=`<div class="stats"><span>平均 <b>${av.toFixed(1)}h</b></span><span>最長 <b>${hi[0]}h</b>（${md(hi[1])}）</span><span>最短 <b>${lo[0]}h</b>（${md(lo[1])}）</span></div><div class="stats"><span>中途覚醒あり <b>${wy}日</b>／記録${ws.length}日</span><span>眠らなくても元気 <b>${lw}日</b></span></div>`;
+    const H=120,base=H-16,top=14,hy=t=>base-Math.min(t,12)/12*(base-top),bw=Math.max(2,Math.min(12,308/n*.7));
+    h+=`<svg viewBox="0 0 340 ${H}" role="img" aria-label="睡眠時間の推移">`;
+    SL.forEach((o,i)=>{if(o.v===null)return;const t=hy(o.v),q=o.wn?14:8;h+=`<rect x="${x(i)-bw/2}" y="${t}" width="${bw}" height="${base-t}" rx="1.5" fill="var(--accent)" opacity=".6"/>`;if(o.wn)h+=`<circle cx="${x(i)}" cy="${t-5}" r="${n>45?2:3}" fill="var(--energy)"/>`;if(o.low)h+=`<rect x="${x(i)-2.5}" y="${t-q}" width="5" height="5" transform="rotate(45 ${x(i)} ${t-q+2.5})" fill="var(--ink)"/>`});
+    h+=`<line x1="24" x2="332" y1="${hy(av)}" y2="${hy(av)}" stroke="var(--ink)" stroke-dasharray="4 3" opacity=".5"/><line x1="24" x2="332" y1="${base}" y2="${base}" stroke="var(--line)"/>`+cl(top,16,H)+ax(H)+'</svg><div class="legend"><span><i class="dot" style="background:var(--energy)"></i>中途覚醒あり</span><span>◆ あまり眠らなくても元気</span><span>横の点線：平均</span></div>'+wk}
+   $('#s2').innerHTML=h}
+  const rows=(names,kind,showRec)=>{const rec=days.filter(d=>m[d]).length,H=names.length*24+14,w=Math.max(1.5,308/n*.85);let h=`<svg viewBox="0 0 340 ${H}" role="img">`;
+    names.forEach((nm,r)=>{const y0=r*24,hits=days.filter(d=>m[d]&&m[d][kind].has(nm)).length;
+      h+=`<text x="24" y="${y0+10}" font-size="11" fill="var(--ink)">${esc(nm)}　${hits}日${showRec?'／記録'+rec+'日':''}</text>`;
+      G.forEach((g,i)=>{const rd=g.filter(d=>m[d]),ht=g.filter(d=>m[d]&&m[d][kind].has(nm)).length;if(!rd.length)return;
+        h+=`<rect x="${x(i)-w/2}" y="${y0+14}" width="${w}" height="8" rx="1" fill="var(--line)"/>`;
+        if(ht)h+=`<rect x="${x(i)-w/2}" y="${y0+14}" width="${w}" height="8" rx="1" fill="var(--accent)" opacity="${(.35+.65*ht/rd.length).toFixed(2)}"/>`})});
+    return h+cl(0,14,H)+ax(H)+'</svg>'};
+  const block=(names,kind,showRec)=>names.length>5?rows(names.slice(0,5),kind,showRec)+'<details><summary>ほか'+(names.length-5)+'件</summary>'+rows(names.slice(5),kind,showRec)+'</details>':rows(names,kind,showRec);
+  const LG='<div class="legend"><span><i class="dot" style="background:var(--accent)"></i>チェックあり</span><span><i class="dot" style="background:var(--line)"></i>記録はあるがチェックなし</span><span>空白：記録なし</span></div>'+(bs>1?'<p class="note">1週間ごとに表示。色の濃さは、その週の記録のある日のうち、チェックがあった日の割合です。</p>':'');
+  const nm=kind=>{const c={};days.forEach(d=>m[d]&&m[d][kind].forEach(k=>c[k]=(c[k]||0)+1));return Object.keys(c).sort((a,b)=>c[b]-c[a])};
+  $('#s5').innerHTML=block(DONE,'dn',true)+LG;
+  {const pn=nm('md');$('#s6').innerHTML=pn.length?block(pn,'md',true)+LG+'<p class="note">チェックのない日は、飲まなかった日か、入力しなかった日のどちらかです。</p>':'<p class="note">この期間に薬のチェックがありません。</p>'}
+  {const win=(s,a,b)=>{const r={mo:[],en:[],sl:[],n:0};for(let k=a;k<=b;k++){const d=ad(s,k);if(d>today)break;const e=m[d];if(!e)continue;r.n++;r.mo.push(...e.mo);r.en.push(...e.en);if(e.sl)r.sl.push(e.sl)}return r};
+   const row=(l,r)=>`<div class="ba"><span>${l}</span><span>気分 ${f1(avg(r.mo))}</span><span>活力 ${f1(avg(r.en))}</span><span>睡眠 ${r.sl.length?Math.round(avg(r.sl)*10)/10+'h':'-'}</span></div>`;
+   const cs=S.changes.filter(c=>days.includes(c.date)).sort((a,b)=>a.date<b.date?-1:1);
+   $('#s3').innerHTML=cs.length?cs.map(c=>{const b=win(c.date,-14,-1),a=win(c.date,1,14);return `<div class="chg"><b>${c.date.slice(5).replace('-','/')} ${esc(c.med)} ${c.kind}</b>${c.memo?' <small>'+esc(c.memo)+'</small>':''}${row('前2週',b)}${row('後2週',a)}<small class="note">記録のある日数：前${b.n}日／後${a.n}日</small></div>`}).join('')+'<p class="note">数字を並べているだけで、薬の影響を示すものではありません。</p>':'<p class="note">この期間に記録された薬の変更はありません。</p>'}
+  {const cnt={};days.forEach(d=>m[d]&&m[d].se.forEach(k=>cnt[k]=(cnt[k]||0)+1));const ks=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]),mx=cnt[ks[0]]||1;
+   const ns=S.items.filter(e=>days.includes(e.date)&&e.note).sort((a,b)=>a.date<b.date?1:-1).slice(0,30);
+   $('#s4').innerHTML=(ks.length?block(ks,'se',false)+LG:'<p class="note">この期間に選択された副作用はありません。</p>')+(ns.length?'<details><summary>ひとことメモ（'+ns.length+'件）</summary>'+ns.map(e=>`<p>${e.date.slice(5).replace('-','/')} ${MN[e.slot]}：${esc(e.note)}</p>`).join('')+'</details>':'')}
+}
+
+const n=new Date();sel=today;vy=n.getFullYear();vm=n.getMonth();mode=n.getHours()<12?'am':'pm';
+cal();loadForm();
+</script>
+</body>
+</html>
