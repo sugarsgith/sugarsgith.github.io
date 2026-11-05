@@ -80,6 +80,9 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
 .kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
 .back{font-size:13px;color:var(--accent);text-decoration:none}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gen4 button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;line-height:1.25}
+.gen4 button b{font-size:14px;font-weight:700}
+.gen4 button .gsub{font-size:11px;color:var(--sub);font-weight:400}
 .btns button{width:100%;font-size:14px;line-height:1.25}
 .btns button small{display:block;font-size:11.5px;color:var(--sub);font-weight:400}
 button.p small{color:#e6eeff}
@@ -120,6 +123,24 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 .cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
 .cmp td.h{font-weight:700}
 .pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+
+.hint2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-width:0;max-width:100%}
+.hint2 b{font-size:13px;font-weight:700}
+.hint2 small{font-size:11px;color:var(--sub);font-weight:500;white-space:normal;line-height:1.35}
+.gnote{font-size:12px;color:var(--warn);margin:6px 0 0}
+.qrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px;padding:8px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.qrow label{font-size:11px;color:var(--sub)}
+.qrow input{width:72px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--card);color:var(--text)}
+.dlg[hidden]{display:none!important}.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.dlg .box{background:var(--card);border-radius:16px 16px 12px 12px;padding:16px;width:100%;max-width:480px;max-height:85vh;overflow:auto}
+.dlg h3{margin:0 0 8px;font-size:17px}
+.dlg .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dlg label{font-size:12px;color:var(--sub);display:block;margin:0 0 2px}
+.dlg input,.dlg textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--bg);color:var(--text)}
+.dlg .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.toolsbar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+#copyOut{width:100%;min-height:110px;font:12px/1.4 ui-monospace,monospace;margin-top:8px;display:none}
+
 </style>
 <meta name="theme-color" content="#0b0b0f">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -151,14 +172,34 @@ button.p .cnt{background:#fff;color:#1d4ed8}
     <div class="seg" id="resetSeg"><button data-set="reset" data-v="yes">変更あり</button><button data-set="reset" data-v="no">据え置き</button><button data-set="reset" data-v="unknown">不明</button></div>
     <p class="cap" style="margin-top:6px">リセット判別は解析サイトでも「調査中」（なな徹）。間接的な目安：<b>650G+α（炎炎ループ間は1500G+α）で当たらなければ据え置き濃厚</b>（<a href="https://altema.jp/pachimo/lenen2reset" target="_blank" rel="noopener">アルテマ</a>・<a href="https://www.slopachi-quest.com/article/enennosyouboutai2-tenjou/" target="_blank" rel="noopener">スロパチクエスト</a>）。ホールの公表・前日データと合わせて判断してください。</p>
     <h3>自分が打った分（一括入力）</h3>
-    <div class="grid2">
-      <div><label>通常時のゲーム数</label><input data-f="g" inputmode="numeric" placeholder="例 2000"></div>
+    <label>何の数字？（ゲーム数）</label>
+    <div class="seg" id="gSrcSeg">
+      <button data-set="gSrc" data-v="lamp">データランプ累計</button>
+      <button data-set="gSrc" data-v="lcd">台の液晶</button>
+      <button data-set="gSrc" data-v="manual">自分で数えた通常G</button>
+      <button data-set="gSrc" data-v="unknown">分からない</button>
+    </div>
+    <div class="grid2" style="margin-top:8px">
+      <div><label id="gLabel">ゲーム数</label><input data-f="g" inputmode="numeric" placeholder="例 2000"></div>
       <div><label>ボーナス初当り回数</label><input data-f="bon" inputmode="numeric" placeholder="例 9"></div>
       <div><label>うち炎炎ループ突入</label><input data-f="loop" inputmode="numeric" placeholder="例 4"></div>
     </div>
-    <p class="cap" style="margin-top:6px">ボーナス初当り＝初当りREG＋SPエピソード。炎炎ループ突入＝SPエピ直行＋伝導者の罠成功。下の「当たり記録」ボタンでも自動で増えます。</p>
+    <p class="cap" style="margin-top:6px">ボーナス初当り＝初当りREG＋SPエピソード。炎炎ループ突入＝SPエピ直行＋伝導者の罠成功。下の「当たり記録」で当選Gを入れると、<b>推定通常G（合算）を優先</b>して推測します。</p>
+    <p class="gnote" id="gSrcNote"></p>
+    <p class="note" id="estGNote"></p>
+    <h3>任意（コピー・履歴用）</h3>
+    <div class="grid2">
+      <div><label>店名</label><input data-f="store" placeholder="例 メガ・ガディス"></div>
+      <div><label>台番</label><input data-f="dai" inputmode="numeric" placeholder="例 304"></div>
+      <div><label>収支（枚・任意）</label><input data-f="balance" placeholder="例 +1200"></div>
+    </div>
     <p class="note" id="savestate"></p>
-    <button id="resetAll">リセット</button>
+    <div class="toolsbar">
+      <button type="button" id="btnCopy" class="p">チャット用にコピー</button>
+      <button type="button" id="btnEnd">この台を終了して保存</button>
+      <button type="button" id="resetAll">リセット</button>
+    </div>
+    <textarea id="copyOut" readonly aria-label="コピー用テキスト"></textarea>
   </section>
 
   <section id="mid" hidden>
@@ -179,7 +220,7 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 
   <section id="now">
     <h2>当たり記録</h2>
-    <p class="cap">押すと回数と天井カウンターが自動で動き、終了画面の種類も切り替わります。</p>
+    <p class="cap">押すと回数と天井カウンターが自動で動き、終了画面の種類も切り替わります。<b>初当りREG／SPエピ</b>には当選G（通常からのゲーム数）を入力でき、合計が推定通常Gになります。</p>
     <div class="kv"><span>いまの状態</span><b id="stateLbl"></b></div>
     <div class="btns" style="margin-top:8px">
       <button data-q="reg">初当りREG<small>→伝導者の罠へ</small></button>
@@ -221,7 +262,7 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 
   <section id="rc">
     <h2>REG中のキャラ紹介 <span class="rel m">信頼度 中</span></h2>
-    <p class="cap">初当りREG中に5人紹介（P-WORLD）。シナリオを1つ選んで記録。振り分けはちょんぼりすたの表（結合セルを上の値で補完し、各設定の合計100%で検算済み）。<a href="https://www.p-world.co.jp/machine/database/10415" target="_blank" rel="noopener">紹介順の一覧（P-WORLD）</a>・<a href="https://chonborista.com/slot/sankyo-slot/247643/" target="_blank" rel="noopener">振り分け（ちょんぼりすた）</a></p>
+    <p class="cap">初当りREG中に5人紹介（P-WORLD）。シナリオを1つ選んで記録（5人の順番を省略せず表示）。振り分けはちょんぼりすたの表（結合セルを上の値で補完し、各設定の合計100%で検算済み）。第8③の3人目はタマキ（なな徹・アルテマ）。CSプラザはヴァルカン表記で<span class="warnx">不一致</span>。<a href="https://www.p-world.co.jp/machine/database/10415" target="_blank" rel="noopener">紹介順の一覧（P-WORLD）</a>・<a href="https://chonborista.com/slot/sankyo-slot/247643/" target="_blank" rel="noopener">振り分け（ちょんぼりすた）</a></p>
     <div class="hints" id="rcBtns"></div>
     <h3>出現箇所不問（金キャラ）</h3>
     <div class="hints" id="rcxBtns"></div>
@@ -230,7 +271,7 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 
   <section id="coin">
     <h2>獲得枚数表示 <span class="rel h">信頼度 高</span></h2>
-    <p class="cap">AT中の一定枚数獲得時（P-WORLD）。いずれも確定系。出現率は約1%だが分母が不明なので、否定・確定としてだけ使います。</p>
+    <p class="cap">AT中の一定枚数獲得時（P-WORLD）。いずれも濃厚。出現率は約1%だが分母が不明なので、濃厚・否定としてだけ使います。</p>
     <div class="hints" id="coinBtns"></div>
     <div class="evs" id="coinLog"></div>
   </section>
@@ -256,10 +297,13 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 
   <section id="gen">
     <h2>その他の示唆（数値未公表） <span class="rel l">信頼度 低</span></h2>
-    <p class="cap">例：有利区間リセット時に炎炎大戦以上（「高設定ほど当選しやすい模様」ちょんぼりすた）など、数値のない示唆。強さはこの機種のREG後終了画面の「弱」「強」と同程度と仮定し、⚙の重み（初当り／連チャン中）を掛けます。</p>
-    <label>タイミング（状態から自動・手動でも可）</label>
-    <div class="seg" id="tmSeg"><button data-set="tm" data-v="first">初当り</button><button data-set="tm" data-v="loop">連チャン中</button></div>
-    <div class="btns" style="margin-top:8px"><button data-gen="weak">高設定示唆（弱）</button><button data-gen="strong">高設定示唆（強）</button></div>
+    <p class="cap">例：有利区間リセット時に炎炎大戦以上（「高設定ほど当選しやすい模様」ちょんぼりすた）など、数値のない示唆。強さはこの機種のREG後終了画面の「弱」「強」と同程度と仮定し、⚙の重みを掛けます。<b>初当りか連チャン中かで重みが違う</b>（連チャン中は⚙で軽め）ので、見たタイミングのボタンを1タップで記録してください。</p>
+    <div class="btns gen4" style="margin-top:8px">
+      <button type="button" data-gen="weak" data-tm="first"><b>初当りで 弱</b><span class="gsub">高設定示唆（弱）・初当りで</span></button>
+      <button type="button" data-gen="strong" data-tm="first"><b>初当りで 強</b><span class="gsub">高設定示唆（強）・初当りで</span></button>
+      <button type="button" data-gen="weak" data-tm="loop"><b>連チャン中に 弱</b><span class="gsub">高設定示唆（弱）・連チャン中に</span></button>
+      <button type="button" data-gen="strong" data-tm="loop"><b>連チャン中に 強</b><span class="gsub">高設定示唆（強）・連チャン中に</span></button>
+    </div>
     <div class="evs" id="genLog"></div>
   </section>
 
@@ -327,18 +371,18 @@ var ESI=[
 var RC=[
  {id:"d1",n:"第8①",s:"シンラ→アーサー→タマキ→マキ→ヒナワ",m:"デフォルト",lv:"default",r:[43,40.5,38,38.5,35.5,30.5]},
  {id:"d2",n:"第8②",s:"シンラ→リヒト→ヴァルカン→アイリス→オウビ",m:"偶数示唆",lv:"weak",r:[15,20,10,20,10,20]},
- {id:"d3",n:"第8③",s:"…→マキ→紅丸（金）",m:"設定4以上濃厚",lv:"confirm",r:[0,0,0,1,1,0.5]},
- {id:"d4",n:"第8④",s:"…→アイリス→シンラ（金）",m:"設定6濃厚",lv:"confirm",r:[0,0,0,0,0,1]},
+ {id:"d3",n:"第8③",s:"シンラ→アーサー→タマキ→マキ→紅丸（金）",m:"設定4以上濃厚",lv:"confirm",r:[0,0,0,1,1,0.5]},
+ {id:"d4",n:"第8④",s:"シンラ→リヒト→ヴァルカン→アイリス→シンラ（金）",m:"設定6濃厚",lv:"confirm",r:[0,0,0,0,0,1]},
  {id:"t1",n:"伝導者①",s:"ジョヴァンニ→カロン→ハウメア→フレイル→インカ",m:"奇数示唆",lv:"weak",r:[15,10,20,10,20,10]},
- {id:"t2",n:"伝導者②",s:"…→フレイル→オロチ",m:"高設定示唆（弱）",lv:"weak",r:[5,5,5,7.5,7.5,7.5]},
- {id:"t3",n:"伝導者③",s:"…→フレイル→リツ",m:"高設定示唆（強）",lv:"strong",r:[1,1,1,5,5,5]},
- {id:"t4",n:"伝導者④",s:"…→フレイル→ショウ（金）",m:"設定5以上濃厚",lv:"confirm",r:[0,0,0,0,0.5,1]},
+ {id:"t2",n:"伝導者②",s:"ジョヴァンニ→カロン→ハウメア→フレイル→オロチ",m:"高設定示唆（弱）",lv:"weak",r:[5,5,5,7.5,7.5,7.5]},
+ {id:"t3",n:"伝導者③",s:"ジョヴァンニ→カロン→ハウメア→フレイル→リツ",m:"高設定示唆（強）",lv:"strong",r:[1,1,1,5,5,5]},
+ {id:"t4",n:"伝導者④",s:"ジョヴァンニ→カロン→ハウメア→フレイル→ショウ（金）",m:"設定5以上濃厚",lv:"confirm",r:[0,0,0,0,0.5,1]},
  {id:"i1",n:"アイリス①",s:"まもるくん→オウビ→インカ→アーグ→バーンズ",m:"設定1否定",lv:"confirm",r:[0,10,10,4,4,4]},
- {id:"i2",n:"アイリス②",s:"アイリス→まもるくん→…",m:"設定2否定",lv:"confirm",r:[7.5,0,10,4,4,4]},
- {id:"i3",n:"アイリス③",s:"アイリス→オウビ→まもるくん→…",m:"設定3否定",lv:"confirm",r:[7.5,7.5,0,4,4,4]},
- {id:"i4",n:"アイリス④",s:"…→インカ→まもるくん→バーンズ",m:"設定4否定",lv:"confirm",r:[3,3,3,0,7.5,4]},
- {id:"i5",n:"アイリス⑤",s:"…→アーグ→まもるくん",m:"設定5否定",lv:"confirm",r:[3,3,3,5,0,7.5]},
- {id:"i6",n:"アイリス⑥",s:"まもるくんが出ない",m:"設定6濃厚",lv:"confirm",r:[0,0,0,0,0,0.5]},
+ {id:"i2",n:"アイリス②",s:"アイリス→まもるくん→インカ→アーグ→バーンズ",m:"設定2否定",lv:"confirm",r:[7.5,0,10,4,4,4]},
+ {id:"i3",n:"アイリス③",s:"アイリス→オウビ→まもるくん→アーグ→バーンズ",m:"設定3否定",lv:"confirm",r:[7.5,7.5,0,4,4,4]},
+ {id:"i4",n:"アイリス④",s:"アイリス→オウビ→インカ→まもるくん→バーンズ",m:"設定4否定",lv:"confirm",r:[3,3,3,0,7.5,4]},
+ {id:"i5",n:"アイリス⑤",s:"アイリス→オウビ→インカ→アーグ→まもるくん",m:"設定5否定",lv:"confirm",r:[3,3,3,5,0,7.5]},
+ {id:"i6",n:"アイリス⑥",s:"アイリス→オウビ→インカ→アーグ→バーンズ（まもるくん無し）",m:"設定6濃厚",lv:"confirm",r:[0,0,0,0,0,0.5]},
  {id:"oc",n:"大隊長",s:"ジョヴァンニ→オウビ→アーグ→バーンズ→紅丸（金）",m:"設定4以上濃厚",lv:"confirm",r:[0,0,0,1,1,0.5]}];
 var RCX=[{id:"kurono",n:"黒野（金）",m:"設定4以上濃厚",allow:[4,5,6]},{id:"joker",n:"ジョーカー（金）",m:"設定5以上濃厚",allow:[5,6]},{id:"shino",n:"シンラ（死ノ圧）",m:"設定6濃厚",allow:[6]}];
 var COIN=[{id:"c119",n:"119枚OVER",m:"設定2以上濃厚",allow:[2,3,4,5,6]},{id:"c246",n:"246枚OVER",m:"偶数設定濃厚",allow:[2,4,6]},{id:"c456",n:"456枚OVER",m:"設定4以上濃厚",allow:[4,5,6]},{id:"c666",n:"666枚OVER",m:"設定6濃厚",allow:[6]}];
@@ -368,7 +412,8 @@ var MH=[
  {id:"es_h",g:"終了画面（示唆・濃厚ではない）",n:"第8ヘルメット",m:"通常D以上示唆",min:3,hard:false},
  {id:"es_119",g:"終了画面（示唆・濃厚ではない）",n:"119（ワンワンニャイン）",m:"通常E示唆",min:4,hard:false}];
 
-function emptyS(){return {mode:"asa",reset:"unknown",g:"",bon:"",loop:"",wv:"",wx:"",state:"normal",btype:"reg",role:"other",tm:"first",tmAuto:true,
+function emptyS(){return {mode:"asa",reset:"unknown",g:"",gSrc:"lamp",bon:"",loop:"",wv:"",wx:"",state:"normal",btype:"reg",role:"other",tm:"first",tmAuto:true,
+ store:"",dai:"",balance:"",
  ev:[],q:[],c:{bg:"",lg:"",thru:"",sen:""},p:{ht:"",g:"",bon:"",loop:""},scope:"unknown",merge:false,
  W:{first:100,loop:50,custom:0},custom:false,mctx:"bonus",zones:{},mh:{},cnt:[],notes:""};}
 var S=emptyS(),canSave=true;
@@ -378,11 +423,28 @@ function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var p=JSON.pars
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));canSave=true;}catch(x){canSave=false;}}
 function $(id){return document.getElementById(id);}
 function num(x){var n=Number(String(x).replace(/[^\d.]/g,""));return isFinite(n)?n:0;}
+function hitGSum(){var s=0,n=0;S.q.forEach(function(e){if((e.t==="初当りREG"||e.t==="SPエピ")&&e.g!==undefined&&e.g!==""){s+=num(e.g);n++;}});return n?s:null;}
+function effG(){var h=hitGSum();if(h!==null)return{g:h,kind:"hits",rel:"m",label:"推定通常G（当たり当選Gの合算）"};
+ var g=num(S.g),src=S.gSrc||"lamp";
+ if(!g)return{g:0,kind:src,rel:"l",label:"未入力"};
+ if(src==="manual")return{g:g,kind:src,rel:"h",label:"自分で数えた通常G"};
+ if(src==="lcd")return{g:g,kind:src,rel:"m",label:"台の液晶のG"};
+ if(src==="unknown")return{g:g,kind:src,rel:"l",label:"種別不明のG（信頼度低め）"};
+ return{g:g,kind:"lamp",rel:"l",label:"データランプ累計（AT等含む可能性・信頼度低め）"};}
+function gSrcCaption(){return({lamp:"データランプの累計G（AT・REG・ループ中も含むことが多い）",lcd:"台の液晶に出ているゲーム数",manual:"自分で数えた通常時ゲーム数",unknown:"どの数字か分からない場合"})[S.gSrc||"lamp"]||"";}
+
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function pct(x){return (Math.round(x*1000)/10).toFixed(1)+"%";}
 function table(cols,rows){return '<div class="scroll"><table><thead><tr>'+cols.map(function(c){return "<th>"+esc(c)+"</th>";}).join("")+'</tr></thead><tbody>'+rows.map(function(r){return "<tr>"+r.map(function(c){return "<td>"+esc(c)+"</td>";}).join("")+"</tr>";}).join("")+"</tbody></table></div>";}
 function kv(k,v){return '<div class="kv"><span>'+k+'</span><b>'+v+'</b></div>';}
-function tagOf(lv){return lv==="confirm"?'<span class="tag confirm">確定系</span>':lv==="strong"?'<span class="tag strong">強</span>':lv==="weak"?'<span class="tag weak">弱</span>':'<span class="tag">デフォルト</span>';}
+function tagOf(lv,m){
+  if(lv==="strong")return '<span class="tag strong">強</span>';
+  if(lv==="weak")return '<span class="tag weak">弱</span>';
+  if(lv!=="confirm")return '<span class="tag">デフォルト</span>';
+  var lab="濃厚";
+  if(m){if(/否定/.test(m))lab="否定";else if(/確定/.test(m)&&!/濃厚/.test(m))lab="確定";else if(/濃厚/.test(m))lab="濃厚";}
+  return '<span class="tag confirm">'+lab+'</span>';
+}
 function curTm(){return S.state==="loop"?"loop":"first";}
 function btTm(bt){return bt==="reg"?"first":"loop";}
 function tmLbl(t){return t==="loop"?'<span class="badge loop">連チャン中</span>':'<span class="badge">初当り</span>';}
@@ -406,8 +468,8 @@ function estimate(o){o=o||{};var OWN=o.own!==false,PRV=o.prev!==undefined?o.prev
  function cat(r,w){var a=[];for(var i=0;i<6;i++){if(r[i]<=0){allow[i]=0;a.push(0);}else a.push(Math.log(r[i]/100));}addArr(a,w);}
  function mask(al){for(var i=0;i<6;i++)if(al.indexOf(i+1)<0)allow[i]=0;}
  var pb=SPEC.bon.map(function(d){return 1/d;}),pq=SPEC.bon.map(function(d,i){return d/SPEC.loop[i];});
- var G=num(S.g),B=num(S.bon),Lp=num(S.loop);
- if(OWN&&G>0&&S.bon!==""){addArr(binom(B,G,pb),1);used.push({t:"ボーナス初当り 1/"+(B?Math.round(G/B):"-")+"（"+B+"回/"+G+"G）",rel:"h"});}
+ var EG=effG(),G=EG.g,B=num(S.bon),Lp=num(S.loop);
+ if(OWN&&G>0&&S.bon!==""){addArr(binom(B,G,pb),1);used.push({t:"ボーナス初当り 1/"+(B?Math.round(G/B):"-")+"（"+B+"回/"+G+"G・"+EG.label+"）",rel:EG.rel});}
  if(OWN&&B>0&&S.loop!==""){var k=Math.min(Lp,B);addArr(binom(k,B,pq),1);used.push({t:"炎炎ループ突入 "+k+"/"+B+"（初当りの"+Math.round(k/B*100)+"%）",rel:"h"});if(Lp>B)used.push({t:"⚠ ループ回数が初当り回数より多い（初当り回数で計算）",rel:"l"});}
  if(PRV){var w=S.scope==="today"?1:0.5,pg=num(S.p.g),pB=num(S.p.bon),pL=num(S.p.loop);
   if(pg>0&&S.p.bon!==""){addArr(binom(pB,pg,pb),w);used.push({t:"前任 初当り "+pB+"回/"+pg+"G（重み"+w*100+"%）",rel:"l"});}
@@ -452,11 +514,11 @@ function modeEst(){
 // ---------- render ----------
 function seg(id,val){document.querySelectorAll("#"+id+" button").forEach(function(b){b.className=b.dataset.v===val?"on":"";});}
 function renderStatic(){
- $("esBtns").innerHTML=ESI.map(function(h){return '<div class="hint" data-es="'+h.v+'"><button class="tap"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv)+'</div><div class="look">'+esc(h.m)+'</div></button><div class="row"><button class="sm p" data-es="'+h.v+'">＋記録 <span class="cnt" data-esc="'+h.v+'">0</span></button></div></div>';}).join("");
- $("rcBtns").innerHTML=RC.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv)+'</div><div class="look">'+esc(h.s)+'<br>'+esc(h.m)+'</div><button class="sm p" data-rc="'+h.id+'">＋記録 <span class="cnt" data-rcc="'+h.id+'">0</span></button></div>';}).join("");
- $("rcxBtns").innerHTML=RCX.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf("confirm")+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-rcx="'+h.id+'">＋記録 <span class="cnt" data-rcxc="'+h.id+'">0</span></button></div>';}).join("");
- $("coinBtns").innerHTML=COIN.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf("confirm")+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-coin="'+h.id+'">＋記録 <span class="cnt" data-coinc="'+h.id+'">0</span></button></div>';}).join("");
- $("endBtns").innerHTML=END.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv)+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-end="'+h.id+'">＋記録 <span class="cnt" data-endc="'+h.id+'">0</span></button></div>';}).join("");
+ $("esBtns").innerHTML=ESI.map(function(h){return '<div class="hint" data-es="'+h.v+'"><button class="tap"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv,h.m)+'</div><div class="look">'+esc(h.m)+'</div></button><div class="row"><button class="sm p" data-es="'+h.v+'">＋記録 <span class="cnt" data-esc="'+h.v+'">0</span></button></div></div>';}).join("");
+ $("rcBtns").innerHTML=RC.map(function(h){return '<div class="hint hint2"><div class="hd"><span>'+esc(h.n)+' · '+esc(h.m)+'</span>'+tagOf(h.lv,h.m)+'</div><div class="look"><b style="font-weight:600;color:var(--text)">'+esc(h.s)+'</b></div><button class="sm p" data-rc="'+h.id+'">＋記録 <span class="cnt" data-rcc="'+h.id+'">0</span></button></div>';}).join("");
+ $("rcxBtns").innerHTML=RCX.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf("confirm",h.m)+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-rcx="'+h.id+'">＋記録 <span class="cnt" data-rcxc="'+h.id+'">0</span></button></div>';}).join("");
+ $("coinBtns").innerHTML=COIN.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf("confirm",h.m)+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-coin="'+h.id+'">＋記録 <span class="cnt" data-coinc="'+h.id+'">0</span></button></div>';}).join("");
+ $("endBtns").innerHTML=END.map(function(h){return '<div class="hint"><div class="hd"><span>'+esc(h.n)+'</span>'+tagOf(h.lv,h.m)+'</div><div class="look">'+esc(h.m)+'</div><button class="sm p" data-end="'+h.id+'">＋記録 <span class="cnt" data-endc="'+h.id+'">0</span></button></div>';}).join("");
  var g="";$("mhBtns").innerHTML=MH.map(function(h){var hd=h.g!==g?'<div style="flex:1 1 100%;font-size:12.5px;color:var(--sub)">'+esc(h.g)+'</div>':"";g=h.g;return hd+'<button class="sm" data-mh="'+h.id+'" style="flex:1 1 140px">'+esc(h.n)+'<br><small>'+esc(h.m)+'</small></button>';}).join("");
  $("zones").innerHTML=ZONES.slice(0,7).map(function(z){var opts=[["","—"],["fake","前兆→ハズレ"],["none","前兆なし"]];if(z===88)opts.push(["none2","なし＋連続演出も無"]);
   return '<div class="zone"><b>'+z+'G</b><div class="seg" data-zone="'+z+'">'+opts.map(function(o){return '<button data-zv="'+o[0]+'">'+o[1]+'</button>';}).join("")+'</div></div>';}).join("");
@@ -511,12 +573,12 @@ function evChip(e,i){var t="";
  else if(e.k==="rcx")t=RCX.find(function(y){return y.id===e.v;}).n;
  else if(e.k==="coin")t=COIN.find(function(y){return y.id===e.v;}).n;
  else if(e.k==="end")t=END.find(function(y){return y.id===e.v;}).n+(e.r==="cross"?"（十字リプ）":"");
- else if(e.k==="gen")t=(e.v==="weak"?"弱":"強")+" "+tmLbl(e.tm);
+ else if(e.k==="gen")t=(e.tm==="loop"?"連チャン中":"初当り")+"・"+(e.v==="weak"?"弱":"強");
  return '<span class="ev'+((e.k==="es"&&e.t!=="reg")||(e.k==="gen"&&e.tm==="loop")?" loop":"")+'">'+t+'<button data-del="'+i+'" aria-label="取り消し">✕</button></span>';}
 function logFor(k,id){var h="";S.ev.forEach(function(e,i){if(k.indexOf(e.k)>=0)h+=evChip(e,i);});$(id).innerHTML=h;}
 
 function render(){
- seg("modeSeg",S.mode);seg("resetSeg",S.reset);seg("btypeSeg",S.btype);seg("roleSeg",S.role);seg("tmSeg",S.tm);seg("scopeSeg",S.scope);seg("mctxSeg",S.mctx);
+ seg("modeSeg",S.mode);seg("resetSeg",S.reset);seg("btypeSeg",S.btype);seg("roleSeg",S.role);seg("scopeSeg",S.scope);seg("mctxSeg",S.mctx);if($("gSrcSeg"))seg("gSrcSeg",S.gSrc||"lamp");
  $("mid").hidden=S.mode!=="mid";$("navMid").style.display=S.mode==="mid"?"":"none";
  document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f];});
  document.querySelectorAll("[data-c]").forEach(function(el){if(document.activeElement!==el)el.value=S.c[el.dataset.c];});
@@ -527,6 +589,10 @@ function render(){
  if(document.activeElement!==$("notes"))$("notes").value=S.notes;
  $("stateLbl").innerHTML=S.state==="loop"?'<span class="badge loop">炎炎ループ中</span>':'<span class="badge">通常時</span>';
  $("savestate").textContent=canSave?"入力はこの端末に自動保存されます。":"⚠ 保存できません（プライベートブラウズ等）。";
+ if($("gSrcNote"))$("gSrcNote").textContent=gSrcCaption();
+ if($("estGNote")){var eg=effG();$("estGNote").innerHTML=eg.g?('推測に使うG： <b class="mono">'+eg.g+'</b>G（'+esc(eg.label)+') <span class="rel '+eg.rel+'">'+(eg.rel==="h"?"高":eg.rel==="m"?"中":"低")+"</span>"):"推測用のGは未確定です。当たりの当選Gか、上のゲーム数を入れてください。";
+  if($("gLabel"))$("gLabel").textContent=({lamp:"データランプ累計G",lcd:"台の液晶のG",manual:"通常G（自計）",unknown:"ゲーム数（種別不明）"})[S.gSrc||"lamp"];}
+
  // counts on buttons
  function cnt(k,f,v){return S.ev.filter(function(e){return e.k===k&&e[f]===v&&(k!=="es"||e.t===S.btype);}).length;}
  document.querySelectorAll("[data-esc]").forEach(function(el){el.textContent=cnt("es","v",el.dataset.esc);});
@@ -535,10 +601,16 @@ function render(){
  document.querySelectorAll("[data-coinc]").forEach(function(el){el.textContent=cnt("coin","v",el.dataset.coinc);});
  document.querySelectorAll("[data-endc]").forEach(function(el){el.textContent=cnt("end","v",el.dataset.endc);});
  logFor(["es"],"esLog");logFor(["rc","rcx"],"rcLog");logFor(["coin"],"coinLog");logFor(["end"],"endLog");logFor(["gen"],"genLog");
- $("customWarn").innerHTML=S.custom?'<div class="alert">店長カスタムあり：弱・強・デフォルトの画面は重み'+S.W.custom+'%で計算。確定系（全員集合・赤枠9人・金枠）は100%のまま（なな徹は「任意に出現させるカスタムも存在できる模様」とも記載。気になる場合はメモへ）。</div>':"";
+ $("customWarn").innerHTML=S.custom?'<div class="alert">店長カスタムあり：弱・強・デフォルトの画面は重み'+S.W.custom+'%で計算。濃厚（全員集合・赤枠9人・金枠）は100%のまま（なな徹は「任意に出現させるカスタムも存在できる模様」とも記載。気になる場合はメモへ）。</div>':"";
  document.querySelectorAll("[data-mh]").forEach(function(b){b.className="sm"+(S.mh[b.dataset.mh]?" p":"");});
  document.querySelectorAll("[data-zone]").forEach(function(sg){var z=sg.dataset.zone,v=S.zones[z]||"";sg.querySelectorAll("button").forEach(function(b){b.className=b.dataset.zv===v?"on":"";});});
- $("qLog").innerHTML=S.q.slice(-12).map(function(x){return '<span class="ev" style="padding-right:8px">'+esc(x.t||x)+'</span>';}).join("")+(S.q.length?'<button class="sm" id="qUndo">↶ 最後の当たり記録を取り消し</button>':"");
+ $("qLog").innerHTML=(function(){var hs=hitGSum(),h="";S.q.slice(-12).forEach(function(x,i){var ri=S.q.length-12+i;if(ri<0)ri=i;var abs=S.q.length-Math.min(12,S.q.length)+i;
+  h+='<div class="qrow"><span class="ev">'+esc(x.t||x)+'</span>';
+  if(x.t==="初当りREG"||x.t==="SPエピ"){h+='<label>当選G</label><input data-qg="'+abs+'" inputmode="numeric" placeholder="例 320" value="'+esc(x.g==null?"":x.g)+'">';}
+  h+='</div>';});
+ if(S.q.length)h+='<button class="sm" id="qUndo">↶ 最後の当たり記録を取り消し</button>';
+ if(hs!==null)h+='<p class="note">推定通常G（当選G合算）＝ <b class="mono">'+hs+'</b>G　← 推測で優先使用</p>';
+ return h;})();
  renderCeil();renderEst();renderMode();renderMid();renderCnt();
 }
 function renderCeil(){
@@ -560,9 +632,9 @@ function renderEst(){
  h+=r.post.map(function(p,i){return '<div class="r'+(i===best?" best":"")+'"><span class="l">設定'+(i+1)+'</span><span class="t"><span class="f" style="display:block;width:'+(p*100).toFixed(1)+'%"></span></span><span class="v">'+pct(p)+'</span></div>';}).join("");
  var hi=r.post[3]+r.post[4]+r.post[5],ev=r.post[1]+r.post[3]+r.post[5];
  h+='<div class="call">高設定域（4・5・6） '+pct(hi)+'　偶数 '+pct(ev)+'　最有力 設定'+(best+1)+'</div>';
- if(r.conflict)h+='<div class="alert">確定・否定どうしが矛盾しています（見間違い・カスタムの可能性）。確定系を無視して計算中。</div>';
+ if(r.conflict)h+='<div class="alert">確定・否定どうしが矛盾しています（見間違い・カスタムの可能性）。濃厚・否定を無視して計算中。</div>';
  h+=cmpBlock();
- h+='<div class="used"><b>使った要素</b><ul>'+r.used.map(function(u){return "<li>"+esc(u.t)+' <span class="rel '+u.rel+'">'+(u.rel==="h"?"高":u.rel==="m"?"中":"低")+"</span></li>";}).join("")+r.masks.map(function(m){return '<li>'+esc(m)+' <span class="rel h">確定系100%</span></li>';}).join("")+"</ul></div>";
+ h+='<div class="used"><b>使った要素</b><ul>'+r.used.map(function(u){return "<li>"+esc(u.t)+' <span class="rel '+u.rel+'">'+(u.rel==="h"?"高":u.rel==="m"?"中":"低")+"</span></li>";}).join("")+r.masks.map(function(m){return '<li>'+esc(m)+' <span class="rel h">濃厚100%</span></li>';}).join("")+"</ul></div>";
  if(r.masks.length){var al=[];r.allow.forEach(function(a,i){if(a)al.push(i+1);});h+='<p class="note">確定・否定で残った設定：'+al.join("・")+'</p>';}
  $("estBody").innerHTML=h;statbar(r);
 }
@@ -571,9 +643,9 @@ function preEst(){if(!prevAny())return null;var r=estimate({own:false,prev:true,
 function cmpBlock(){if(S.mode!=="mid"||!S.merge||!prevAny())return "";
  var a=estimate({prev:false}),b=estimate();if(!a.any)return '<h3>自分の分だけ／前任者込み</h3><p class="note">自分の分を入れると、合算前との比較を表示します。</p>';
  return '<h3>自分の分だけ／前任者込み</h3>'+cmpTable([["自分の分だけ",a.post],["前任者込み",b.post]]);}
-function statbar(r){var h="",G=num(S.g),B=num(S.bon),L=num(S.loop);
+function statbar(r){var h="",EG=effG(),G=EG.g,B=num(S.bon),L=num(S.loop);
  if(S.mode==="mid")h+="<span>途中から"+(S.merge?"・合算ON":"")+"</span>";
- h+="<span>"+(S.mode==="mid"?"自分 ":"")+"通常 "+G+"G</span>";if(B)h+="<span>初当り 1/"+Math.round(G/B)+"</span>";if(L)h+="<span>ループ 1/"+Math.round(G/L)+"</span>";
+ h+="<span>"+(S.mode==="mid"?"自分 ":"")+EG.label.split("（")[0]+" "+G+"G</span>";if(B)h+="<span>初当り 1/"+Math.round(G/B)+"</span>";if(L)h+="<span>ループ 1/"+Math.round(G/L)+"</span>";
  if(r){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});h+='<span>最有力 設定'+(b+1)+'</span>';}
  $("statbar").innerHTML=h;
  var rows=[],conf=false,note="";
@@ -605,17 +677,41 @@ function renderMid(){if(S.mode!=="mid"){$("midBody").innerHTML="";return;}
  h+='</div>';
  if(!S.merge)h+='<p class="note">合算OFF：設定推測は自分が打った分だけ。</p>';
  $("midBody").innerHTML=h;}
-function renderCnt(){$("cntBody").innerHTML=S.cnt.map(function(c,i){return '<div class="kv"><span>'+esc(c.n)+'</span><b><button class="sm" data-cm="'+i+'">−</button> <span class="mono">'+c.v+'</span> <button class="sm p" data-cp="'+i+'">＋</button> <button class="sm" data-cx="'+i+'">✕</button></b></div>';}).join("")+(S.cnt.length?'<p class="note">'+(num(S.g)?S.cnt.map(function(c){return esc(c.n)+" 1/"+(c.v?(num(S.g)/c.v).toFixed(1):"-");}).join("・")+"（通常G基準）":"")+'</p>':"");}
+function renderCnt(){$("cntBody").innerHTML=S.cnt.map(function(c,i){return '<div class="kv"><span>'+esc(c.n)+'</span><b><button class="sm" data-cm="'+i+'">−</button> <span class="mono">'+c.v+'</span> <button class="sm p" data-cp="'+i+'">＋</button> <button class="sm" data-cx="'+i+'">✕</button></b></div>';}).join("")+(S.cnt.length?'<p class="note">'+(effG().g?S.cnt.map(function(c){return esc(c.n)+" 1/"+(c.v?(effG().g/c.v).toFixed(1):"-");}).join("・")+"（"+effG().label+"基準）":"")+'</p>':"");}
 
 function commit(){if(S.q.length>40)S.q=S.q.slice(-40);save();render();}
 function setState(st){S.state=st;S.btype=st==="loop"?"big":"reg";if(S.tmAuto)S.tm=st==="loop"?"loop":"first";}
 function q(t){var bon=num(S.bon),lp=num(S.loop);var snap=JSON.stringify({bon:S.bon,loop:S.loop,c:S.c,state:S.state,btype:S.btype,tm:S.tm,zones:S.zones,mh:S.mh,mctx:S.mctx});
- if(t==="reg"){S.bon=String(bon+1);S.c.bg="0";setState("normal");S.btype="reg";S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"初当りREG",s:snap});}
- else if(t==="sp"){S.bon=String(bon+1);S.loop=String(lp+1);S.c.bg="0";S.c.thru="0";setState("loop");S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"SPエピ",s:snap});}
+ if(t==="reg"){S.bon=String(bon+1);S.c.bg="0";setState("normal");S.btype="reg";S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"初当りREG",g:"",s:snap});}
+ else if(t==="sp"){S.bon=String(bon+1);S.loop=String(lp+1);S.c.bg="0";S.c.thru="0";setState("loop");S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"SPエピ",g:"",s:snap});}
  else if(t==="ok"){S.loop=String(lp+1);S.c.thru="0";setState("loop");S.q.push({t:"罠→ループ",s:snap});}
  else if(t==="thru"){S.c.thru=String(num(S.c.thru)+1);setState("normal");S.q.push({t:"罠スルー",s:snap});}
  else if(t==="end"){setState("normal");S.c.bg="0";S.c.lg="0";S.c.sen="0";S.zones={};S.mh={};S.mctx="bonus";S.q.push({t:"ループ終了",s:snap});}
 }
+
+var SESS_KEY="slotsense:sessions:v1";
+function machineMeta(){return{id:"enen2",title:"L炎炎ノ消防隊2"};}
+function buildCopyText(){var eg=effG(),r=estimate(),best=0;if(r.any)r.post.forEach(function(p,i){if(p>r.post[best])best=i;});
+ var lines=["【SLOTSENSE / "+machineMeta().title+"】","日付: "+(new Date()).toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+"  台番: "+(S.dai||"-")+"  収支: "+(S.balance||"-"),
+  "G種別: "+eg.label+"  使用G: "+(eg.g||0)+(hitGSum()!==null?"（当選G合算優先）":""),"初当り: "+(S.bon||0)+"  炎炎ループ: "+(S.loop||0),
+  "示唆: "+(S.ev.slice(-8).map(function(e){if(e.k==="rc"){var x=RC.find(function(z){return z.id===e.v});return x?"REG "+x.n+" "+x.s:e.v;}if(e.k==="es")return "終了画面 "+e.v;if(e.k==="rcx")return "金キャラ "+e.v;return e.k+":"+e.v;}).join(" / ")||"-"),
+  r.any?("設定推測（示唆込み）: 高設定域 "+Math.round((r.post[3]+r.post[4]+r.post[5])*100)+"%  最有力 設定"+(best+1)):"設定推測: データ不足",
+  "メモ: "+(S.notes||"-")];
+ return lines.join("\n");}
+function doCopy(){var t=buildCopyText(),out=$("copyOut");out.style.display="block";out.value=t;
+ navigator.clipboard.writeText(t).then(function(){$("savestate").textContent="チャット用テキストをコピーしました";}).catch(function(){out.focus();out.select();$("savestate").textContent="上の欄を長押しでコピーしてください";});}
+function openEndDlg(){var d=$("endDlg");d.hidden=false;
+ $("endStore").value=S.store||"";$("endDai").value=S.dai||"";$("endBal").value=S.balance||"";
+ var now=new Date();var z=new Date(now.toLocaleString("en-US",{timeZone:"Asia/Tokyo"}));
+ $("endDate").value=z.getFullYear()+"-"+String(z.getMonth()+1).padStart(2,"0")+"-"+String(z.getDate()).padStart(2,"0");
+ $("endMemo").value=S.notes||"";}
+function saveSession(clear){S.store=$("endStore").value.trim();S.dai=$("endDai").value.trim();S.balance=$("endBal").value.trim();S.notes=$("endMemo").value;
+ var text=buildCopyText(),eg=effG(),meta=machineMeta(),id="s"+Date.now();
+ var rec={id:id,date:$("endDate").value,machine:meta.id,title:meta.title,store:S.store,dai:S.dai,balance:S.balance,memo:S.notes,
+  summary:"G"+eg.g+" / 初当り"+(S.bon||0)+" / ループ"+(S.loop||0),text:text,createdAt:new Date().toISOString()};
+ try{var a=[];try{a=JSON.parse(localStorage.getItem(SESS_KEY)||"[]")}catch(e){}a.push(rec);localStorage.setItem(SESS_KEY,JSON.stringify(a));}catch(e){alert("履歴を保存できませんでした");return;}
+ $("endDlg").hidden=true;if(clear){S=emptyS();}$("savestate").textContent="履歴に保存しました"+(clear?"（入力を消しました）":"（入力は残しています）")+" → メニューの「履歴」";commit();}
+
 function bind(){
  document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
   if(d.set){S[d.set]=d.v;if(d.set==="tm")S.tmAuto=false;if(d.set==="mode"&&d.v==="asa")S.merge=S.merge;commit();return;}
@@ -626,7 +722,7 @@ function bind(){
   if(d.rcx){S.ev.push({k:"rcx",v:d.rcx});commit();return;}
   if(d.coin){S.ev.push({k:"coin",v:d.coin});commit();return;}
   if(d.end){S.ev.push({k:"end",v:d.end,r:S.role});commit();return;}
-  if(d.gen){S.ev.push({k:"gen",v:d.gen,tm:S.tm});commit();return;}
+  if(d.gen){S.ev.push({k:"gen",v:d.gen,tm:d.tm||S.tm});commit();return;}
   if(d.del!==undefined){S.ev.splice(Number(d.del),1);commit();return;}
   if(d.mh){S.mh[d.mh]=!S.mh[d.mh];commit();return;}
   if(d.zv!==undefined){var z=b.parentNode.dataset.zone;S.zones[z]=d.zv;commit();return;}
@@ -636,10 +732,20 @@ function bind(){
   if(d.cx!==undefined){if(confirm("このカウンターを削除しますか？")){S.cnt.splice(Number(d.cx),1);commit();}return;}
   if(b.id==="addCnt"){var n=$("newCnt").value.trim();if(n){S.cnt.push({n:n,v:0});$("newCnt").value="";commit();}return;}
   if(b.id==="wReset"){S.W={first:100,loop:50,custom:0};commit();return;}
+  if(b.id==="btnCopy"){doCopy();return;}
+  if(b.id==="btnEnd"){openEndDlg();return;}
+  if(b.id==="endCancel"){$("endDlg").hidden=true;return;}
+  if(b.id==="endKeep"){saveSession(false);return;}
+  if(b.id==="endClear"){saveSession(true);return;}
   if(b.id==="resetAll"){if(confirm("この機種の入力をすべて消しますか？")){S=emptyS();commit();}return;}
  });
  document.addEventListener("input",function(e){var el=e.target,d=el.dataset;
-  if(d.f!==undefined){S[d.f]=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();return;}
+  if(d.qg!==undefined){var qi=Number(d.qg);if(S.q[qi]){S.q[qi].g=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();statbar(estimate());
+   if($("estGNote")){var eg=effG();$("estGNote").innerHTML=eg.g?("推測に使うG： <b class=\"mono\">"+eg.g+"</b>G（"+esc(eg.label)+") <span class=\"rel "+eg.rel+"\">"+(eg.rel==="h"?"高":eg.rel==="m"?"中":"低")+"</span>"):"推測用のGは未確定です。";}
+   var note=document.querySelector("#qLog .note");var hs=hitGSum();
+   if(hs!==null){var t="推定通常G（当選G合算）＝ <b class=\"mono\">"+hs+"</b>G　← 推測で優先使用";if(note)note.innerHTML=t;else{var p=document.createElement("p");p.className="note";p.innerHTML=t;$("qLog").appendChild(p);}}
+  }return;}
+ if(d.f!==undefined){if(d.f==="store"||d.f==="balance"||d.f==="dai"||d.f==="notes"){S[d.f]=el.value;save();return;}S[d.f]=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();statbar(estimate());if($("estGNote")){var eg2=effG();$("estGNote").innerHTML=eg2.g?("推測に使うG： <b class=\"mono\">"+eg2.g+"</b>G（"+esc(eg2.label)+")"):"推測用のGは未確定です。";}return;}
   if(d.c!==undefined){S.c[d.c]=el.value.replace(/[^\d]/g,"");save();renderCeil();renderMode();return;}
   if(d.p!==undefined){S.p[d.p]=el.value.replace(/[^\d]/g,"");save();renderEst();renderMid();return;}
   if(d.w!==undefined){S.W[d.w]=Number(el.value);save();render();return;}
@@ -654,5 +760,27 @@ function bind(){
 load();renderStatic();bind();render();
 })();
 </script>
+
+<div id="endDlg" class="dlg" hidden>
+  <div class="box">
+    <h3>この台を終了して保存</h3>
+    <p class="cap">履歴（別ページ）に残します。作業中の自動保存キーはそのままです。</p>
+    <div class="grid2">
+      <div><label>店名</label><input id="endStore"></div>
+      <div><label>台番</label><input id="endDai"></div>
+      <div><label>収支（任意）</label><input id="endBal"></div>
+      <div><label>日付</label><input id="endDate" type="date"></div>
+    </div>
+    <label style="margin-top:8px">メモ</label>
+    <textarea id="endMemo" rows="2"></textarea>
+    <p class="cap" style="margin-top:10px">保存したあと、いまの入力をどうしますか？</p>
+    <div class="acts">
+      <button type="button" class="p" id="endKeep">保存して入力は残す</button>
+      <button type="button" id="endClear">保存して入力を消す</button>
+      <button type="button" id="endCancel">やめる</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -121,6 +121,18 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 .cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
 .cmp td.h{font-weight:700}
 .pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+
+.toolsbar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+#copyOut{width:100%;min-height:110px;font:12px/1.4 ui-monospace,monospace;margin-top:8px;display:none}
+.dlg[hidden]{display:none!important}.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.dlg .box{background:var(--card);border-radius:16px 16px 12px 12px;padding:16px;width:100%;max-width:480px;max-height:85vh;overflow:auto}
+.dlg h3{margin:0 0 8px;font-size:17px}
+.dlg .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dlg label{font-size:12px;color:var(--sub);display:block;margin:0 0 2px}
+.dlg input,.dlg textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--bg);color:var(--text)}
+.dlg .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.gnote{font-size:12px;color:var(--warn);margin:6px 0 0}
+
 </style>
 <meta name="theme-color" content="#0b0b0f">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -157,6 +169,27 @@ button.p .cnt{background:#fff;color:#1d4ed8}
     </div>
     <p class="cap" style="margin-top:6px">ボーナス合算は「データカウンター上の合算」（設定1 1/201.5〜設定6 1/180.8）で計算します。ART中に引いたボーナスはART完走後に出てくるので、公表の合算（1/189.4〜1/167.6）より重く見えます。通常時G＝総G−ART中G として通常時ベルに使います。下の「当たり記録」でもBIG・REGが増えます。</p>
     <p class="note" id="savestate"></p>
+    
+    <label>何の数字？（ゲーム数）</label>
+    <div class="seg" id="gSrcSeg">
+      <button type="button" data-set="gSrc" data-v="lamp">データランプ累計</button>
+      <button type="button" data-set="gSrc" data-v="lcd">台の液晶</button>
+      <button type="button" data-set="gSrc" data-v="manual">自分で数えた通常G</button>
+      <button type="button" data-set="gSrc" data-v="unknown">分からない</button>
+    </div>
+    <p class="gnote" id="gSrcNote"></p>
+    <h3>任意（コピー・履歴用）</h3>
+    <div class="grid2">
+      <div><label>店名</label><input data-f="store" placeholder="例 店名"></div>
+      <div><label>台番</label><input data-f="dai" inputmode="numeric" placeholder="例 12"></div>
+      <div><label>収支（枚・任意）</label><input data-f="balance" placeholder="例 +500"></div>
+    </div>
+    <div class="toolsbar">
+      <button type="button" id="btnCopy" class="p">チャット用にコピー</button>
+      <button type="button" id="btnEnd">この台を終了して保存</button>
+    </div>
+    <textarea id="copyOut" readonly aria-label="コピー用テキスト"></textarea>
+
     <button id="resetAll">リセット</button>
   </section>
 
@@ -397,7 +430,7 @@ root.UM2={D:D,H:H,WDEF:WDEF,estimate:estimate,RP:RP,num:num};
 "use strict";
 var U=window.UM2,D=U.D,H=U.H,num=U.num;
 var KEY="slotmemo:v1:umineko2";
-function emptyS(){return {mode:"asa",g:"",ag:"",big:"",reg:"",n:{},z:{},ev:[],q:[],c:{cz:""},p:{g:"",big:"",reg:""},scope:"unknown",merge:false,W:{s:U.WDEF.s,w:U.WDEF.w,p:U.WDEF.p,cm:U.WDEF.cm},cnt:[],notes:""};}
+function emptyS(){return {mode:"asa",gSrc:"lamp",store:"",dai:"",balance:"",g:"",ag:"",big:"",reg:"",n:{},z:{},ev:[],q:[],c:{cz:""},p:{g:"",big:"",reg:""},scope:"unknown",merge:false,W:{s:U.WDEF.s,w:U.WDEF.w,p:U.WDEF.p,cm:U.WDEF.cm},cnt:[],notes:""};}
 var S=emptyS(),canSave=true;
 function load(){try{var r=localStorage.getItem(KEY);if(!r)return;var p=JSON.parse(r),e=emptyS();for(var k in e){if(p[k]!==undefined&&p[k]!==null&&typeof p[k]===typeof e[k])e[k]=p[k];}
  ["c","p","W"].forEach(function(k){var d=emptyS()[k];for(var q in d){if(e[k][q]===undefined)e[k][q]=d[q];}});
@@ -502,7 +535,7 @@ function cmpBlock(){if(S.mode!=="mid"||!S.merge||!prevAny())return "";
  return '<h3>自分の分だけ／前任者込み</h3>'+cmpTable([["自分の分だけ",a.post],["前任者込み",b.post]]);}
 function seg(id,val){document.querySelectorAll("#"+id+" button").forEach(function(b){b.className=b.dataset.v===val?"on":"";});}
 function render(){
- seg("modeSeg",S.mode);seg("scopeSeg",S.scope);
+ seg("modeSeg",S.mode);if($("gSrcSeg"))seg("gSrcSeg",S.gSrc||"lamp");if($("gSrcNote"))$("gSrcNote").textContent=gSrcCaption();seg("scopeSeg",S.scope);
  $("mid").hidden=S.mode!=="mid";$("navMid").style.display=S.mode==="mid"?"":"none";
  document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f];});
  document.querySelectorAll("[data-c]").forEach(function(el){if(document.activeElement!==el)el.value=S.c[el.dataset.c];});
@@ -567,8 +600,28 @@ function q(t){var snap=JSON.stringify({big:S.big,reg:S.reg,c:S.c});
  if(t==="bigS"||t==="bigD"){S.big=String(num(S.big)+1);S.q.push({t:t==="bigS"?"同色BIG":"異色BIG",s:snap});}
  else if(t==="reg"){S.reg=String(num(S.reg)+1);S.q.push({t:"REG",s:snap});}
  else if(t==="fall"){S.c.cz="0";S.q.push({t:"CZ転落",s:snap});}}
+
+var SESS_KEY="slotsense:sessions:v1";
+function machineMeta(){return{id:"umineko2",title:"Lうみねこのなく頃に2"};}
+function gSrcCaption(){return({lamp:"データランプの累計G（AT等を含むことが多い・推測は信頼度低め）",lcd:"台の液晶のゲーム数",manual:"自分で数えた通常G",unknown:"種別不明（信頼度低め）"})[S.gSrc||"lamp"]||"";}
+function sessionSummary(){return "G"+(S.g||0);}
+function buildCopyText(){var lines=["【SLOTSENSE / "+machineMeta().title+"】","日付: "+(new Date()).toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+"  台番: "+(S.dai||"-")+"  収支: "+(S.balance||"-")];
+ lines.push("G種別: "+(S.gSrc|| ( true ?"lamp":"通常G"))+"  入力G: "+(S.g||S.normalG||S.nG||"-"));
+ try{if(typeof estimate==="function"){var r=estimate();if(r&&r.post){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});lines.push("設定推測: 高設定域 "+Math.round((r.post[3]+r.post[4]+r.post[5])*100)+"% 最有力 設定"+(b+1));}}}catch(e){}
+ lines.push("メモ: "+(S.notes||S.memo||"-"));return lines.join("\n");}
+function doCopy(){var t=buildCopyText(),out=$("copyOut");if(out){out.style.display="block";out.value=t;}
+ navigator.clipboard.writeText(t).then(function(){}).catch(function(){if(out){out.focus();out.select();}});}
+function openEndDlg(){$("endDlg").hidden=false;$("endStore").value=S.store||"";$("endDai").value=S.dai||"";$("endBal").value=S.balance||"";
+ var z=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Tokyo"}));$("endDate").value=z.getFullYear()+"-"+String(z.getMonth()+1).padStart(2,"0")+"-"+String(z.getDate()).padStart(2,"0");
+ $("endMemo").value=S.notes||S.memo||"";}
+function saveSession(clear){S.store=$("endStore").value.trim();S.dai=$("endDai").value.trim();S.balance=$("endBal").value.trim();if("notes" in S)S.notes=$("endMemo").value;
+ var text=buildCopyText(),meta=machineMeta(),rec={id:"s"+Date.now(),date:$("endDate").value,machine:meta.id,title:meta.title,store:S.store,dai:S.dai,balance:S.balance,memo:$("endMemo").value,summary:sessionSummary(),text:text,createdAt:new Date().toISOString()};
+ try{var a=[];try{a=JSON.parse(localStorage.getItem(SESS_KEY)||"[]")}catch(e){}a.push(rec);localStorage.setItem(SESS_KEY,JSON.stringify(a));}catch(e){alert("履歴を保存できませんでした");return;}
+ $("endDlg").hidden=true;if(clear)S=emptyS();if(typeof commit==="function")commit();else{if(typeof save==="function")save();if(typeof render==="function")render();}
+}
+
 function bind(){
- document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+ document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.id==="btnCopy"){doCopy();return;}if(b.id==="btnEnd"){openEndDlg();return;}if(b.id==="endCancel"){$("endDlg").hidden=true;return;}if(b.id==="endKeep"){saveSession(false);return;}if(b.id==="endClear"){saveSession(true);return;}var d=b.dataset;
   if(d.set){S[d.set]=d.v;commit();return;}
   if(d.q){q(d.q);commit();return;}
   if(b.id==="qUndo"){var last=S.q.pop();if(last&&last.s){try{var o=JSON.parse(last.s);for(var k in o)S[k]=o[k];}catch(x){}}commit();return;}
@@ -584,7 +637,7 @@ function bind(){
   if(b.id==="resetAll"){if(confirm("この機種の入力をすべて消しますか？")){S=emptyS();commit();}return;}
  });
  document.addEventListener("input",function(e){var el=e.target,d=el.dataset;
-  if(d.f!==undefined){S[d.f]=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();restoreFocus(el);return;}
+  if(d.f!==undefined){if(d.f==="store"||d.f==="balance"||d.f==="dai"){S[d.f]=el.value;save();return;}S[d.f]=el.value.replace(/[^\d]/g,"");save();renderEst();renderCnt();restoreFocus(el);return;}
   if(d.c!==undefined){S.c[d.c]=el.value.replace(/[^\d]/g,"");save();renderCeil();statbar(est().any?est():null);return;}
   if(d.p!==undefined){S.p[d.p]=el.value.replace(/[^\d]/g,"");save();renderEst();renderMid();return;}
   if(d.n!==undefined){S.n[d.n]=el.value.replace(/[^\d]/g,"");save();renderEst();return;}
@@ -601,5 +654,27 @@ function restoreFocus(){}
 load();renderStatic();bind();render();
 })();
 </script>
+
+<div id="endDlg" class="dlg" hidden>
+  <div class="box">
+    <h3>この台を終了して保存</h3>
+    <p class="cap">履歴（別ページ）に残します。作業中の自動保存キーはそのままです。</p>
+    <div class="grid2">
+      <div><label>店名</label><input id="endStore"></div>
+      <div><label>台番</label><input id="endDai"></div>
+      <div><label>収支（任意）</label><input id="endBal"></div>
+      <div><label>日付</label><input id="endDate" type="date"></div>
+    </div>
+    <label style="margin-top:8px">メモ</label>
+    <textarea id="endMemo" rows="2"></textarea>
+    <p class="cap" style="margin-top:10px">保存したあと、いまの入力をどうしますか？</p>
+    <div class="acts">
+      <button type="button" class="p" id="endKeep">保存して入力は残す</button>
+      <button type="button" id="endClear">保存して入力を消す</button>
+      <button type="button" id="endCancel">やめる</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

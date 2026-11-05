@@ -100,6 +100,17 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
 .rng{display:flex;align-items:center;gap:10px}
 .rng input{flex:1;min-height:32px;padding:0}
 .rng b{width:56px;text-align:right}
+
+.toolsbar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+#copyOut{width:100%;min-height:110px;font:12px/1.4 ui-monospace,monospace;margin-top:8px;display:none}
+.dlg[hidden]{display:none!important}.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.dlg .box{background:var(--card);border-radius:16px 16px 12px 12px;padding:16px;width:100%;max-width:480px;max-height:85vh;overflow:auto}
+.dlg h3{margin:0 0 8px;font-size:17px}
+.dlg .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dlg label{font-size:12px;color:var(--sub);display:block;margin:0 0 2px}
+.dlg input,.dlg textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--bg);color:var(--text)}
+.dlg .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
 </style>
 <meta name="theme-color" content="#0b0b0f">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -134,6 +145,19 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
     <input id="ownTotal" inputmode="numeric" placeholder="例 1500">
     <p class="cap" id="maker" style="margin-top:8px"></p>
     <p class="note" id="savestate"></p>
+    
+    <h3>任意（コピー・履歴用）</h3>
+    <div class="grid2">
+      <div><label>店名</label><input data-f="store" placeholder="例 店名"></div>
+      <div><label>台番</label><input data-f="dai" inputmode="numeric" placeholder="例 12"></div>
+      <div><label>収支（枚・任意）</label><input data-f="balance" placeholder="例 +500"></div>
+    </div>
+    <div class="toolsbar">
+      <button type="button" id="btnCopy" class="p">チャット用にコピー</button>
+      <button type="button" id="btnEnd">この台を終了して保存</button>
+    </div>
+    <textarea id="copyOut" readonly></textarea>
+
     <button id="reset">リセット</button>
   </section>
 
@@ -195,13 +219,13 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
 
   <section id="est" class="est">
     <h2>設定推測</h2>
-    <p class="cap">入力した回数と確率から計算した各設定の相対的な近さ（事前は均等）。確定系示唆が出たらそれ未満を除外。強・弱示唆は⚙の仮の重みで反映。</p>
+    <p class="cap">入力した回数と確率から計算した各設定の相対的な近さ（事前は均等）。濃厚示唆が出たらそれ未満を除外。強・弱示唆は⚙の仮の重みで反映。</p>
     <div id="estBody"></div>
   </section>
 
   <section id="wt">
     <details id="wtDet"><summary>⚙ 強・弱示唆の重み</summary>
-    <p class="cap"><b>仮の値（出現率は未公表）</b>。強・弱の示唆（終了画面・プロローグEP・ラッシュ中EP・ランプ）を1回見るごとに、設定4・5・6の見込みを設定1・2・3に対して何倍にするか。<b>1.0＝示唆を計算に入れない</b>。確定系（○以上濃厚）は常に100%で、この重みとは別です。</p>
+    <p class="cap"><b>仮の値（出現率は未公表）</b>。強・弱の示唆（終了画面・プロローグEP・ラッシュ中EP・ランプ）を1回見るごとに、設定4・5・6の見込みを設定1・2・3に対して何倍にするか。<b>1.0＝示唆を計算に入れない</b>。濃厚（○以上濃厚）は常に100%で、この重みとは別です。</p>
     <label>強示唆（1回ごと）</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-hw="s"><b id="hwS"></b></div>
     <label>弱示唆（1回ごと）</label><div class="rng"><input type="range" min="1" max="2" step="0.1" data-hw="w"><b id="hwW"></b></div>
     <button class="sm" id="hwReset">初期値に戻す（強 1.2倍 / 弱 1.1倍）</button>
@@ -390,7 +414,7 @@ var curId=MACHINES[0].id, S=null, armed=false, canSave=true, delArmed=-1;
 function emptyPrev(){return {scope:"unknown",last:"unknown",seen:"none",pn:"",ob:"",fl:"",rush:"",rushw:"",ht:"",hcur:"",hreg:"",hart:"",hsince:""};}
 var HW_DEF={s:1.2,w:1.1};
 function emptyHW(){return {s:HW_DEF.s,w:HW_DEF.w};}
-function empty(){return {normalG:"",hits:[],taps:{},trials:{},bulk:{},notes:"",custom:[],enabled:{},mode:"asa",prev:emptyPrev(),merge:false,ownTotal:"",hw:emptyHW()};}
+function empty(){return {store:"",dai:"",balance:"",normalG:"",hits:[],taps:{},trials:{},bulk:{},notes:"",custom:[],enabled:{},mode:"asa",prev:emptyPrev(),merge:false,ownTotal:"",hw:emptyHW()};}
 function key(id){return "slotmemo:v1:"+id;}
 function load(id){try{var r=localStorage.getItem(key(id));if(r){var p=JSON.parse(r);var e=empty();for(var k in e){if(p[k]!==undefined&&p[k]!==null)e[k]=p[k];}if(!Array.isArray(e.custom))e.custom=[];if(typeof e.bulk!=="object")e.bulk={};if(typeof e.enabled!=="object")e.enabled={};if(typeof e.notes!=="string")e.notes="";if(e.mode!=="mid")e.mode="asa";var ep=emptyPrev();if(typeof e.prev!=="object"||!e.prev)e.prev={};for(var q in ep){if(e.prev[q]===undefined||e.prev[q]===null)e.prev[q]=ep[q];}e.merge=e.merge===true;if(typeof e.ownTotal!=="string")e.ownTotal="";var dh=emptyHW();if(typeof e.hw!=="object"||!e.hw)e.hw={};["s","w"].forEach(function(q){var v=Number(e.hw[q]);e.hw[q]=(isFinite(v)&&v>=1&&v<=2)?Math.round(v*10)/10:dh[q];});return e;}}catch(e){}return empty();}
 function save(){try{localStorage.setItem(key(curId),JSON.stringify(S));canSave=true;}catch(e){canSave=false;}}
@@ -411,7 +435,7 @@ var SCOPE_W={today:1,prev:1,unknown:0.5};
 var SCOPE_L={today:"当日の台全体",prev:"前の人の分だけ",unknown:"不明"};
 function prevData(force){if(S.mode!=="mid"||(!S.merge&&!force))return null;var P=S.prev,pn=num(P.pn);if(pn<=0)return null;
   return {w:SCOPE_W[P.scope]||0.5,n:pn,cz:num(P.ob)+num(P.fl),youshou:num(P.fl),at:num(P.rush)};}
-// o: own=false→自分の分を使わない／prev=true|false→前任者を強制ON/OFF（未指定は合算スイッチどおり）／mask=false→確定系示唆を使わない（数字だけ）
+// o: own=false→自分の分を使わない／prev=true|false→前任者を強制ON/OFF（未指定は合算スイッチどおり）／mask=false→濃厚示唆を使わない（数字だけ）
 function hintCounts(m){var r={s:0,w:0};m.hintGroups.forEach(function(g){g.items.forEach(function(h){var c=S.taps[h.id]||0;if(c>0&&h.level==="strong")r.s+=c;else if(c>0&&h.level==="weak")r.w+=c;});});return r;}
 // o.hints=false→強・弱示唆の重みを使わない（未指定は mask と同じ。数字だけ＝mask:false で両方OFF）
 function estimate(m,o){o=o||{};var OWN=o.own!==false,MSK=o.mask!==false,HNT=o.hints!==undefined?o.hints:MSK;
@@ -461,6 +485,7 @@ function table(cols,rows){return '<div class="scroll"><table><thead><tr>'+cols.m
 function render(){
   var m=M(), n=Number(S.normalG)||0;
   if(document.activeElement!==$("normalG"))$("normalG").value=S.normalG;
+  document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement===el)return;if(el.dataset.f)el.value=S[el.dataset.f]||"";});
   $("savestate").textContent=canSave?"入力はこのブラウザに自動保存されます。":"このブラウザでは保存できません（プライベートモード等）。閉じると消えます。";
   $("reset").textContent=armed?"もう一度押すと全データを消去":"リセット";
   $("reset").className=armed?"p":"";
@@ -476,7 +501,7 @@ function render(){
   if(est){var bi=est.indexOf(Math.max.apply(null,est));
     eh=est.map(function(v,i){return '<div class="r'+(i===bi?" best":"")+'"><span class="l">設定'+m.settings[i]+'</span><span class="t"><span class="f" style="display:block;width:'+v.toFixed(1)+'%"></span></span><span class="v">'+v.toFixed(1)+'%</span></div>';}).join("");
   } else eh='<p class="note">通常G数と、カウンターか当選履歴を入れると表示されます。</p>';
-  if(mn>1)eh+='<div class="call">設定'+mn+'以上濃厚（確定系の示唆が出ています）</div>';
+  if(mn>1)eh+='<div class="call">設定'+mn+'以上濃厚（濃厚の示唆が出ています）</div>';
   var seen=[];m.hintGroups.forEach(function(g){g.items.forEach(function(h){if((h.level==="strong"||h.level==="weak")&&(S.taps[h.id]||0)>0)seen.push(h.label+"（"+h.meaning+"）×"+S.taps[h.id]);});});
   if(seen.length){var hc2=hintCounts(m);eh+='<p style="margin:8px 0 0">見えた高設定示唆：'+esc(seen.join("、"))+'</p><p class="note" style="margin:2px 0 0">→ 計算：強 '+hc2.s+'回×'+S.hw.s.toFixed(1)+'倍、弱 '+hc2.w+'回×'+S.hw.w.toFixed(1)+'倍（仮の値・⚙で変更）'+(S.hw.s===1&&S.hw.w===1?'＝今は計算に入れていません':'')+'</p>';}
   var usedL=[];m.rates.forEach(function(r){if(rateUsed(m,r)&&n>0)usedL.push(r.label.replace(/（.*$/,"")+" "+rateCount(m,r)+"回");});
@@ -487,8 +512,8 @@ function render(){
   else if(S.mode==="mid")eh+='<p class="note">途中から：自分が打った分だけで計算中（前任者は合算していません）。</p>';
   if(est)eh+='<div class="call">高設定域（4・5・6） '+(hlHi(fr(est))*100).toFixed(1)+'%</div>';
   if(S.mode==="mid"&&S.merge&&prevData()){var ea=estimate(m,{prev:false});eh+='<h3>自分の分だけ／前任者込み</h3>'+(ea&&est?cmpTable([["自分の分だけ",fr(ea)],["前任者込み",fr(est)]]):'<p class="note">自分の分を入れると、合算前との比較を表示します。</p>');}
-  eh+='<p class="note">上部バーの「数字だけ」＝CZ・幼少期CZ・ラッシュ回数・到達抽選などの数字のみ。「示唆込み」＝それに確定系（トロフィー・終了画面の○以上濃厚）と、強・弱示唆の仮の重み（⚙：強 '+S.hw.s.toFixed(1)+'倍／弱 '+S.hw.w.toFixed(1)+'倍・1回ごとに設定4〜6を1〜3に対して掛ける）を加えたもの。強・弱の出現率は未公表なので、重みは仮の値です。前任者データには示唆がないので、前任者の分には掛かりません。</p>';
-  if(est)eh+='<p class="used">推測に使った項目：'+esc(usedL.join("、")||(PD?"前任者データのみ":"確定系示唆のみ"))+(unused.length?'<br>未使用（0回のため除外）：'+esc(unused.join("、")):"")+'</p>';
+  eh+='<p class="note">上部バーの「数字だけ」＝CZ・幼少期CZ・ラッシュ回数・到達抽選などの数字のみ。「示唆込み」＝それに濃厚（トロフィー・終了画面の○以上濃厚）と、強・弱示唆の仮の重み（⚙：強 '+S.hw.s.toFixed(1)+'倍／弱 '+S.hw.w.toFixed(1)+'倍・1回ごとに設定4〜6を1〜3に対して掛ける）を加えたもの。強・弱の出現率は未公表なので、重みは仮の値です。前任者データには示唆がないので、前任者の分には掛かりません。</p>';
+  if(est)eh+='<p class="used">推測に使った項目：'+esc(usedL.join("、")||(PD?"前任者データのみ":"濃厚示唆のみ"))+(unused.length?'<br>未使用（0回のため除外）：'+esc(unused.join("、")):"")+'</p>';
   $("estBody").innerHTML=eh;
   // 示唆
   $("hintBody").innerHTML=m.hintGroups.map(function(g){
@@ -606,14 +631,27 @@ function renderTrophy(m){
   var b=m.trophyBands.find(function(x){return tot>=x.lo&&tot<=x.hi;})||m.trophyBands[0];
   h+='<p class="cap">台の総G ≈ '+(S.mode==="mid"?"着席時 "+base+"＋":"")+"自分 "+own+" ＝ <b>"+tot+'G</b> → '+b.lo+'〜'+(b.hi===Infinity?"":b.hi)+'G帯（ラッシュ終了画面で出現）</p>';
   h+=table(["設定","銅","合算"],[["設定1","−","−"]].concat(b.cu.map(function(v,i){return ["設定"+(i+2),v.toFixed(2)+"%",b.all[i].toFixed(2)+"%"];})));
-  h+='<p class="note">3001〜4000Gは高め、5001〜8000Gは大幅に高い、8001G以降は大幅に低い。出典：<a href="'+SLOTHACK+'" target="_blank" rel="noopener">SLOT HACK</a>。推測には確定系（銅＝設定2以上）としてだけ使います。</p>';
+  h+='<p class="note">3001〜4000Gは高め、5001〜8000Gは大幅に高い、8001G以降は大幅に低い。出典：<a href="'+SLOTHACK+'" target="_blank" rel="noopener">SLOT HACK</a>。推測には濃厚（銅＝設定2以上）としてだけ使います。</p>';
   $("trophyBand").innerHTML=h;
 }
 function commit(){save();render();}
 
 // ===== 操作 =====
 document.addEventListener("click",function(e){
-  var el=e.target.closest?e.target.closest("button"):null; if(!el)return;
+  
+var SESS_KEY="slotsense:sessions:v1";
+function machineMeta(){return{id:"lycoris",title:"スマスロ リコリス・リコイル"};}
+function sessionSummary(){return "通常G"+(S.normalG||0);}
+function buildCopyText(){var lines=["【SLOTSENSE / "+machineMeta().title+"】","日付: "+(new Date()).toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+"  台番: "+(S.dai||"-")+"  収支: "+(S.balance||"-"),"通常G: "+(S.normalG||"-"),"メモ: "+(S.notes||"-")];
+ try{if(typeof estimate==="function"){var r=estimate();if(r&&r.post){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});lines.push("設定推測: 高設定域 "+Math.round((r.post[3]+r.post[4]+r.post[5])*100)+"% 最有力 設定"+(b+1));}}}catch(e){}
+ return lines.join("\n");}
+function doCopy(){var t=buildCopyText(),out=$("copyOut");if(out){out.style.display="block";out.value=t;}navigator.clipboard.writeText(t).then(function(){}).catch(function(){if(out){out.focus();out.select();}});}
+function openEndDlg(){$("endDlg").hidden=false;$("endStore").value=S.store||"";$("endDai").value=S.dai||"";$("endBal").value=S.balance||"";var z=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Tokyo"}));$("endDate").value=z.getFullYear()+"-"+String(z.getMonth()+1).padStart(2,"0")+"-"+String(z.getDate()).padStart(2,"0");$("endMemo").value=S.notes||"";}
+function saveSession(clear){S.store=$("endStore").value.trim();S.dai=$("endDai").value.trim();S.balance=$("endBal").value.trim();S.notes=$("endMemo").value;var text=buildCopyText(),meta=machineMeta(),rec={id:"s"+Date.now(),date:$("endDate").value,machine:meta.id,title:meta.title,store:S.store,dai:S.dai,balance:S.balance,memo:S.notes,summary:sessionSummary(),text:text,createdAt:new Date().toISOString()};
+ try{var a=[];try{a=JSON.parse(localStorage.getItem(SESS_KEY)||"[]")}catch(e){}a.push(rec);localStorage.setItem(SESS_KEY,JSON.stringify(a));}catch(e){alert("履歴を保存できませんでした");return;}
+ $("endDlg").hidden=true;if(clear){S=empty();}save();render();}
+
+var el=e.target.closest?e.target.closest("button"):null; if(!el)return; if(el.id==="btnCopy"){doCopy();return;} if(el.id==="btnEnd"){openEndDlg();return;} if(el.id==="endCancel"){$("endDlg").hidden=true;return;} if(el.id==="endKeep"){saveSession(false);return;} if(el.id==="endClear"){saveSession(true);return;}
   if(el.id!=="reset"&&armed){armed=false;}
   if(el.dataset.mode){S.mode=el.dataset.mode;commit();return;}
   if(el.dataset.pset){S.prev[el.dataset.pset]=el.dataset.v;commit();return;}
@@ -629,7 +667,7 @@ document.addEventListener("click",function(e){
   if(el.id==="reset"){if(armed){S=empty();armed=false;commit();}else{armed=true;render();}return;}
   render();
 });
-document.addEventListener("input",function(e){var t=e.target;if(t.dataset&&t.dataset.hw){var hv=Math.round(Number(t.value)*10)/10;if(isFinite(hv)&&hv>=1&&hv<=2){S.hw[t.dataset.hw]=hv;commit();}return;}if(t.dataset&&t.dataset.prev){var pv=t.value.replace(/[^0-9]/g,"");t.value=pv;S.prev[t.dataset.prev]=pv;commit();return;}if(t.id==="ownTotal"){S.ownTotal=t.value.replace(/[^0-9]/g,"");t.value=S.ownTotal;commit();return;}if(t.dataset&&t.dataset.bulk){var v=t.value.replace(/[^0-9]/g,"");t.value=v;if(t.dataset.bulk==="normalG"){S.normalG=v;}else{S.bulk[t.dataset.bulk]=v;}commit();}});
+document.addEventListener("input",function(e){var t=e.target;if(t.dataset&&t.dataset.f&&(t.dataset.f==="store"||t.dataset.f==="dai"||t.dataset.f==="balance")){S[t.dataset.f]=t.value;save();return;}if(t.dataset&&t.dataset.hw){var hv=Math.round(Number(t.value)*10)/10;if(isFinite(hv)&&hv>=1&&hv<=2){S.hw[t.dataset.hw]=hv;commit();}return;}if(t.dataset&&t.dataset.prev){var pv=t.value.replace(/[^0-9]/g,"");t.value=pv;S.prev[t.dataset.prev]=pv;commit();return;}if(t.id==="ownTotal"){S.ownTotal=t.value.replace(/[^0-9]/g,"");t.value=S.ownTotal;commit();return;}if(t.dataset&&t.dataset.bulk){var v=t.value.replace(/[^0-9]/g,"");t.value=v;if(t.dataset.bulk==="normalG"){S.normalG=v;}else{S.bulk[t.dataset.bulk]=v;}commit();}});
 document.addEventListener("change",function(e){var t=e.target;if(t.id==="merge"){S.merge=t.checked;commit();return;}if(t.dataset&&t.dataset.en){S.enabled[t.dataset.en]=t.checked;commit();}});
 $("notes").addEventListener("input",function(e){S.notes=e.target.value;save();});
 $("cname").addEventListener("keydown",function(e){if(e.key==="Enter")$("cadd").click();});
@@ -638,5 +676,27 @@ $("machine").addEventListener("change",function(e){curId=e.target.value;S=load(c
 
 S=load(curId);renderStatic();render();
 </script>
+
+<div id="endDlg" class="dlg" hidden>
+  <div class="box">
+    <h3>この台を終了して保存</h3>
+    <p class="cap">履歴（別ページ）に残します。作業中の自動保存キーはそのままです。</p>
+    <div class="grid2">
+      <div><label>店名</label><input id="endStore"></div>
+      <div><label>台番</label><input id="endDai"></div>
+      <div><label>収支（任意）</label><input id="endBal"></div>
+      <div><label>日付</label><input id="endDate" type="date"></div>
+    </div>
+    <label style="margin-top:8px">メモ</label>
+    <textarea id="endMemo" rows="2"></textarea>
+    <p class="cap" style="margin-top:10px">保存したあと、いまの入力をどうしますか？</p>
+    <div class="acts">
+      <button type="button" class="p" id="endKeep">保存して入力は残す</button>
+      <button type="button" id="endClear">保存して入力を消す</button>
+      <button type="button" id="endCancel">やめる</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

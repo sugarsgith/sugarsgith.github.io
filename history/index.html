@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SLOTSENSE 履歴</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SLOTSENSE">
+<meta name="theme-color" content="#0b0b0f">
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){})})}</script>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:10px}
+header a{color:var(--accent);text-decoration:none;font-size:13px}
+main{max-width:520px;margin:0 auto;padding:16px 14px 80px}
+h1{font-size:20px;margin:0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin:0 0 10px}
+.card b{display:block;font-size:15px}
+.card span{display:block;font-size:12px;color:var(--sub);margin-top:2px}
+.card .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+button,.btn{appearance:none;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;font-weight:600}
+button.p{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.d{color:#b91c1c}
+.note{font-size:12px;color:var(--sub)}
+textarea{width:100%;min-height:100px;font:12px/1.4 ui-monospace,monospace;border:1px solid var(--border);border-radius:10px;padding:8px;background:var(--bg);color:var(--text)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+pre{white-space:pre-wrap;font:12px/1.45 ui-monospace,monospace;background:var(--bg);border-radius:10px;padding:10px;margin:8px 0 0;border:1px solid var(--border)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header><a href="../">← メニュー</a><h1>打った台の履歴</h1></header>
+<main>
+<p class="note">各機種の「この台を終了して保存」で残した記録です。作業中の入力（機種ごとの自動保存）とは別です。</p>
+<div class="tools">
+  <button class="p" id="exp">JSON書き出し</button>
+  <button id="imp">JSON取り込み</button>
+  <input type="file" id="file" accept="application/json,.json" class="hidden">
+</div>
+<p class="note" id="msg"></p>
+<div id="list"></div>
+<textarea id="io" class="hidden" placeholder="バックアップJSON"></textarea>
+</main>
+<script>
+var KEY='slotsense:sessions:v1';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]})}
+function render(){
+  var a=load().slice().sort(function(x,y){return (y.createdAt||'').localeCompare(x.createdAt||'')});
+  var el=document.getElementById('list');
+  if(!a.length){el.innerHTML='<p class="note">まだ履歴がありません。</p>';return;}
+  el.innerHTML=a.map(function(r,i){
+    return '<div class="card" data-i="'+i+'"><b>'+esc(r.date||'')+'　'+esc(r.title||r.machine||'')+'</b>'+
+      '<span>'+esc([r.store&&('店:'+r.store),r.dai&&('台:'+r.dai),r.summary].filter(Boolean).join(' ／ '))+'</span>'+
+      '<div class="row"><button data-copy="'+esc(r.id)+'">コピー</button><button data-tog="'+esc(r.id)+'">詳細</button><button class="d" data-del="'+esc(r.id)+'">削除</button></div>'+
+      '<pre class="hidden" id="d-'+esc(r.id)+'">'+esc(r.text||'')+'</pre></div>';
+  }).join('');
+}
+document.getElementById('list').onclick=function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var a=load();
+  if(b.dataset.copy){var r=a.find(function(x){return x.id===b.dataset.copy});if(!r)return;
+    navigator.clipboard.writeText(r.text||'').then(function(){document.getElementById('msg').textContent='コピーしました';}).catch(function(){
+      var io=document.getElementById('io');io.classList.remove('hidden');io.value=r.text||'';io.focus();io.select();
+      document.getElementById('msg').textContent='上の欄を長押しでコピーしてください';});}
+  if(b.dataset.tog){var p=document.getElementById('d-'+b.dataset.tog);if(p)p.classList.toggle('hidden');}
+  if(b.dataset.del&&confirm('この履歴を削除しますか？')){save(a.filter(function(x){return x.id!==b.dataset.del}));render();}
+};
+document.getElementById('exp').onclick=function(){
+  var t=JSON.stringify({v:1,sessions:load()},null,2);
+  var io=document.getElementById('io');io.classList.remove('hidden');io.value=t;io.focus();io.select();
+  navigator.clipboard.writeText(t).then(function(){document.getElementById('msg').textContent='書き出してコピーしました';}).catch(function(){document.getElementById('msg').textContent='上の欄を保存してください';});
+};
+document.getElementById('imp').onclick=function(){document.getElementById('file').click();};
+document.getElementById('file').onchange=function(){
+  var f=this.files&&this.files[0];if(!f)return;var rd=new FileReader();
+  rd.onload=function(){try{var o=JSON.parse(rd.result);var inc=o.sessions||o;if(!Array.isArray(inc))throw 0;
+    var cur=load(),ids={};cur.forEach(function(x){ids[x.id]=1});var n=0;
+    inc.forEach(function(x){if(x&&x.id&&!ids[x.id]){cur.push(x);n++;}});
+    save(cur);render();document.getElementById('msg').textContent='取り込みました：追加'+n+'件';}catch(e){document.getElementById('msg').textContent='取り込みに失敗しました';}};
+  rd.readAsText(f);this.value='';
+};
+render();
+</script>
+</body>
+</html>
