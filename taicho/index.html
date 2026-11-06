@@ -137,18 +137,32 @@ const $=s=>document.querySelector(s),sg=v=>v>0?'+'+v:''+v,p2=n=>String(n).padSta
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dk=d=>{d=new Date(d);return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())},hm=t=>{const d=new Date(t);return p2(d.getHours())+':'+p2(d.getMinutes())};
 const today=dk(new Date()),avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
-function persist(){try{localStorage.setItem(K2,JSON.stringify(S))}catch(e){$('#msg').textContent='この環境では保存できません。書き出しで控えを取ってください。'}}
+let loadBlocked=false,rawRecovery=null;
+const storageError='保存できませんでした。入力は残しています。書き出しで控えを取ってください。';
+function persist(next=S){if(loadBlocked){$('#msg').textContent='元のデータを保護するため保存を停止しています。書き出しで元データを救出してください。';return false}try{localStorage.setItem(K2,JSON.stringify(next));return true}catch(e){$('#msg').textContent=storageError;return false}}
+function validate(o){
+  const obj=x=>x&&typeof x==='object'&&!Array.isArray(x),str=x=>typeof x==='string',arr=x=>Array.isArray(x)&&x.every(str);
+  if(!obj(o)||o.v!==2||!arr(o.meds)||!Array.isArray(o.items)||(o.changes!==undefined&&!Array.isArray(o.changes)))throw Error('記録データの形式が正しくありません。');
+  const ids=new Set();
+  for(const x of o.items){if(!obj(x)||!str(x.id)||!x.id||ids.has(x.id)||!str(x.date)||!/^\d{4}-\d{2}-\d{2}$/.test(x.date)||!['am','pm','any'].includes(x.slot)||![x.mood,x.energy].every(v=>v===null||Number.isInteger(v)&&v>=-3&&v<=3)||!arr(x.done)||!arr(x.meds)||!str(x.note)||!str(x.savedAt)||!Number.isFinite(Date.parse(x.savedAt))||!str(x.updatedAt)||!Number.isFinite(Date.parse(x.updatedAt))||(x.se!==undefined&&!arr(x.se)))throw Error('記録の内容が正しくありません。');ids.add(x.id)}
+  const changes=new Set();for(const c of o.changes||[]){if(!obj(c)||!str(c.id)||!c.id||changes.has(c.id)||!str(c.date)||!/^\d{4}-\d{2}-\d{2}$/.test(c.date)||!str(c.med)||!['開始','増量','減量','中止'].includes(c.kind)||!str(c.memo))throw Error('薬の変更履歴が正しくありません。');changes.add(c.id)}
+  return o;
+}
 function migrate(o){const m={};
   (o.entries||[]).forEach(e=>{const date=dk(e.t),slot=e.mode==='wake'?'am':e.mode==='bath'?'pm':'any',id=slot==='any'?'m-'+e.t:date+'-'+slot;
     const it={id,date,slot,mood:e.mood,energy:e.energy,sleep:e.sleep||null,lowneed:!!e.lowneed,done:e.done||[],meds:e.meds||[],note:e.note||'',savedAt:e.t,updatedAt:e.t};
     if(!m[id]||m[id].updatedAt<it.updatedAt)m[id]=it});
   return{v:2,meds:o.meds||[],items:Object.values(m)}}
-function merge(o){if(o.entries)o=migrate(o);let a=0,u=0;
-  (o.meds||[]).forEach(x=>{if(!S.meds.includes(x))S.meds.push(x)});(o.changes||[]).forEach(c=>{if(!S.changes.some(y=>y.id===c.id)){S.changes.push(c);a++}});
-  (o.items||[]).forEach(it=>{const i=S.items.findIndex(x=>x.id===it.id);
-    if(i<0){S.items.push(it);a++}else if(it.slot!=='any'&&it.updatedAt>S.items[i].updatedAt){S.items[i]=it;u++}});
-  persist();return[a,u]}
-try{let r=localStorage.getItem(K2);if(r)S=JSON.parse(r);else{r=localStorage.getItem(K1);if(r){S=migrate(JSON.parse(r));persist()}}}catch(e){}
+function merge(o){
+  if(loadBlocked)throw Error('元のデータを保護するため取り込みを停止しています。');
+  if(o&&o.entries)o=migrate(o);validate(o);
+  const next=JSON.parse(JSON.stringify(S));let a=0,u=0;
+  o.meds.forEach(x=>{if(!next.meds.includes(x))next.meds.push(x)});
+  (o.changes||[]).forEach(c=>{if(!next.changes.some(y=>y.id===c.id)){next.changes.push(c);a++}});
+  o.items.forEach(it=>{const i=next.items.findIndex(x=>x.id===it.id);if(i<0){next.items.push(it);a++}else if(it.slot!=='any'&&it.updatedAt>next.items[i].updatedAt){next.items[i]=it;u++}});
+  validate(next);if(!persist(next))throw Error(storageError);S=next;return[a,u];
+}
+try{let r=localStorage.getItem(K2);if(r!==null){rawRecovery=r;S=validate(JSON.parse(r))}else{r=localStorage.getItem(K1);if(r!==null){rawRecovery=r;S=validate(migrate(JSON.parse(r)));persist()}}}catch(e){loadBlocked=true;S={v:2,meds:[],items:[],changes:[]}}
 S.changes=S.changes||[];const rec=(d,s)=>S.items.find(x=>x.id===d+'-'+s);
 const msg=t=>$('#msg').textContent=t;
 
@@ -201,11 +215,11 @@ $('#save').onclick=()=>{
   const it={id:mode==='any'?'m-'+now+'-'+Math.random().toString(36).slice(2,6):sel+'-'+mode,date:sel,slot:mode,mood,energy,done:[...done],meds:[...taken],se:[...se],note:$('#note').value.trim(),savedAt:ex?ex.savedAt:now,updatedAt:now};
   if(mode==='am'){it.sleepBed=$('#bed').value;it.sleepWake=$('#wake').value;it.sleep=hours(it.sleepBed,it.sleepWake);it.lowneed=lowneed;it.wn=wn}
   if(ex)S.items[S.items.indexOf(ex)]=it;else S.items.push(it);
-  persist();
+  if(!persist())return;
   if(mode==='any'){mood=null;energy=null;lowneed=false;done=new Set();taken=new Set();$('#note').value=''}
   const m=MN[mode]+'を'+(ex?'更新':'保存')+'しました（'+hm(now)+'）';
   loadForm();cal();msg(m)};
-$('#del').onclick=()=>{const r=rec(sel,mode);if(!r)return;S.items.splice(S.items.indexOf(r),1);persist();loadForm();cal();msg('削除しました')};
+$('#del').onclick=()=>{const r=rec(sel,mode);if(!r)return;S.items.splice(S.items.indexOf(r),1);if(!persist())return;loadForm();cal();msg('削除しました')};
 
 function hist(){const r=S.items.filter(x=>x.date===sel&&x.slot==='any').sort((a,b)=>a.savedAt.localeCompare(b.savedAt));
   $('#hist').innerHTML=r.length?'<li><small>この日の「気づいた時」の記録</small></li>'+r.map(e=>`<li><div>${hm(e.savedAt)}　気分${e.mood===null?'-':sg(e.mood)} 活力${e.energy===null?'-':sg(e.energy)}<br><small>${[...e.done,...e.meds].map(esc).join('、')}${e.note?' ／ '+esc(e.note):''}</small></div><button type="button" data-id="${esc(e.id)}" aria-label="この記録を削除">×</button></li>`).join(''):''}
@@ -231,13 +245,13 @@ $('#copy').onclick=async()=>{
   const ds=[...new Set(S.items.map(i=>i.date))].sort().slice(-30),f=v=>v===null?'-':sg(v);
   const t='日付 / 区分(保存時刻) / 気分 / エネルギー / 睡眠 / できたこと / 薬 / メモ\n'+ds.flatMap(d=>S.items.filter(i=>i.date===d).sort((a,b)=>RK[a.slot]-RK[b.slot]||a.savedAt.localeCompare(b.savedAt)).map(i=>`${d.slice(5).replace('-','/')} / ${MN[i.slot]}(${hm(i.updatedAt)}${dk(i.updatedAt)!==i.date?'・'+dk(i.updatedAt).slice(5).replace('-','/')+'入力':''}) / ${f(i.mood)} / ${f(i.energy)} / ${i.sleep?i.sleep+'h':'-'} / ${i.done.join('、')||'-'} / ${i.meds.join('、')||'-'} / ${i.note||'-'}`)).join('\n');
   try{await navigator.clipboard.writeText(t);$('#copymsg').textContent='コピーしました。'}catch(e){$('#copymsg').textContent='コピーできませんでした。手動で選択してください：\n'+t}};
-$('#exp').onclick=async()=>{const t=JSON.stringify(S);$('#io').value=t;try{await navigator.clipboard.writeText(t);$('#iomsg').textContent='書き出してコピーしました。大事に保管してください。'}catch(e){$('#iomsg').textContent='上の欄の文字列を全選択してコピーしてください。'}};
-$('#imp').onclick=()=>{try{const o=JSON.parse($('#io').value);const[a,u]=merge(o);$('#iomsg').textContent=`取り込みました：追加${a}件、更新${u}件`;loadForm();cal()}catch(e){$('#iomsg').textContent='取り込めませんでした。書き出した文字列をそのまま貼り付けてください。'}};
+$('#exp').onclick=async()=>{const t=loadBlocked?rawRecovery:JSON.stringify(S);if(t===null){$('#iomsg').textContent='元データを読み出せません。ブラウザのデータを消さずに再起動してください。';return}$('#io').value=t;try{await navigator.clipboard.writeText(t);$('#iomsg').textContent='書き出してコピーしました。大事に保管してください。'}catch(e){$('#iomsg').textContent='上の欄の文字列を全選択してコピーしてください。'}};
+$('#imp').onclick=()=>{try{const o=JSON.parse($('#io').value);const[a,u]=merge(o);$('#iomsg').textContent=`取り込みました：追加${a}件、更新${u}件`;loadForm();cal()}catch(e){$('#iomsg').textContent='取り込めませんでした。'+e.message}};
 
 function chg(){$('#cdate').value=sel;$('#medl').innerHTML=S.meds.map(m=>`<option value="${esc(m)}">`).join('');
   $('#clist').innerHTML=[...S.changes].sort((a,b)=>a.date<b.date?1:-1).slice(0,8).map(c=>`<li><div>${c.date.slice(5).replace('-','/')} ${esc(c.med)} ${c.kind}${c.memo?'<br><small>'+esc(c.memo)+'</small>':''}</div><button type="button" data-id="${esc(c.id)}" aria-label="この変更を削除">×</button></li>`).join('')}
 $('#cadd').onclick=()=>{const med=$('#cmed').value.trim(),date=$('#cdate').value;if(!med||!date){msg('薬の名前と日付を入れてください。');return}
-  S.changes.push({id:'c-'+Date.now()+Math.random().toString(36).slice(2,6),date,med,kind:$('#ckind').value,memo:$('#cmemo').value.trim()});persist();$('#cmed').value='';$('#cmemo').value='';chg();msg('薬の変更を記録しました')};
+  S.changes.push({id:'c-'+Date.now()+Math.random().toString(36).slice(2,6),date,med,kind:$('#ckind').value,memo:$('#cmemo').value.trim()});if(!persist())return;$('#cmed').value='';$('#cmemo').value='';chg();msg('薬の変更を記録しました')};
 $('#clist').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.changes=S.changes.filter(c=>c.id!==b.dataset.id);persist();chg()};
 $('#vt').onclick=e=>{const b=e.target.closest('button');if(!b)return;const v=b.dataset.view;document.querySelectorAll('#vt button').forEach(x=>x.classList.toggle('on',x===b));$('#recv').hidden=v!=='rec';$('#sumv').hidden=v!=='sum';if(v==='sum')renderSum()};
 $('#per').onclick=e=>{const b=e.target.closest('button');if(!b)return;per=+b.dataset.p;document.querySelectorAll('#per button').forEach(x=>x.classList.toggle('on',x===b));renderSum()};
@@ -301,6 +315,7 @@ function renderSum(){
 
 const n=new Date();sel=today;vy=n.getFullYear();vm=n.getMonth();mode=n.getHours()<12?'am':'pm';
 cal();loadForm();
+if(loadBlocked){document.querySelectorAll('button,input,select,textarea').forEach(el=>{if(!['exp','io'].includes(el.id))el.disabled=true});msg('保存データを読み込めません。元データを保護するため保存・取り込みを停止しました。「書き出す」で元の文字列を救出できます。')}
 </script>
 </body>
 </html>
