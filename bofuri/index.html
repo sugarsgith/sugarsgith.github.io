@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SLOTSENSE 防振り</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:8px 12px}
+header h1{font-size:16px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:13px}
+.bar span{padding:2px 8px;border-radius:999px;background:var(--accentSoft)}
+.bar span.ok{background:var(--okSoft);color:var(--ok);font-weight:700}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+main{max-width:720px;margin:0 auto;padding:0 12px 80px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 4px}
+h3{font-size:15px;margin:14px 0 2px}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}
+button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.sm{min-height:36px;padding:4px 12px}
+button:active{transform:scale(.97)}
+.grow{flex:1 1 120px}
+input,select{font:inherit;font-size:18px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--sub);display:block;margin:8px 0 4px}
+.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;font-weight:700}
+.stars{color:var(--warn)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cell{flex:1 1 90px;text-align:center;font-size:12.5px;padding:4px;border-radius:6px;border:1px solid var(--border)}
+.cell.best{border-color:var(--accent);background:var(--accentSoft);font-weight:700}
+.hints{display:flex;flex-wrap:wrap;gap:8px}
+.hint{flex:1 1 260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.hint.on{background:var(--accentSoft)}
+.hint.on.confirm{border-color:var(--ok);background:var(--okSoft)}
+.hint .tap{all:unset;display:block;width:100%;cursor:pointer}
+.look{color:var(--sub);font-size:12.5px;margin:2px 0 6px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.tag.confirm{color:var(--ok);border-color:var(--ok);font-weight:700}
+.tag.strong{color:var(--accent);border-color:var(--accent);font-weight:700}
+.tag.weak{color:var(--warn);border-color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 8px;border:1px solid var(--border);border-radius:6px}
+.est .r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.est .l{width:46px}.est .v{width:52px;text-align:right}
+.est .t{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.est .f{height:100%;background:var(--accent);opacity:.55}
+.est .r.best .f{opacity:1}
+.call{border:1px solid var(--ok);background:var(--okSoft);color:var(--ok);border-radius:10px;padding:8px 10px;font-weight:700;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+th,td{border-bottom:1px solid var(--border);padding:6px 4px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+ul{padding-left:18px;margin:6px 0}
+.src li{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub)}
+textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.grid2 label{margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:8px}
+.chk input{width:22px;height:22px;min-height:0}
+details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
+.used{font-size:12.5px;color:var(--sub);margin-top:8px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:80px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.rel{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid;margin-left:6px;font-weight:700;vertical-align:middle}
+.rel.h{color:var(--ok);border-color:var(--ok)}.rel.m{color:var(--accent);border-color:var(--accent)}.rel.l{color:var(--warn);border-color:var(--warn)}
+.chk.big{font-size:15px;color:var(--text);font-weight:700;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+.alert{border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;border-bottom:1px solid var(--border);padding:5px 0}
+.kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
+.back{font-size:13px;color:var(--accent);text-decoration:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gen4 button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;line-height:1.25}
+.gen4 button b{font-size:14px;font-weight:700}
+.gen4 button .gsub{font-size:11px;color:var(--sub);font-weight:400}
+.btns button{width:100%;font-size:14px;line-height:1.25}
+.btns button small{display:block;font-size:11.5px;color:var(--sub);font-weight:400}
+button.p small{color:#e6eeff}
+.cnt{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--accentSoft);font-weight:700;font-size:12.5px;margin-left:4px}
+.evs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ev{font-size:12px;padding:2px 4px 2px 8px;border:1px solid var(--border);border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.ev button{min-height:26px;padding:0 8px;border:none;background:transparent;color:var(--danger);font-size:14px}
+.ev.loop{border-color:var(--warn)}
+.badge{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--accentSoft);margin-left:4px}
+.badge.loop{background:#fdf0dc;color:#8a4b00}
+@media (prefers-color-scheme:dark){.badge.loop{background:#3a2a12;color:#f5c27a}}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input{flex:1;min-height:32px;padding:0}
+.rng b{width:48px;text-align:right}
+.zone{display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding:6px 0}
+.zone>b{width:52px}
+.zone .seg{flex:1}
+.zone .seg button{min-width:0;font-size:12.5px;min-height:36px;padding:2px 4px}
+.warnx{color:var(--warn);font-weight:700}
+.mono{font-variant-numeric:tabular-nums}
+button.p .cnt{background:#fff;color:#1d4ed8}
+.hl{margin-top:6px;font-size:12px;line-height:1.3}
+.hll{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:11px;padding:0 40px 0 100px;white-space:nowrap}
+.hlr{display:flex;align-items:center;gap:6px;margin:3px 0}
+.hlk{flex:none;width:54px;color:var(--sub);font-size:11.5px;white-space:nowrap;overflow:hidden}
+.hlv{flex:none;width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hlv.r{text-align:left}
+.hlb{flex:1;min-width:60px;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--border)}
+.hlb i{display:block;height:100%}
+.hlb i.hi{background:#8a93a3}.hlb i.lo{background:#d3d8df}
+@media (prefers-color-scheme:dark){.hlb i.hi{background:#7a8396}.hlb i.lo{background:#3b414e}}
+.hlr.th .hlb i.hi{background:var(--accent)}.hlr.th .hlv:not(.r){color:var(--accent)}
+.hlr.tl .hlb i.lo{background:var(--warn)}.hlr.tl .hlv.r{color:var(--warn)}
+.hlc{color:var(--sub);font-size:11.5px;margin-top:2px}
+.hlc.conf{color:var(--ok);font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:4px 2px;text-align:right;border-bottom:1px solid var(--border)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
+.cmp td.h{font-weight:700}
+.pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+
+.hint2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-width:0;max-width:100%}
+.hint2 b{font-size:13px;font-weight:700}
+.hint2 small{font-size:11px;color:var(--sub);font-weight:500;white-space:normal;line-height:1.35}
+.gnote{font-size:12px;color:var(--warn);margin:6px 0 0}
+.qrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px;padding:8px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.qrow label{font-size:11px;color:var(--sub)}
+.qrow input{width:72px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--card);color:var(--text)}
+.dlg[hidden]{display:none!important}.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.dlg .box{background:var(--card);border-radius:16px 16px 12px 12px;padding:16px;width:100%;max-width:480px;max-height:85vh;overflow:auto}
+.dlg h3{margin:0 0 8px;font-size:17px}
+.dlg .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dlg label{font-size:12px;color:var(--sub);display:block;margin:0 0 2px}
+.dlg input,.dlg textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--bg);color:var(--text)}
+.dlg .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.toolsbar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+#copyOut{width:100%;min-height:110px;font:12px/1.4 ui-monospace,monospace;margin-top:8px;display:none}
+
+
+main{max-width:600px;margin:auto;padding:12px 14px 70px}header{position:static;padding:12px 14px;background:var(--card);border-bottom:1px solid var(--border)}header h1{font-size:19px;margin:6px 0}.hintgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hintgrid button{white-space:normal;text-align:left;min-width:0;padding:10px;font-size:13px;line-height:1.5}.hintgrid b,.hintgrid small{display:block}.hintgrid small{color:var(--sub);font-weight:400}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;font-size:13px;margin:8px 0 3px}input,select,textarea{width:100%;min-width:0;padding:9px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:9px;font:inherit;font-size:16px}button{touch-action:manipulation}.seg{flex-wrap:wrap}.seg button{white-space:normal}.logrow{padding:9px;border:1px solid var(--border);border-radius:10px;margin:7px 0;font-size:13px}.logrow .row{margin-top:6px;flex-wrap:wrap}.toolsbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.toolsbar button{font-size:13px}.prob{height:9px;background:var(--border);border-radius:7px;overflow:hidden;margin:4px 0}.prob i{display:block;height:100%;background:var(--accent)}.resultrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resultrow .box{min-width:0}.warnx{color:var(--warn,#b45309)}.pill{display:inline-block;border:1px solid var(--border);border-radius:20px;padding:2px 7px;font-size:11px}.dlg[hidden],[hidden]{display:none!important}.dlg .box{margin:0}.dlg .acts button{font-size:13px}.error{color:#b91c1c}.srcref{font-size:12px;color:var(--sub)}#copyOut{min-height:210px;font:12px/1.6 ui-monospace,monospace}section{scroll-margin-top:10px}.tablewrap{overflow-x:auto}nav{padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;font-size:13px}button:focus-visible{outline:2px solid var(--accent)}
+</style></head><body>
+<header><a href="../">← メニュー</a>　<a href="../history/">履歴</a><h1>スロット実戦メモ（L防振り）</h1><p class="cap">サミー · 2024/6/3導入 · 疑似ボーナスAT（純増約5.5枚/G）</p></header>
+<main><nav><a href="#base">台・G数</a><a href="#hits">当たり記録</a><a href="#hints">示唆</a><a href="#est">設定推測</a><a href="#sources">出典・不一致</a></nav>
+<section id="base"><h2>台・ゲーム数</h2><label>何の数字？（当日累計G）</label><div class="seg" id="gsrc">
+<button data-src="lcd">台の液晶</button><button data-src="lamp">データランプ累計</button><button data-src="myslot">マイスロ</button><button data-src="manual">自分で数えたG</button><button data-src="unknown">分からない</button></div>
+<div class="grid2"><div><label for="dayG">当日累計G（示唆のG帯用）</label><input id="dayG" data-f="dayG" inputmode="numeric" placeholder="例 5200"></div><div><label for="normalG">通常G（初当たり用・任意）</label><input id="normalG" data-f="normalG" inputmode="numeric" placeholder="防御状態を除ける場合だけ"></div></div>
+<p class="note" id="gNote"></p><p class="note" id="bandNote"></p>
+<p class="cap">当日累計Gと通常Gは別の数字です。液晶Gでも通常Gとは見なしません。マイスロは疑似遊技を含みます。G帯用の数字と機械内部の振り分けGが一致するかは調査中。G不明のときは率計算から外し、明示された設定範囲・否定だけ使います。</p>
+<div class="grid2"><div><label>店名（任意）<input data-f="store"></label></div><div><label>台番（任意）<input data-f="dai"></label></div><div><label>収支（任意）<input data-f="balance" placeholder="例 +3000円"></label></div><div><label>朝一<input data-f="reset" placeholder="リセット確認／不明など"></label></div></div>
+<label>メモ<textarea data-f="notes" rows="2"></textarea></label>
+</section>
+<section id="hits"><h2>当たり記録</h2><p class="cap">初当たり／防御状態中の連チャン／不明を選んで記録。BET高確は初当たりBIG・REGだけ。EP・950G天井は自動除外します。朝一の特殊直撃と通常のヒドラ目直撃も混同しないでください。</p>
+<div class="grid2"><label>区分<select id="hitKind"><option value="first">初当たり</option><option value="loop">防御状態中の連チャン</option><option value="unknown">不明</option></select></label><label>ボーナス<select id="hitType"><option>BIG</option><option>REG</option><option>EP</option><option>不明</option></select></label></div>
+<label><input id="ceiling" type="checkbox" style="width:auto"> 950G最大天井契機</label>
+<button class="p" id="addHit">＋ 当たりを記録</button><div id="hitLog"></div></section>
+<section id="hints"><h2>示唆を1タップで記録</h2><p class="cap">タップ時点の当日累計GとG帯を保存します。記録後に上のGを変えても過去のG帯は変わりません。誤入力は✕で削除できます。</p>
+<h3>終了画面（7種）</h3><p class="cap">キラキラ付きが設定示唆。EP・天使ZONE・暴虐ZONE経由の固定画面は対象外。バニー／オールスター／楓の木ガールズは濃厚扱い。</p><div class="hintgrid" id="endBtns"></div>
+<h3>キャラ紹介（9種）</h3><p class="cap">順番不要・見たキャラをタップ。機械神は設定2のみ否定、大天使は1・3のみ否定。期待度アップの対象以外を除外しません。</p><div class="hintgrid" id="charBtns"></div>
+<p class="note warnx">不一致：ミィの設定4はなな徹2.00%／一撃の通常帯表1.20%。一部のキャラ表合計も100%ではありません。なな徹の値をそのまま使い、正規化せず尤度の重みを25%に抑えます。紹介順の連動もあるため参考扱い。</p>
+<h3>サブ液晶コメント（5種）</h3><p class="cap">EP以外の終了画面でサブ液晶にタッチ→4レス目のコメントを記録。</p><div class="hintgrid" id="commentBtns"></div>
+<h3>サミートロフィー（5色）</h3><p class="cap">カスタム可能。出なかったことは低設定の根拠にしません。出現率は使用せず、表示された設定範囲だけ反映。</p><div class="hintgrid" id="trophyBtns"></div>
+<h3>獲得枚数表示</h3><div class="hintgrid" id="coinBtns"></div><p class="note">なな徹表は「設定○以上／設定6」。一撃・アルテマは濃厚または濃厚!?と表記。出典より強い表現に変えません。</p>
+<details><summary>⚙ 未公表の示唆（初期OFF）</summary><p class="cap">1人目銀翼＝「高設定に期待！？」（なな徹）。仮の値・公開出現率なし。キャラ銀翼と同じ事象を二重記録しないでください。</p><label>仮の重み<select data-f="unpub"><option value="0">OFF（計算に入れない）</option><option value="1.2">設定4〜6に1.2倍（仮定）</option><option value="1.5">設定4〜6に1.5倍（仮定）</option></select></label><button data-hint="firstSilver">1人目銀翼を記録（任意）</button></details>
+<div class="toolsbar"><button id="undoHint">↶ 最後の示唆を取り消す</button></div><div id="hintLog"></div></section>
+<section id="est"><h2>設定推測</h2><p class="cap">各設定同じ事前確率。数字のみ／示唆込みを分離。あくまで相対的な見込みで、勝ちを保証しません。</p>
+<details open><summary>確率の参考入力（重み25%）</summary><label>ボーナス確率はどちらか1つだけ<select data-f="ref"><option value="off">OFF</option><option value="first">初当たり／通常G（参考）</option><option value="total">ループ込み合算／データカウンタG（参考）</option></select></label>
+<label>データカウンタ上の対象G（合算専用）<input data-f="counterG" inputmode="numeric" placeholder="当日累計Gとは別に確認"></label><p class="cap">初当たりの分母が不明ならOFF。合算は全記録ボーナスを用います。開始Gと当たり記録の観測区間を揃えてください。両者の重複計上はしません。</p></details>
+<div id="result"></div><p class="note">BET高確は対象初当たりの当選・非当選を両方記録したときだけ率を利用。ボーナス確率と関連するため参考的な推測です。未入力や不明は非当選にしません。</p>
+<div class="toolsbar"><button class="p" id="copy">チャット用にコピー</button><button id="finish">この台を終了して保存</button></div><textarea id="copyOut" hidden readonly aria-label="チャット用コピー出力"></textarea><p class="note" id="status" role="status"></p></section>
+<section id="sources"><h2>出典・不一致・朝一</h2><ul>
+<li><a href="https://nana-press.com/kaiseki/machine/764/21883/">なな徹：設定判別</a> ／ <a href="https://nana-press.com/kaiseki/machine/764/20940/">基本確率・機械割</a></li>
+<li><a href="https://nana-press.com/kaiseki/machine/764/21905/">キャラ紹介振り分け</a> ／ <a href="https://nana-press.com/kaiseki/machine/764/21907/">終了画面振り分け</a></li>
+<li><a href="https://1geki.jp/slot/l_bofuri/0/">一撃：コメントを含む設定別振り分け</a> ／ <a href="https://pachimo.altema.jp/lbouhurisettei">アルテマ：設定差</a></li>
+<li><a href="https://nana-press.com/kaiseki/machine/764/21886/">なな徹：朝一・リセット</a></li></ul>
+<p class="note">終了画面・キャラのG帯は1〜5000／5001〜7000／7001〜8000／8001以上。公開表には丸め誤差や不整合があり、値を勝手に正規化しません。キャラは25%重み。</p>
+<ul class="note"><li>不一致：初当たり設定3＝なな徹・アルテマ1/307.3／一撃1/307.1。ここでは1/307.3を参考値に採用。</li><li>不一致：中段チェリーの設定3・4の数値に差。朝一優遇もあるためカウンター・推測には採用しません。ベルカウンターも付けていません。</li><li>不一致：ゾーンはなな徹・一撃650G／アルテマの一部表600G。CZゾーン詳細は今回未搭載。</li><li>キャラの機械神・大天使はなな徹「期待度アップ」、一撃・アルテマ「期待度大幅アップ」。本ページはなな徹表を優先。</li><li>終了画面のマイユイはなな徹「高設定示唆」、アルテマ「高設定示唆(弱)」。銀翼・樹皇も同様の表記差。</li><li>トロフィー・枚数・コメント「長い冒険」等はなな徹表の「設定○以上」を表示し、他サイトの「濃厚／濃厚!?」を脚注で区別。</li></ul>
+<h3>基本情報・リセット参考</h3><p class="cap">機械割：設定1〜6＝97.9／98.8／100.5／105.9／109.5／113.0%。通常最大950G＋α→無限CZ、950G天井後はBET高確。設定変更後は450G＋α（70%）／650G＋α（30%）、初当たり単発が続く間は短縮継続。ランダム内部G加算でリセット判別は困難。中段チェリー約3倍は防御状態でのボーナス当選まで。朝一特殊直撃は別扱い。</p></section>
+</main>
+<div class="dlg" id="endDlg" hidden><div class="box"><h3>この台を終了して保存</h3><p class="cap">履歴は作業中の自動保存とは別です。</p><div class="grid2"><label>店名<input id="endStore"></label><label>台番<input id="endDai"></label><label>収支（任意）<input id="endBal"></label><label>日付<input id="endDate" type="date"></label></div><label>メモ<textarea id="endMemo" rows="2"></textarea></label><p>保存したあと、いまの入力をどうしますか？</p><div class="acts"><button class="p" id="keep">保存して入力は残す</button><button id="clear">保存して入力を消す</button><button id="cancel">やめる</button></div></div></div>
+<script>
+(function(){"use strict";
+var KEY="slotmemo:v1:bofuri",SESS="slotsense:sessions:v1",TITLE="スマスロ防振り";
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]});}
+function num(s){return Math.max(0,Number(s)||0);}
+function empty(){return {v:1,gsrc:"lcd",dayG:"",normalG:"",counterG:"",ref:"off",unpub:"0",store:"",dai:"",balance:"",reset:"",notes:"",hits:[],ev:[]};}
+var S=empty();try{var o=JSON.parse(localStorage.getItem(KEY)||"null");if(o&&typeof o==="object"){Object.keys(S).forEach(function(k){if(o[k]!=null)S[k]=o[k];});}}catch(e){}
+if(!Array.isArray(S.hits))S.hits=[];if(!Array.isArray(S.ev))S.ev=[];
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));$("status").textContent="自動保存済み";}catch(e){$("status").textContent="自動保存できません。コピーで控えを残してください。";}}
+function band(g){g=num(g);return g<=0?"unknown":g<=5000?"a":g<=7000?"b":g<=8000?"c":"a";}
+function bandName(g){g=num(g);return !g?"G帯不明":g<=5000?"1〜5000G":g<=7000?"5001〜7000G":g<=8000?"7001〜8000G":"8001G以上";}
+function item(id,n,m,group,allow){return {id:id,n:n,m:m,group:group,allow:allow||null};}
+var H=[
+item("ed0","キラキラなし","デフォルト","end"),item("ed1","マイユイメイド","高設定示唆","end"),item("ed2","昼ビーチ","高設定示唆（強）","end"),item("ed3","夕方ビーチ","高設定示唆（極）","end"),item("ed4","バニーガール","設定4以上濃厚","end",[4,5,6]),item("ed5","メイプルオールスター","設定5以上濃厚","end",[5,6]),item("ed6","楓の木ガールズ","設定6濃厚","end",[6]),
+item("ch0","メイプル（青）","デフォルト","char"),item("ch1","銀翼（赤）","高設定示唆","char"),item("ch2","樹皇（赤）","高設定示唆","char"),item("ch3","ミィ（赤）","高設定示唆（強）","char"),item("ch4","ペイン（赤）","高設定示唆（極）","char"),item("ch5","機械神（赤）","設定2否定かつ設定5以上期待度アップ","char",[1,3,4,5,6]),item("ch6","大天使メイプル（赤）","設定1・3否定かつ設定4・6期待度アップ","char",[2,4,5,6]),item("ch7","ドラぞう（金）","設定3以上","char",[3,4,5,6]),item("ch8","運営（金）","設定5以上","char",[5,6]),
+item("co0","メイプルちゃんしか勝たん","偶数設定示唆かつ設定6で最も出現しやすい","comment"),item("co1","サリーちゃんしか勝たん","設定3・5示唆かつ設定5で最も出現しやすい","comment"),item("co2","楓の木しか勝たん","高設定示唆（極）","comment"),item("co3","長い冒険になりそうだ","設定4以上","comment",[4,5,6]),item("co4","オリハルコンかな？","設定6","comment",[6]),
+item("tr0","銅トロフィー","設定2以上","trophy",[2,3,4,5,6]),item("tr1","銀トロフィー","設定3以上","trophy",[3,4,5,6]),item("tr2","金トロフィー","設定4以上","trophy",[4,5,6]),item("tr3","キリン柄トロフィー","設定5以上","trophy",[5,6]),item("tr4","虹トロフィー","設定6","trophy",[6]),
+item("cn0","456枚OVER","設定4以上","coin",[4,5,6]),item("cn1","666枚OVER","設定6","coin",[6]),item("firstSilver","1人目銀翼","高設定に期待！？（未公表・⚙）","unpub")];
+var MAP={};H.forEach(function(h){MAP[h.id]=h;});
+// Raw source percentages: no per-setting renormalisation. Rows = settings; columns = UI order.
+var END={a:[[69.9,25,5,.1,0,0,0],[68.3,26,5.5,.2,0,0,0],[67,27,5.5,.5,0,0,0],[63.45,28,7,1.5,.05,0,0],[61.4,29,7.5,2,.05,.05,0],[59.75,30,8,2,.1,.1,.05]],b:[[69.9,25,5,.1,0,0,0],[68.3,26,5.5,.2,0,0,0],[67,27,5.5,.5,0,0,0],[62.5,28,7,1.5,1,0,0],[58.5,29,7.5,2,2,1,0],[55,30,8,2,2,2,1]],c:[[69.9,25,5,.1,0,0,0],[68.3,26,5.5,.2,0,0,0],[67,27,5.5,.5,0,0,0],[53.5,28,7,1.5,10,0,0],[46.5,29,7.5,2,5,10,0],[40,30,8,2,5,5,10]]};
+var CHAR={a:[[80.85,13,5,1,.1,.05,0,0,0],[79.9,13.4,5.2,1.2,.25,0,.05,0,0],[79.2,13.8,5.4,1.2,.25,.05,0,.1,0],[76.55,14.2,5.6,2,1,.05,.5,.1,0],[75.65,14.6,5.8,2,1.25,.5,.05,.1,.05],[73.85,15,6,2.5,1.5,.5,.5,.1,.05]],b:[[80.85,13,5,1,.1,.05,0,0,0],[79.9,13.4,5.2,1.2,.25,0,.05,0,0],[78.8,13.8,5.4,1.2,.25,.05,0,.5,0],[75.25,14.2,5.6,2,1,.2,1.25,.5,0],[74.15,14.6,5.8,2,1.25,1.25,.2,.5,.25],[71.75,15,6,2.5,1.5,1.25,1.25,.5,.25]],c:[[80.85,13,5,1,.1,.05,0,0,0],[79.9,13.4,5.2,1.2,.25,0,.05,0,0],[76.8,13.8,5.4,1.2,.25,.05,0,2.5,0],[68.25,14.2,5.6,2,1,.2,6.25,2.5,0],[66.4,14.6,5.8,2,1.25,6.25,.2,2.5,1],[58.99,15,6,2.5,1.5,6.25,6.25,2.5,1]]};
+var COMMENT=[[49.97,49.97,.06,0,0],[56.9,42.9,.2,0,0],[42.8,56.8,.4,0,0],[56.9,42,1,.1,0],[41.98,56.9,1,.12,0],[57.04,41.3,1.5,.15,.01]];
+var FIRST=[319,309.8,307.3,266.8,257.1,229.7],TOTAL=[122.4,119.6,115.1,102.8,95.7,90],BET=[.025,.05,.054,.079,.096,.104];
+function eligible(h){return h.kind==="first"&&(h.type==="BIG"||h.type==="REG")&&!h.ceiling;}
+function estimate(withHints){var ll=[0,0,0,0,0,0],allowed=[true,true,true,true,true,true],used=[],masks=[];
+function binom(n,k,ps,w){if(!(n>0)||k>n)return;for(var i=0;i<6;i++){var p=ps[i];ll[i]+=w*(k*Math.log(p)+(n-k)*Math.log(1-p));}}
+var first=S.hits.filter(function(h){return h.kind==="first";}).length;
+if(S.ref==="first"&&num(S.normalG)>0){binom(num(S.normalG),first,FIRST.map(function(x){return 1/x;}),.25);used.push("初当たり／通常G（参考25%）");}
+else if(S.ref==="total"&&num(S.counterG)>0){binom(num(S.counterG),S.hits.length,TOTAL.map(function(x){return 1/x;}),.25);used.push("ループ込み合算（参考25%）");}
+var bets=S.hits.filter(function(h){return eligible(h)&&(h.bet===0||h.bet===1);});
+if(bets.length){binom(bets.length,bets.filter(function(h){return h.bet===1;}).length,BET,1);used.push("BET高確 "+bets.filter(function(h){return h.bet===1;}).length+"/"+bets.length);}
+if(withHints){S.ev.forEach(function(e){var h=MAP[e.id];if(!h)return;
+if(h.allow){allowed=allowed.map(function(a,i){return a&&h.allow.indexOf(i+1)>=0;});masks.push(h.n+"："+h.m);}
+var rates=null,w=1,idx=parseInt(h.id.slice(2),10);
+if(h.group==="end"&&END[e.band])rates=END[e.band];
+if(h.group==="char"&&CHAR[e.band]){rates=CHAR[e.band];w=.25;}
+if(h.group==="comment")rates=COMMENT;
+if(rates){for(var i=0;i<6;i++)ll[i]+=w*Math.log(Math.max(rates[i][idx]/100,1e-12));}
+if(h.group==="unpub"&&num(S.unpub)>0){for(var j=3;j<6;j++)ll[j]+=Math.log(num(S.unpub));}
+});if(S.ev.length)used.push("示唆 "+S.ev.length+"件（キャラ25%／G帯不明の画面・キャラは率不使用）");}
+var conflict=!allowed.some(Boolean);if(conflict)return {post:null,used:used,masks:masks,conflict:true};
+var max=Math.max.apply(null,ll.filter(function(x,i){return allowed[i];}));var raw=ll.map(function(x,i){return allowed[i]?Math.exp(x-max):0;}),sum=raw.reduce(function(a,b){return a+b;},0);
+return {post:raw.map(function(x){return x/sum;}),used:used,masks:masks,conflict:false};}
+function resultBox(name,r){if(!r.post)return '<div class="box"><b>'+name+'</b><p class="error">設定範囲・否定が矛盾しています。記録を確認してください。推測は保留します。</p></div>';
+var high=r.post.slice(3).reduce(function(a,b){return a+b;},0),best=r.post.indexOf(Math.max.apply(null,r.post))+1;
+return '<div class="box"><b>'+name+'</b><p>高設定域4〜6 <b>'+Math.round(high*100)+'%</b><br>最有力 設定'+best+'</p>'+r.post.map(function(p,i){return '<small>設定'+(i+1)+'　'+(p*100).toFixed(1)+'%</small><div class="prob"><i style="width:'+(p*100)+'%"></i></div>';}).join("")+'</div>';}
+function renderResult(){var a=estimate(false),b=estimate(true);$("result").innerHTML='<div class="resultrow">'+resultBox("数字のみ",a)+resultBox("示唆込み",b)+'</div><p class="note">使った要素：'+esc(b.used.join(" ／ ")||"未入力（各設定均等）")+'</p>'+(b.masks.length?'<p class="note">設定範囲・否定（期待度アップの文言は範囲制限ではありません）：'+esc(b.masks.join(" ／ "))+'</p>':"");}
+function renderHints(){["end","char","comment","trophy","coin"].forEach(function(g){$(g+"Btns").innerHTML=H.filter(function(h){return h.group===g;}).map(function(h){var badge=h.m==="デフォルト"?"デフォルト":/濃厚/.test(h.m)?"濃厚":/否定/.test(h.m)?"否定":h.allow?"設定範囲":"示唆";return '<button data-hint="'+h.id+'"><b>'+esc(h.n)+'</b><small>'+esc(h.m)+'</small><span class="pill">'+badge+'</span></button>';}).join("");});}
+function renderLogs(){$("hintLog").innerHTML=S.ev.map(function(e,i){var h=MAP[e.id];return '<div class="logrow">'+esc(h?h.n:e.id)+' · '+esc(bandName(e.g))+' <button data-del-hint="'+i+'" aria-label="この示唆を取り消し">✕</button><br><small>'+esc(h?h.m:"")+'</small></div>';}).join("");
+$("hitLog").innerHTML=S.hits.map(function(h,i){return '<div class="logrow"><b>'+esc(({first:"初当たり",loop:"防御状態中の連チャン",unknown:"不明"})[h.kind]||"不明")+' · '+esc(h.type)+'</b>'+ (h.ceiling?' · 950G天井':'')+' <button data-del-hit="'+i+'" aria-label="この当たりを取り消し">✕</button>'+ (eligible(h)?'<div class="row">BET高確 <button data-bet="'+i+'" data-v="1" class="'+(h.bet===1?'p':'')+'">当選</button><button data-bet="'+i+'" data-v="0" class="'+(h.bet===0?'p':'')+'">非当選</button><button data-bet="'+i+'" data-v="unknown">未入力に戻す</button></div>':'<p class="note">BET高確：対象外（EP・天井・連チャン・区分不明）</p>')+'</div>';}).join("");}
+function render(){document.querySelectorAll('[data-f]').forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f]||"";});document.querySelectorAll('[data-src]').forEach(function(b){b.classList.toggle("on",b.dataset.src===S.gsrc);});
+$("gNote").textContent=({lcd:"台の液晶：初期選択。通常Gや内部振り分けGとの一致は別途確認が必要です。",lamp:"データランプ累計：信頼度低め。ループ分を含むため初当たりの通常Gには使いません。",myslot:"マイスロ：疑似遊技を含みます。分母の混同に注意。",manual:"自分で数えたG：通常／防御状態や観測区間を揃えてください。",unknown:"何の数字か不明：信頼度低め。通常Gには自動変換しません。"})[S.gsrc]||"";
+$("bandNote").textContent="次に記録する示唆のG帯："+bandName(S.dayG);renderLogs();renderResult();}
+function commit(){save();render();}
+function copyText(){var a=estimate(false),b=estimate(true);function fmt(r){return !r.post?"矛盾・保留":"高設定域4〜6 "+Math.round(r.post.slice(3).reduce(function(x,y){return x+y;},0)*100)+"%";}
+return ["【SLOTSENSE / "+TITLE+"】",new Date().toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+" 台番: "+(S.dai||"-")+" 収支: "+(S.balance||"-"),"G出所: "+({lcd:"台の液晶",lamp:"データランプ累計（信頼度低め）",myslot:"マイスロ",manual:"自分で数えたG",unknown:"分からない"}[S.gsrc]||S.gsrc)+" 当日累計G: "+(S.dayG||"-")+" 通常G: "+(S.normalG||"-"),"初当たり: "+S.hits.filter(function(h){return h.kind==="first";}).length+" / 総ボーナス: "+S.hits.length,"数字のみ: "+fmt(a),"示唆込み: "+fmt(b),"示唆: "+(S.ev.map(function(e){return (MAP[e.id]?MAP[e.id].n:e.id)+"（"+bandName(e.g)+"）";}).join(" ／ ")||"-"),"参考重み25%・キャラ不一致あり・G帯対応は調査中", "メモ: "+(S.notes||"-")].join("\n");}
+function copy(){var out=$("copyOut");out.hidden=false;out.value=copyText();function fallback(){out.focus();out.select();$("status").textContent="欄を長押ししてコピーしてください。";}
+if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out.value).then(function(){$("status").textContent="コピーしました";},fallback);else fallback();}
+function today(){return new Date().toLocaleDateString("sv-SE",{timeZone:"Asia/Tokyo"});}
+function finish(){[ ["endStore","store"],["endDai","dai"],["endBal","balance"],["endMemo","notes"] ].forEach(function(p){$(p[0]).value=S[p[1]]||"";});$("endDate").value=today();$("endDlg").hidden=false;}
+function finishSave(clear){var next=Object.assign({},S,{store:$("endStore").value,dai:$("endDai").value,balance:$("endBal").value,notes:$("endMemo").value});var prev=S;S=next;
+try{var a=JSON.parse(localStorage.getItem(SESS)||"[]");if(!Array.isArray(a))throw Error("invalid sessions");var now=new Date().toISOString();a.push({id:"bofuri-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),machine:"bofuri",title:TITLE,createdAt:now,date:$("endDate").value||today(),store:S.store,dai:S.dai,balance:S.balance,summary:"当日"+(S.dayG||0)+"G ／ ボーナス"+S.hits.length+"回",text:copyText(),data:JSON.parse(JSON.stringify(S))});localStorage.setItem(SESS,JSON.stringify(a));}catch(e){S=prev;$("status").textContent="履歴を保存できませんでした。入力は消していません。";alert("履歴を保存できませんでした。入力は残します。");return;}
+if(clear)S=empty();$("endDlg").hidden=true;commit();$("status").textContent="履歴に保存しました（入力は"+(clear?"クリア":"保持")+"）。";}
+document.addEventListener("input",function(e){var el=e.target;if(!el.dataset.f)return;var f=el.dataset.f;if(["dayG","normalG","counterG"].indexOf(f)>=0)el.value=el.value.replace(/[^0-9]/g,"");S[f]=el.value;save();renderResult();$("bandNote").textContent="次に記録する示唆のG帯："+bandName(S.dayG);});
+document.addEventListener("change",function(e){if(e.target.dataset.f){S[e.target.dataset.f]=e.target.value;commit();}});
+document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+if(d.src){S.gsrc=d.src;commit();return;}
+if(d.hint){S.ev.push({id:d.hint,g:S.dayG,band:band(S.dayG),gsrc:S.gsrc,at:new Date().toISOString()});commit();return;}
+if(d.delHint!==undefined){S.ev.splice(Number(d.delHint),1);commit();return;}
+if(d.delHit!==undefined){S.hits.splice(Number(d.delHit),1);commit();return;}
+if(d.bet!==undefined){var h=S.hits[Number(d.bet)];if(h&&eligible(h)){h.bet=d.v==="unknown"?null:Number(d.v);commit();}return;}
+if(b.id==="addHit"){S.hits.push({kind:$("hitKind").value,type:$("hitType").value,ceiling:$("ceiling").checked,bet:null,g:S.dayG,at:new Date().toISOString()});$("ceiling").checked=false;commit();return;}
+if(b.id==="undoHint"){S.ev.pop();commit();return;}
+if(b.id==="copy")copy();if(b.id==="finish")finish();if(b.id==="cancel")$("endDlg").hidden=true;if(b.id==="keep")finishSave(false);if(b.id==="clear")finishSave(true);
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("endDlg").hidden=true;});
+renderHints();render();
+// Read-only test surface: no writes and no existing machine globals affected.
+window.bofuriTest={estimate:estimate,band:band,eligible:eligible,rates:{end:END,char:CHAR,comment:COMMENT},hints:H};
+})();
+</script></body></html>

@@ -51,6 +51,7 @@ pre{white-space:pre-wrap;font:12px/1.45 ui-monospace,monospace;background:var(--
 </main>
 <script>
 var KEY='slotsense:sessions:v1';
+var MACHINE_TITLES={bofuri:'スマスロ防振り',enen2:'L炎炎ノ消防隊2',lycoris:'リコリス・リコイル',umineko2:'Lうみねこのなく頃に2',magireco:'マギアレコード'};
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
 function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]})}
@@ -59,7 +60,7 @@ function render(){
   var el=document.getElementById('list');
   if(!a.length){el.innerHTML='<p class="note">まだ履歴がありません。</p>';return;}
   el.innerHTML=a.map(function(r,i){
-    return '<div class="card" data-i="'+i+'"><b>'+esc(r.date||'')+'　'+esc(r.title||r.machine||'')+'</b>'+
+    return '<div class="card" data-i="'+i+'"><b>'+esc(r.date||'')+'　'+esc(r.title||MACHINE_TITLES[r.machine]||r.machine||'')+'</b>'+
       '<span>'+esc([r.store&&('店:'+r.store),r.dai&&('台:'+r.dai),r.summary].filter(Boolean).join(' ／ '))+'</span>'+
       '<div class="row"><button data-copy="'+esc(r.id)+'">コピー</button><button data-tog="'+esc(r.id)+'">詳細</button><button class="d" data-del="'+esc(r.id)+'">削除</button></div>'+
       '<pre class="hidden" id="d-'+esc(r.id)+'">'+esc(r.text||'')+'</pre></div>';

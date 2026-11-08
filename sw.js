@@ -1,6 +1,6 @@
 // SLOTSENSE service worker: network-first (always fresh online), cache fallback offline.
-const CACHE = 'slotsense-v2';
-const PRECACHE = ['/', '/lycoris/', '/enen2/', '/umineko2/', '/magireco/', '/hyena/', '/history/',
+const CACHE = 'slotsense-v3';
+const PRECACHE = ['/', '/lycoris/', '/enen2/', '/umineko2/', '/magireco/', '/hyena/', '/history/', '/bofuri/',
   '/manifest.webmanifest', '/icons/apple-touch-icon.png', '/icons/icon-192.png',
   '/icons/icon-512.png', '/icons/icon-512-maskable.png'];
 self.addEventListener('install', e => {
