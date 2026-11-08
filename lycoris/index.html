@@ -121,6 +121,8 @@ details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SLOTSENSE">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){})})}</script>
+<link rel="stylesheet" href="../topbar.css">
+<script src="../topbar.js"></script>
 </head>
 <body>
 <noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
@@ -435,9 +437,9 @@ var SCOPE_W={today:1,prev:1,unknown:0.5};
 var SCOPE_L={today:"当日の台全体",prev:"前の人の分だけ",unknown:"不明"};
 function prevData(force){if(S.mode!=="mid"||(!S.merge&&!force))return null;var P=S.prev,pn=num(P.pn);if(pn<=0)return null;
   return {w:SCOPE_W[P.scope]||0.5,n:pn,cz:num(P.ob)+num(P.fl),youshou:num(P.fl),at:num(P.rush)};}
-// o: own=false→自分の分を使わない／prev=true|false→前任者を強制ON/OFF（未指定は合算スイッチどおり）／mask=false→濃厚示唆を使わない（数字だけ）
+// o: own=false→自分の分を使わない／prev=true|false→前任者を強制ON/OFF（未指定は合算スイッチどおり）／mask=false→濃厚示唆を使わない（数字のみ）
 function hintCounts(m){var r={s:0,w:0};m.hintGroups.forEach(function(g){g.items.forEach(function(h){var c=S.taps[h.id]||0;if(c>0&&h.level==="strong")r.s+=c;else if(c>0&&h.level==="weak")r.w+=c;});});return r;}
-// o.hints=false→強・弱示唆の重みを使わない（未指定は mask と同じ。数字だけ＝mask:false で両方OFF）
+// o.hints=false→強・弱示唆の重みを使わない（未指定は mask と同じ。数字のみ＝mask:false で両方OFF）
 function estimate(m,o){o=o||{};var OWN=o.own!==false,MSK=o.mask!==false,HNT=o.hints!==undefined?o.hints:MSK;
   var n=Number(S.normalG)||0, ll=m.settings.map(function(){return 0;}), used=false, PD=o.prev===undefined?prevData():(o.prev?prevData(true):null);
   m.rates.forEach(function(r){if(!rateUsed(m,r))return;var k=rateCount(m,r);if(OWN&&n>0&&k<=n){used=true;r.denoms.forEach(function(d,i){var p=1/d;ll[i]+=k*Math.log(p)+(n-k)*Math.log(1-p);});}
@@ -458,10 +460,10 @@ function stars(n){return "★★★".slice(0,n)+"☆☆☆".slice(0,3-n);}
 function hlPct(x){return Math.round(x*100)+"%";}
 function hlHi(p){return p[3]+p[4]+p[5];}
 function hlRow(key,p){var hi=hlHi(p),lo=Math.max(0,1-hi),c=hi>0.7?" th":lo>0.7?" tl":"";
- return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+hlPct(lo)+'</span></div>';}
+ return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+(100-Math.round(hi*100))+"%"+'</span></div>';}
 function hlBlock(rows,conf,note){if(!rows.length)return "";
  return '<div class="hl"><div class="hll"><span>高設定域 4〜6</span><span>低設定域 1〜3</span></div>'+rows.map(function(r){return hlRow(r[0],r[1]);}).join("")+
- '<div class="hlc'+(conf?" conf":"")+'">'+(conf?"確定・濃厚示唆あり":"あくまで予想です。様子見の判断材料に")+(note?'<span style="color:var(--sub);font-weight:400">　'+note+'</span>':"")+'</div></div>';}
+ '<div class="hlc'+(conf?" conf":"")+'">'+(conf?"濃厚・否定の条件を反映":"あくまで予想です。様子見の判断材料に")+(note?'<span style="color:var(--sub);font-weight:400">　'+note+'</span>':"")+'</div></div>';}
 function cmpTable(rows){return '<table class="cmp"><thead><tr><th></th><th>4〜6</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead><tbody>'+
  rows.map(function(r){return '<tr><td>'+r[0]+'</td><td class="h">'+hlPct(hlHi(r[1]))+'</td>'+r[1].map(function(v){return '<td>'+Math.round(v*100)+'</td>';}).join("")+'</tr>';}).join("")+'</tbody></table><p class="note" style="margin:0">数字は各設定の％（四捨五入）。</p>';}
 function fr(e){return e?e.map(function(v){return v/100;}):null;}
@@ -512,7 +514,7 @@ function render(){
   else if(S.mode==="mid")eh+='<p class="note">途中から：自分が打った分だけで計算中（前任者は合算していません）。</p>';
   if(est)eh+='<div class="call">高設定域（4・5・6） '+(hlHi(fr(est))*100).toFixed(1)+'%</div>';
   if(S.mode==="mid"&&S.merge&&prevData()){var ea=estimate(m,{prev:false});eh+='<h3>自分の分だけ／前任者込み</h3>'+(ea&&est?cmpTable([["自分の分だけ",fr(ea)],["前任者込み",fr(est)]]):'<p class="note">自分の分を入れると、合算前との比較を表示します。</p>');}
-  eh+='<p class="note">上部バーの「数字だけ」＝CZ・幼少期CZ・ラッシュ回数・到達抽選などの数字のみ。「示唆込み」＝それに濃厚（トロフィー・終了画面の○以上濃厚）と、強・弱示唆の仮の重み（⚙：強 '+S.hw.s.toFixed(1)+'倍／弱 '+S.hw.w.toFixed(1)+'倍・1回ごとに設定4〜6を1〜3に対して掛ける）を加えたもの。強・弱の出現率は未公表なので、重みは仮の値です。前任者データには示唆がないので、前任者の分には掛かりません。</p>';
+  eh+='<p class="note">上部バーの「数字のみ」＝CZ・幼少期CZ・ラッシュ回数・到達抽選などの数字のみ。「示唆込み」＝それに濃厚（トロフィー・終了画面の○以上濃厚）と、強・弱示唆の仮の重み（⚙：強 '+S.hw.s.toFixed(1)+'倍／弱 '+S.hw.w.toFixed(1)+'倍・1回ごとに設定4〜6を1〜3に対して掛ける）を加えたもの。強・弱の出現率は未公表なので、重みは仮の値です。前任者データには示唆がないので、前任者の分には掛かりません。</p>';
   if(est)eh+='<p class="used">推測に使った項目：'+esc(usedL.join("、")||(PD?"前任者データのみ":"濃厚示唆のみ"))+(unused.length?'<br>未使用（0回のため除外）：'+esc(unused.join("、")):"")+'</p>';
   $("estBody").innerHTML=eh;
   // 示唆
@@ -558,9 +560,9 @@ function render(){
   if(mn>1)bar+='<span class="ok">設定'+mn+'以上濃厚</span>';
   $("statbar").innerHTML=bar;
   var rows=[],note="";
-  if(est){var en=estimate(m,{mask:false});if(en)rows.push(["数字だけ",fr(en)]);rows.push(["示唆込み",fr(est)]);}
+  if(est){var en=estimate(m,{mask:false});if(en)rows.push(["数字のみ",fr(en)]);rows.push(["示唆込み",fr(est)]);}
   else{var pe=preEst(m);if(pe){rows.push(["座る前",fr(pe)]);note="前任者分のみ・信頼度 低〜中";}}
-  $("hlbar").innerHTML=hlBlock(rows,!!est&&mn>1,note);
+  $("hlbar").innerHTML=hlBlock(rows,!!est&&mn>1,note);SSTop.legacy(null,false);
 }
 function seg(id,key,val){document.querySelectorAll("#"+id+" button").forEach(function(b){var v=b.dataset.v||b.dataset.mode;b.className=v===val?"on":"";});}
 function kv(k,v){return '<div class="kv"><span>'+k+'</span><b>'+v+'</b></div>';}

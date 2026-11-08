@@ -143,6 +143,8 @@ button.p .cnt{background:#fff;color:#1d4ed8}
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SLOTSENSE">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){})})}</script>
+<link rel="stylesheet" href="../topbar.css">
+<script src="../topbar.js"></script>
 </head>
 <body>
 <noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
@@ -394,9 +396,9 @@ function renderStatic(){
 function hlPct(x){return Math.round(x*100)+"%";}
 function hlHi(p){return p[3]+p[4]+p[5];}
 function hlRow(key,p){var hi=hlHi(p),lo=Math.max(0,1-hi),c=hi>0.7?" th":lo>0.7?" tl":"";
- return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+hlPct(lo)+'</span></div>';}
+ return '<div class="hlr'+c+'"><span class="hlk">'+key+'</span><span class="hlv">'+hlPct(hi)+'</span><span class="hlb"><i class="hi" style="width:'+(hi*100).toFixed(1)+'%"></i><i class="lo" style="width:'+(lo*100).toFixed(1)+'%"></i></span><span class="hlv r">'+(100-Math.round(hi*100))+"%"+'</span></div>';}
 function hlBlock(rows,conf){if(!rows.length)return "";
- return '<div class="hl"><div class="hll"><span>高設定域 4〜6</span><span>低設定域 1〜3</span></div>'+rows.map(function(r){return hlRow(r[0],r[1]);}).join("")+'<div class="hlc'+(conf?" conf":"")+'">'+(conf?"濃厚・否定の示唆あり":"あくまで予想です。様子見の判断材料に")+'</div></div>';}
+ return '<div class="hl"><div class="hll"><span>高設定域 4〜6</span><span>低設定域 1〜3</span></div>'+rows.map(function(r){return hlRow(r[0],r[1]);}).join("")+'<div class="hlc'+(conf?" conf":"")+'">'+(conf?"濃厚・否定の条件を反映":"あくまで予想です。様子見の判断材料に")+'</div></div>';}
 function render(){if($("gSrcSeg")){$("gSrcSeg").querySelectorAll("button").forEach(function(b){b.classList.toggle("on",b.dataset.v===(S.gSrc||"lamp"));});}if($("gSrcNote"))$("gSrcNote").textContent=gSrcCaption();
 
  document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f];});
@@ -422,13 +424,13 @@ function renderEst(){var r=est(),h="";
  if(r.conflict)h+='<div class="alert">濃厚・否定どうしが矛盾しています（見間違いの可能性）。濃厚・否定を無視して計算中。</div>';
  h+='<div class="used"><b>使った要素</b><ul>'+r.used.map(function(u){return "<li>"+esc(u.t)+' <span class="rel '+u.rel+'">信頼度 '+(u.rel==="h"?"高":u.rel==="m"?"中":"低")+"</span></li>";}).join("")+r.masks.map(function(m){return '<li>'+esc(m)+' <span class="rel h">濃厚100%</span></li>';}).join("")+"</ul></div>";
  if(r.masks.length){var al=[];r.allow.forEach(function(a,i){if(a)al.push(i+1);});h+='<p class="note">濃厚・否定で残った設定：'+al.join("・")+'</p>';}
- h+='<p class="note">「信頼度」はその要素の数字がどこまで確かか（高＝公表の設定差、中＝補正が必要な値、低＝⚙の仮の重み）で、高設定域か低設定域かを示すものではありません。「数字だけ」＝AT初当り・BIG後高確・スイカCZ・みたまウワサ発展・弱チェリー。「示唆込み」＝それに濃厚・否定（除外）と強・弱の仮の重み（⚙）を加えたもの。</p>';
+ h+='<p class="note">「信頼度」はその要素の数字がどこまで確かか（高＝公表の設定差、中＝補正が必要な値、低＝⚙の仮の重み）で、高設定域か低設定域かを示すものではありません。「数字のみ」＝AT初当り・BIG後高確・スイカCZ・みたまウワサ発展・弱チェリー。「示唆込み」＝それに濃厚・否定（除外）と強・弱の仮の重み（⚙）を加えたもの。</p>';
  $("estBody").innerHTML=h;statbar(r);}
 function statbar(r){var h="",G=num(S.g),k=num(S.n.at);h+="<span>総 "+G+"G</span>";if(G&&k)h+="<span>AT 1/"+Math.round(G/k)+"</span>";
  if(r){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});h+='<span>最有力 設定'+(b+1)+'</span>';}
  $("statbar").innerHTML=h;var rows=[];
- if(r){var n=est({hints:false});if(n.any)rows.push(["数字だけ",n.post]);rows.push(["示唆込み",r.post]);}
- $("hlbar").innerHTML=hlBlock(rows,r&&r.masks.length>0);}
+ if(r){var n=est({hints:false});if(n.any)rows.push(["数字のみ",n.post]);rows.push(["示唆込み",r.post]);}
+ $("hlbar").innerHTML=hlBlock(rows,r&&r.masks.length>0);SSTop.legacy(r,(S.gSrc||"lamp")==="lamp");}
 function renderMy(){$("myCnt").innerHTML=S.cnt.map(function(c,i){return '<div class="kv"><span>'+esc(c.n)+'</span><b><button class="sm" data-cm="'+i+'">−</button> <span class="mono">'+c.v+'</span> <button class="sm p" data-cp="'+i+'">＋</button> <button class="sm" data-cx="'+i+'">✕</button></b></div>';}).join("");}
 function commit(){save();render();}
 

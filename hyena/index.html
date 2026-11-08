@@ -153,6 +153,8 @@ details.low summary{font-size:14px}
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SLOTSENSE">
 <script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){})})}</script>
+<link rel="stylesheet" href="../topbar.css">
+<script src="../topbar.js"></script>
 </head>
 <body>
 <noscript><div style="padding:12px;background:#fde2e2;color:#900;font-weight:bold">この画面ではメモ機能が動きません。SafariかChromeで開き直してください。</div></noscript>
@@ -361,7 +363,7 @@ function renderTop(){
  $('bar').innerHTML='<span>'+esc(H.RATES[S.rate])+'</span><span>'+S.lend+'枚貸</span><span>閉店 '+(S.close||'未設定')+'</span>';
 }
 function render(){renderTop();var m=H.M[S.mc],sit=m.sits[S.sit],g=S.g===''?null:+S.g;
- var j=H.judge(g,sit,S.rate),line=H.judgeLine(sit,S.rate),html='';
+ var j=H.judge(g,sit,S.rate),line=H.judgeLine(sit,S.rate),html='';SSTop.hyena(j,sit,g);
  // ---- checker result
  var cls={in:'res in',near:'res near',out:'res out',over:'res over',noline:'res out',none:'res none'}[j.st];
  var t='',sub='';
