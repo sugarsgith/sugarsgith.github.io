@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>SLOTSENSE 戦国乙女5</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--border);padding:8px 12px}
+header h1{font-size:16px;margin:0}
+.bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:13px}
+.bar span{padding:2px 8px;border-radius:999px;background:var(--accentSoft)}
+.bar span.ok{background:var(--okSoft);color:var(--ok);font-weight:700}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px}
+nav a{font-size:13px;color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+main{max-width:720px;margin:0 auto;padding:0 12px 80px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0}
+h2{font-size:17px;margin:0 0 4px}
+h3{font-size:15px;margin:14px 0 2px}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}
+button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.sm{min-height:36px;padding:4px 12px}
+button:active{transform:scale(.97)}
+.grow{flex:1 1 120px}
+input,select{font:inherit;font-size:18px;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);width:100%}
+label{font-size:13px;color:var(--sub);display:block;margin:8px 0 4px}
+.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.hd{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;font-weight:700}
+.stars{color:var(--warn)}
+.cells{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cell{flex:1 1 90px;text-align:center;font-size:12.5px;padding:4px;border-radius:6px;border:1px solid var(--border)}
+.cell.best{border-color:var(--accent);background:var(--accentSoft);font-weight:700}
+.hints{display:flex;flex-wrap:wrap;gap:8px}
+.hint{flex:1 1 260px;border:1px solid var(--border);border-radius:12px;padding:10px}
+.hint.on{background:var(--accentSoft)}
+.hint.on.confirm{border-color:var(--ok);background:var(--okSoft)}
+.hint .tap{all:unset;display:block;width:100%;cursor:pointer}
+.look{color:var(--sub);font-size:12.5px;margin:2px 0 6px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.tag.confirm{color:var(--ok);border-color:var(--ok);font-weight:700}
+.tag.strong{color:var(--accent);border-color:var(--accent);font-weight:700}
+.tag.weak{color:var(--warn);border-color:var(--warn)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 8px;border:1px solid var(--border);border-radius:6px}
+.est .r{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.est .l{width:46px}.est .v{width:52px;text-align:right}
+.est .t{flex:1;height:14px;background:var(--bg);border-radius:4px;overflow:hidden}
+.est .f{height:100%;background:var(--accent);opacity:.55}
+.est .r.best .f{opacity:1}
+.call{border:1px solid var(--ok);background:var(--okSoft);color:var(--ok);border-radius:10px;padding:8px 10px;font-weight:700;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0 12px}
+th,td{border-bottom:1px solid var(--border);padding:6px 4px;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+ul{padding-left:18px;margin:6px 0}
+.src li{margin:6px 0}
+.note{font-size:12.5px;color:var(--sub)}
+textarea{font:inherit;font-size:16px;width:100%;min-height:110px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px}
+.grid2 label{margin:6px 0 2px}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-top:8px}
+.chk input{width:22px;height:22px;min-height:0}
+details summary{cursor:pointer;font-weight:700;font-size:17px;min-height:32px}
+.used{font-size:12.5px;color:var(--sub);margin-top:8px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:80px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.rel{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;border:1px solid;margin-left:6px;font-weight:700;vertical-align:middle}
+.rel.h{color:var(--ok);border-color:var(--ok)}.rel.m{color:var(--accent);border-color:var(--accent)}.rel.l{color:var(--warn);border-color:var(--warn)}
+.chk.big{font-size:15px;color:var(--text);font-weight:700;padding:8px 10px;border:1px solid var(--border);border-radius:10px}
+.alert{border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13.5px;border-bottom:1px solid var(--border);padding:5px 0}
+.kv span{flex:1 1 auto;min-width:0}.kv b{flex:0 1 auto;text-align:right;max-width:62%}
+.back{font-size:13px;color:var(--accent);text-decoration:none}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.gen4 button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;line-height:1.25}
+.gen4 button b{font-size:14px;font-weight:700}
+.gen4 button .gsub{font-size:11px;color:var(--sub);font-weight:400}
+.btns button{width:100%;font-size:14px;line-height:1.25}
+.btns button small{display:block;font-size:11.5px;color:var(--sub);font-weight:400}
+button.p small{color:#e6eeff}
+.cnt{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--accentSoft);font-weight:700;font-size:12.5px;margin-left:4px}
+.evs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ev{font-size:12px;padding:2px 4px 2px 8px;border:1px solid var(--border);border-radius:999px;display:inline-flex;align-items:center;gap:4px}
+.ev button{min-height:26px;padding:0 8px;border:none;background:transparent;color:var(--danger);font-size:14px}
+.ev.loop{border-color:var(--warn)}
+.badge{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--accentSoft);margin-left:4px}
+.badge.loop{background:#fdf0dc;color:#8a4b00}
+@media (prefers-color-scheme:dark){.badge.loop{background:#3a2a12;color:#f5c27a}}
+.rng{display:flex;align-items:center;gap:10px}
+.rng input{flex:1;min-height:32px;padding:0}
+.rng b{width:48px;text-align:right}
+.zone{display:flex;align-items:center;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding:6px 0}
+.zone>b{width:52px}
+.zone .seg{flex:1}
+.zone .seg button{min-width:0;font-size:12.5px;min-height:36px;padding:2px 4px}
+.warnx{color:var(--warn);font-weight:700}
+.mono{font-variant-numeric:tabular-nums}
+button.p .cnt{background:#fff;color:#1d4ed8}
+.hl{margin-top:6px;font-size:12px;line-height:1.3}
+.hll{display:flex;justify-content:space-between;gap:4px;color:var(--sub);font-size:11px;padding:0 40px 0 100px;white-space:nowrap}
+.hlr{display:flex;align-items:center;gap:6px;margin:3px 0}
+.hlk{flex:none;width:54px;color:var(--sub);font-size:11.5px;white-space:nowrap;overflow:hidden}
+.hlv{flex:none;width:34px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.hlv.r{text-align:left}
+.hlb{flex:1;min-width:60px;height:12px;border-radius:6px;overflow:hidden;display:flex;background:var(--border)}
+.hlb i{display:block;height:100%}
+.hlb i.hi{background:#8a93a3}.hlb i.lo{background:#d3d8df}
+@media (prefers-color-scheme:dark){.hlb i.hi{background:#7a8396}.hlb i.lo{background:#3b414e}}
+.hlr.th .hlb i.hi{background:var(--accent)}.hlr.th .hlv:not(.r){color:var(--accent)}
+.hlr.tl .hlb i.lo{background:var(--warn)}.hlr.tl .hlv.r{color:var(--warn)}
+.hlc{color:var(--sub);font-size:11.5px;margin-top:2px}
+.hlc.conf{color:var(--ok);font-weight:700}
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:4px 2px;text-align:right;border-bottom:1px solid var(--border)}
+.cmp th:first-child,.cmp td:first-child{text-align:left;white-space:nowrap}
+.cmp td.h{font-weight:700}
+.pre{border:1px dashed var(--border);border-radius:10px;padding:8px 10px;margin:8px 0}
+
+.hint2{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-width:0;max-width:100%}
+.hint2 b{font-size:13px;font-weight:700}
+.hint2 small{font-size:11px;color:var(--sub);font-weight:500;white-space:normal;line-height:1.35}
+.gnote{font-size:12px;color:var(--warn);margin:6px 0 0}
+.qrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px;padding:8px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.qrow label{font-size:11px;color:var(--sub)}
+.qrow input{width:72px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--card);color:var(--text)}
+.dlg[hidden]{display:none!important}.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.dlg .box{background:var(--card);border-radius:16px 16px 12px 12px;padding:16px;width:100%;max-width:480px;max-height:85vh;overflow:auto}
+.dlg h3{margin:0 0 8px;font-size:17px}
+.dlg .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dlg label{font-size:12px;color:var(--sub);display:block;margin:0 0 2px}
+.dlg input,.dlg textarea{width:100%;padding:8px;border:1px solid var(--border);border-radius:8px;font:inherit;background:var(--bg);color:var(--text)}
+.dlg .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.toolsbar{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+#copyOut{width:100%;min-height:110px;font:12px/1.4 ui-monospace,monospace;margin-top:8px;display:none}
+
+
+main{max-width:600px;margin:auto;padding:12px 14px 70px}header{position:static;padding:12px 14px;background:var(--card);border-bottom:1px solid var(--border)}header h1{font-size:19px;margin:6px 0}.hintgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hintgrid button{white-space:normal;text-align:left;min-width:0;padding:10px;font-size:13px;line-height:1.5}.hintgrid b,.hintgrid small{display:block}.hintgrid small{color:var(--sub);font-weight:400}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;font-size:13px;margin:8px 0 3px}input,select,textarea{width:100%;min-width:0;padding:9px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:9px;font:inherit;font-size:16px}button{touch-action:manipulation}.seg{flex-wrap:wrap}.seg button{white-space:normal}.logrow{padding:9px;border:1px solid var(--border);border-radius:10px;margin:7px 0;font-size:13px}.logrow .row{margin-top:6px;flex-wrap:wrap}.toolsbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.toolsbar button{font-size:13px}.prob{height:9px;background:var(--border);border-radius:7px;overflow:hidden;margin:4px 0}.prob i{display:block;height:100%;background:var(--accent)}.resultrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resultrow .box{min-width:0}.warnx{color:var(--warn,#b45309)}.pill{display:inline-block;border:1px solid var(--border);border-radius:20px;padding:2px 7px;font-size:11px}.dlg[hidden],[hidden]{display:none!important}.dlg .box{margin:0}.dlg .acts button{font-size:13px}.error{color:#b91c1c}.srcref{font-size:12px;color:var(--sub)}#copyOut{min-height:210px;font:12px/1.6 ui-monospace,monospace}section{scroll-margin-top:10px}.tablewrap{overflow-x:auto}nav{padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;font-size:13px}button:focus-visible{outline:2px solid var(--accent)}
+</style></head><body>
+<header><a href="../">← メニュー</a>　<a href="../history/">履歴・JSONバックアップ</a><h1>スロット実戦メモ（L戦国乙女5）</h1><p class="cap">業火を穿つ宿焔の双刃 · 平和／オリンピア · 2026/6/8導入</p></header>
+<main><nav><a href="#base">通常G</a><a href="#hits">初当たり</a><a href="#cz">巫女0pt</a><a href="#hints">示唆</a><a href="#est">設定推測</a><a href="#sources">出典</a></nav>
+<section id="base"><h2>台・通常ゲーム数</h2><label>何の数字？（通常Gの出所）</label><div class="seg" id="gsrc"><button data-src="lcd">台の液晶</button><button data-src="lamp">データランプ累計</button><button data-src="darwin">打-WIN LITE</button><button data-src="manual">自分で数えた通常G</button><button data-src="unknown">分からない</button></div>
+<label for="normalG">通常G（実G・観測区間の累計）</label><input id="normalG" data-f="normalG" inputmode="numeric" placeholder="例 3200"><p class="note" id="gNote"></p><p class="alert">液晶左の周期G（強カワチャンスの加算込み）は使いません。AT間Gがリセットされる場合は、各区間を足した通常実Gを入力。当たり・巫女0ptも同じ観測区間で記録してください。</p>
+<div class="grid2"><label>店名（任意）<input data-f="store"></label><label>台番（任意）<input data-f="dai"></label><label>収支（任意）<input data-f="balance"></label><label>朝一（任意）<input data-f="reset" placeholder="リセット確認／不明"></label></div><label>メモ<textarea data-f="notes" rows="2"></textarea></label></section>
+<section id="hits"><h2>AT初当たり</h2><p class="cap">戦国乙女ボーナス経由は下の専用ボタンだけ押せば、AT初当たりにも1回含まれます。出陣ボーナス・ATのセット継続・引き戻しは別の初当たりに数えません。</p><div class="btns"><button id="addAT" class="p">＋ AT初当たり<small>戦国乙女ボーナス以外</small></button><button id="addBonus">＋ 戦国乙女ボーナス経由<small>AT初当たりにも1回含む</small></button></div><div id="hitLog"></div></section>
+<section id="cz"><h2>巫女ポイント0ptごとに記録</h2><p class="cap">乙女アタックに「突入したか」を記録。CZ勝敗ではありません。カンスケモード中とリールロック2段階契機は推測から除外。不明も非突入には数えません。</p><label class="chk"><input type="checkbox" id="kansuke">カンスケモード滞在・疑い（除外）</label><label class="chk"><input type="checkbox" id="lock2">リールロック2段階契機（除外）</label><div class="seg"><button data-cz="1" class="p">乙女アタック 突入</button><button data-cz="0">非突入</button><button data-cz="unknown">不明</button></div><div id="czLog"></div></section>
+<section id="hints"><h2>示唆を1タップで記録</h2><p class="cap">タップ時の通常G・出所を保存。取り消し可能。濃厚・否定は設定範囲だけ反映し、何度見ても追加加点しません。未出現は証拠にしません。</p><h3>ボーナス終了スタンプ</h3><div class="hintgrid" id="stampBtns"></div>
+<h3>AT終了画面（7種）</h3><p class="cap">4人・赤集合は条件確認まで保留。周期テーブルと周期モードを混同しないでください。</p><div class="hintgrid" id="endBtns"></div><div id="pendingLog"></div>
+<h3>ゴエモンボイス（12種）</h3><p class="cap">完走待ち・ノブナガが走る場面でレア役→PUSH。聞き直しは新しい記録にしません。</p><div class="hintgrid" id="voiceBtns"></div>
+<details><summary>⚙ 奇偶・弱・強の仮重み（初期OFF）</summary><label>未公表の出現率に対する仮定<select data-f="unpub"><option value="0">OFF（計算に入れない）</option><option value="1">ON（参考・奇偶1.1倍／弱1.1倍／強1.2倍）</option></select></label><p class="note">解析値ではありません。同じ種類は複数回でも1回分の仮重み。数字と示唆の関連もあり、表示は近似的な相対推測です。</p></details>
+<h3>枚数OVER</h3><div class="hintgrid" id="coinBtns"></div><h3>ハルルナPUSH</h3><div class="hintgrid" id="pushBtns"></div>
+<h3>隠れ凪（打-WIN LITE）</h3><p class="cap">メニューから起動→途中確認／終了時のQRを読込。1000Gごとに再抽選。同じ区間の再読込は追加しません。終了表示も追加抽選とは扱いません。</p><div class="grid2"><label>確認タイミング<select id="nagiWhen"><option value="mid">途中</option><option value="end">終了</option></select></label><label>打-WIN LITEの1000G区間<select id="nagiBand"><option value="unknown">不明</option><option value="1">1000〜1999G</option><option value="2">2000〜2999G</option><option value="3">3000〜3999G</option><option value="4">4000〜4999G</option><option value="5">5000〜5999G</option><option value="6">6000〜6999G</option><option value="7">7000〜7999G</option><option value="8">8000〜8999G</option><option value="9">9000〜9999G</option><option value="10">10000〜10999G</option><option value="11">11000〜11999G</option><option value="12">12000〜12999G</option><option value="13">13000〜13999G</option><option value="14">14000〜14999G</option><option value="15">15000〜15999G</option></select></label></div><p class="note">通常Gから区間を自動推定しません。打-WIN LITE起動後のGを確認。終了時の最高表示説・総G基準の詳細は調査中。</p><div class="hintgrid" id="nagiBtns"></div>
+<p class="alert" id="extraNote">枚数OVER・ハルルナPUSH・隠れ凪は他機種参考・推察を含む情報です。ご指定の採用方針で濃厚として範囲を絞ります。本機固有の確認済み解析を意味しません。</p>
+<h3>ED初回キャラ（記録のみ）</h3><p class="cap">最初に出た1人だけ。意味・出現率は調査中、推測には使いません。</p><div class="hintgrid" id="charBtns"></div><h3>スタンプなし終了画面（記録のみ）</h3><p class="cap">不一致：必勝本はデフォルト、なな徹ほかは調査中。計算しません。</p><div class="hintgrid" id="plainBtns"></div><div class="toolsbar"><button id="undoHint">↶ 最後の示唆を取り消す</button></div><div id="hintLog"></div></section>
+<section id="est"><h2>設定推測</h2><p class="cap">設定1〜6同じ事前確率。数字のみ／示唆込みを分離。天井・モードを含むAT過程は単純な独立試行ではなく、数値は近似的な相対見込みです。</p><div id="result"></div><p class="note">AT初当たりを戦国乙女ボーナス経由／それ以外に分けるカテゴリ尤度で、同じ初当たりの二重加点を防ぎます。CZ突入との相関もあるため推測を過信しないでください。未入力は0回扱いにしません（通常G入力後の当たり記録0件は0回として計算）。</p><div class="toolsbar"><button id="copy" class="p">チャット用にコピー</button><button id="finish">この台を終了して保存</button></div><textarea id="copyOut" hidden readonly aria-label="チャット用コピー出力"></textarea><p class="note" id="status" role="status"></p></section>
+<section id="sources"><h2>出典・不一致・採用方針</h2><ul><li><a href="https://nana-press.com/kaiseki/machine/1160/37314/">なな徹：設定判別・ボイス・隠れ凪</a>／<a href="https://nana-press.com/kaiseki/machine/1160/37336/">枚数表示（11/5更新でも従来機種参考）</a></li><li><a href="https://1geki.jp/slot/l_otome5/0/">一撃：濃厚!?・推察の注記</a></li><li><a href="https://altema.jp/pachimo/lotome5settei">アルテマ：濃厚表記</a></li><li><a href="https://chonborista.com/slot/orinpia-slot/256147/">ちょんぼりすた：解析・起動後G・カスタム</a></li><li><a href="https://p.hisshobon.jp/vpage/2789/1">必勝本：解析・過去機種参考の注記</a></li><li><a href="https://nana-press.com/kaiseki/machine/1160/37320/">なな徹：周期テーブル・モード</a>／<a href="https://www.heiwanet.co.jp/products/pachislot/ssg6/">メーカー公式</a></li></ul>
+<ul class="note"><li>調査確認：2026/11/8（JST）。枚数・ハルルナ・隠れ凪は他機種参考・推察を含む。採用方針として濃厚扱い。原文はなな徹「設定N以上／設定6」、一撃「濃厚!?」、アルテマ等「濃厚」。</li><li>不一致：スタンプなし3種は必勝本「デフォルト」、なな徹・ちょんぼりすた「調査中」、一撃「???」。記録のみ。</li><li>表記差：555枚・銀凪は必勝本「設定5or6」、他は「設定5以上」。対象範囲は同じ5・6。</li><li>不一致：4人AT終了画面はなな徹「通常Aなら」、一撃・必勝本「通常B否定で」。通常Aの確認に限り反映。天国を誤って矛盾扱いにしません。</li><li>不一致：必勝本のAT画面概要と詳細で「1周期目100G以内」の2人／3人対応が異なる。なな徹の3人画面側に合わせます。設定範囲には影響なし。</li><li>隠れ凪は1000G毎。総Gか通常Gか・終了時最高表示の厳密条件は調査中。通常Gから自動区分せず、同一区間の再読込は1件。終了表示は範囲確認のみ。</li><li>強カワチャンス設定2〜6、3周期目以降の紫炎移行率、ED初回キャラ率は調査中。試打値を解析値として補完しません。公開G帯別の示唆率も調査中。</li><li>スタンプはカスタム可能。示唆未出現を低設定の根拠にしません。ベルカウンターは付けません。</li></ul><h3>天井・朝一参考</h3><p class="cap">通常実999G＋α／最大6周期、設定変更時650G＋α／最大4周期。設定別機械割97.9／98.9／101.0／106.2／111.1／114.9%。朝一判別は調査中。推測の通常Gに周期加算Gを混ぜないでください。</p></section></main>
+<div class="dlg" id="endDlg" hidden><div class="box"><h3>この台を終了して保存</h3><p class="cap">履歴は作業中の自動保存とは別です。</p><div class="grid2"><label>店名<input id="endStore"></label><label>台番<input id="endDai"></label><label>収支（任意）<input id="endBal"></label><label>日付<input id="endDate" type="date"></label></div><label>メモ<textarea id="endMemo" rows="2"></textarea></label><p>保存したあと、いまの入力をどうしますか？</p><div class="acts"><button class="p" id="keep">保存して入力は残す</button><button id="clear">保存して入力を消す</button><button id="cancel">やめる</button></div></div></div>
+<script>
+(function(){"use strict";
+var KEY="slotmemo:v1:otome5",SESS="slotsense:sessions:v1",TITLE="L戦国乙女5 業火を穿つ宿焔の双刃";
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]});}
+function num(s){return Math.max(0,Number(s)||0);}
+function empty(){return {v:1,gsrc:"lcd",normalG:"",unpub:"0",store:"",dai:"",balance:"",reset:"",notes:"",hits:[],cz:[],ev:[]};}
+var S=empty();try{var o=JSON.parse(localStorage.getItem(KEY)||"null");if(o&&typeof o==="object")Object.keys(S).forEach(function(k){if(o[k]!=null)S[k]=o[k];});}catch(e){}
+["hits","cz","ev"].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));$("status").textContent="自動保存済み";}catch(e){$("status").textContent="自動保存できません。コピーで控えを残してください。";}}
+var H=[];function item(id,n,m,group,min,allow,soft,condition){var h={id:id,n:n,m:m,group:group,allow:allow|| (min?[1,2,3,4,5,6].filter(function(x){return x>=min;}):null),soft:soft,condition:condition};H.push(h);return h;}
+["可","吉","良","優","極"].forEach(function(n,i){item("st"+i,n+"スタンプ","設定"+(i===4?"6":""+(i+2)+"以上")+"濃厚","stamp",i+2);});
+item("ed0","ノブナガ","デフォルト","end");item("ed1","マサムネ・ヒデヨシ","周期テーブル通常B以上示唆","end");item("ed2","モトナリ・ドウセツ・ソウリン","通常B以上示唆＋1周期目100G以内示唆","end");item("ed3","敵キャラ集合","ストラップ・ヨシテル濃厚（設定示唆ではない）","end");item("ed4","イエヤス・シンゲン・カンスケ・ヨシモト","通常B以上濃厚／通常Aなら設定4以上濃厚","end",4,null,null,"通常Aだった");item("ed5","乙女集合・赤","天国濃厚／天国否定で設定4以上濃厚","end",4,null,null,"天国じゃなかった");item("ed6","乙女集合・金","天国濃厚＋設定2以上濃厚","end",2);
+item("vo0","なんとかなるっしょ！","デフォルト","voice");item("vo1","感謝、感謝！","奇数設定示唆・⚙初期OFF","voice",null,null,"odd");item("vo2","怪しい…！","偶数設定示唆・⚙初期OFF","voice",null,null,"even");item("vo3","どーよ？ あたしも中々いけてるっしょ","高設定示唆（弱）・⚙初期OFF","voice",null,null,"weak");item("vo4","きゅい～ん♪","高設定示唆（強）・⚙初期OFF","voice",null,null,"strong");
+item("vo5","なになに、気になるー？","設定2否定","voice",null,[1,3,4,5,6]);item("vo6","ちょ～っと ホンキ出しちゃおっかな？","設定3否定","voice",null,[1,2,4,5,6]);
+["さんきゅ～！","ご機嫌っしょ！","攻めどきっしょ！","気分アゲアゲだし！","戦乱に忍ぶ深紅の影、石川ゴエモン！"].forEach(function(n,i){item("vo"+(7+i),n,"設定"+(i===4?"6":(i+2)+"以上")+"濃厚","voice",i+2);});
+[222,333,444,555,666].forEach(function(n,i){item("cn"+i,n+"枚OVER","設定"+(i===4?"6":(i+2)+"以上")+"濃厚","coin",i+2);});
+item("push","ハルルナPUSH","設定4以上濃厚","push",4);
+["白｜また遊んでくださいね","青｜一味違いますね","緑｜何やら不思議な気配です！","赤｜良い予感がします…！","銀｜遊び尽くしちゃいましょう！","金｜お肉～♪お肉～♪"].forEach(function(n,i){item("na"+i,n,i?"設定"+(i===5?"6":(i+1)+"以上")+"濃厚":"デフォルト","nagi",i?i+1:null);});
+["ヒデヨシ","ドウセツ","イエヤス","ソウリン","マサムネ","モトナリ","ノブナガ","ヨシモト","ウジマサ","カンスケ","ゴエモン","ミツヒデ","ケンシン","シンゲン","ヨシテル","ヨシアキ（義昭）","敵3人（オウガイ・ムラサメ・コタロウ）"].forEach(function(n,i){item("ch"+i,n,"ED初回のみ・調査中（計算外）","char");});
+["ノブナガ・ヒデヨシ・マサムネ・ゴエモン","イエヤス・ヨシモト・シンゲン・カンスケ","ソウリン・ドウセツ・モトナリ・モトチカ"].forEach(function(n,i){item("pl"+i,n,"調査中／必勝本はデフォルト（計算外）","plain");});
+var MAP={};H.forEach(function(h){MAP[h.id]=h;});
+var AT=[359.5,350.8,332.5,302.8,281,262.9],BONUS=[21206.7,15648.9,13143.5,8143.4,6427.6,5502.7],CZ=[.203,.214,.232,.247,.252,.257];
+function validCZ(c){return (c.result===0||c.result===1)&&!c.kansuke&&!c.lock2;}
+function estimate(withHints){var ll=[0,0,0,0,0,0],allowed=[true,true,true,true,true,true],used=[],masks=[],errors=[],pending=0;var g=num(S.normalG),nb=S.hits.filter(function(h){return h.kind==="bonus";}).length,na=S.hits.length;
+// Disjoint AT categories prevent double-counting the bonus subset of AT first hits.
+if(g>0&&S.gsrc!=="unknown"){if(na>g)errors.push("初当たり回数が通常Gを超えています");else{for(var i=0;i<6;i++){var pa=1/AT[i],pb=1/BONUS[i];ll[i]+=nb*Math.log(pb)+(na-nb)*Math.log(pa-pb)+(g-na)*Math.log(1-pa);}used.push("通常G＋AT初当たり（ボーナス経由を分離・重複なし）");}}
+var cs=S.cz.filter(validCZ),k=cs.filter(function(c){return c.result===1;}).length;if(cs.length){for(var j=0;j<6;j++)ll[j]+=k*Math.log(CZ[j])+(cs.length-k)*Math.log(1-CZ[j]);used.push("巫女0pt→乙女アタック "+k+"/"+cs.length);}
+if(withHints){var softSeen={};S.ev.forEach(function(e){var h=MAP[e.id];if(!h)return;if(h.condition&&!e.confirmed){pending++;return;}if(h.allow){allowed=allowed.map(function(a,i){return a&&h.allow.indexOf(i+1)>=0;});if(masks.indexOf(h.n+"："+h.m)<0)masks.push(h.n+"："+h.m);}if(h.soft&&S.unpub==="1"&&!softSeen[h.id]){softSeen[h.id]=true;for(var i=0;i<6;i++){var target=h.soft==="odd"?(i+1)%2===1:h.soft==="even"?(i+1)%2===0:i>=3;if(target)ll[i]+=Math.log(h.soft==="strong"?1.2:1.1);}}});if(masks.length)used.push("濃厚・否定の範囲制約（反復加点なし）");if(Object.keys(softSeen).length)used.push("⚙仮重みON（解析値ではない・同種1回まで）");}
+var conflict=!allowed.some(Boolean);if(conflict||errors.length)return {post:null,used:used,masks:masks,conflict:conflict,errors:errors,pending:pending};var max=Math.max.apply(null,ll.filter(function(x,i){return allowed[i];}));var raw=ll.map(function(x,i){return allowed[i]?Math.exp(x-max):0;}),sum=raw.reduce(function(a,b){return a+b;},0);return {post:raw.map(function(x){return x/sum;}),used:used,masks:masks,conflict:false,errors:errors,pending:pending};}
+function resultBox(name,r){if(!r.post)return '<div class="box"><b>'+name+'</b><p class="error">'+(r.conflict?'示唆が矛盾しています。該当ログを確認してください。推測は保留します。':esc(r.errors.join("／")))+'</p></div>';var high=r.post.slice(3).reduce(function(a,b){return a+b;},0),best=r.post.indexOf(Math.max.apply(null,r.post))+1;return '<div class="box"><b>'+name+'</b><p>設定4〜6 <b>'+Math.round(high*100)+'%</b><br>最有力 設定'+best+'</p>'+r.post.map(function(p,i){return '<small>設定'+(i+1)+'　'+(p*100).toFixed(1)+'%</small><div class="prob"><i style="width:'+(p*100)+'%"></i></div>';}).join("")+'</div>';}
+function renderResult(){var a=estimate(false),b=estimate(true);$("result").innerHTML='<div class="resultrow">'+resultBox("数字のみ",a)+resultBox("示唆込み",b)+'</div><p class="note">使用：'+esc(b.used.join(" ／ ")||"未入力・各設定均等")+'</p><p class="note">条件確認待ち：'+b.pending+'件</p>'+(b.masks.length?'<p class="note">適用した範囲：'+esc(b.masks.join(" ／ "))+'</p>':"");}
+function renderHints(){["stamp","end","voice","coin","push","nagi","char","plain"].forEach(function(g){$(g+"Btns").innerHTML=H.filter(function(h){return h.group===g;}).map(function(h){return '<button data-hint="'+h.id+'"><b>'+esc(h.n)+'</b><small>'+esc(h.m)+'</small><span class="pill">'+(h.condition?"条件確認まで保留":h.allow?/否定/.test(h.m)?"否定":"濃厚":h.soft?"⚙":"記録")+'</span></button>';}).join("");});}
+function eventDetail(e){return "通常"+(e.g||"不明")+"G"+(MAP[e.id]&&MAP[e.id].group==="nagi"?" · "+(e.views&&e.views.length>1?"途中・終了（再確認）":e.when==="end"?"終了":"途中")+" · "+(e.section==="unknown"?"区間不明":e.section+"千G区間"):"");}
+function renderLogs(){var pending=[];$("hintLog").innerHTML=S.ev.map(function(e,i){var h=MAP[e.id],condition=h&&h.condition;var row='<div class="logrow">'+esc(h?h.n:e.id)+' <button data-del-hint="'+i+'" aria-label="この示唆を取り消し">✕</button><br><small>'+esc(eventDetail(e))+'<br>'+esc(h?h.m:"")+'</small>';if(condition){row+='<p class="'+(e.confirmed?'note':'warnx')+'">'+(e.confirmed?'条件確認済み':'保留・まだ設定範囲に反映しません')+'</p><button data-confirm="'+i+'">'+(e.confirmed?'確認を取り消す':esc(condition))+'</button>';pending.push(row+'</div>');}return row+'</div>';}).join("");$("pendingLog").innerHTML=pending.length?'<h3>条件付き画面の確認待ち・確認履歴</h3>'+pending.join(""):"";
+$("hitLog").innerHTML='<p>AT初当たり '+S.hits.length+'回（うち戦国乙女ボーナス '+S.hits.filter(function(h){return h.kind==="bonus";}).length+'回）</p>'+S.hits.map(function(h,i){return '<div class="logrow">'+(h.kind==="bonus"?'戦国乙女ボーナス経由（AT込み1回）':'AT初当たり')+' · 通常'+esc(h.g||"不明")+'G <button data-del-hit="'+i+'">✕</button></div>';}).join("");
+$("czLog").innerHTML=S.cz.map(function(c,i){return '<div class="logrow">巫女0pt：'+(c.result===1?'突入':c.result===0?'非突入':'不明')+' · 通常'+esc(c.g||"不明")+'G'+(c.kansuke?'／カンスケ除外':'')+(c.lock2?'／RL2除外':'')+' <button data-del-cz="'+i+'">✕</button><br><small>'+(validCZ(c)?'推測に使用':'計算対象外')+'</small></div>';}).join("");}
+var SRC={lcd:"台の液晶（通常実G）",lamp:"データランプ（信頼度低め・通常Gのみ確認）",darwin:"打-WIN LITEの通常G",manual:"自分で数えた通常G",unknown:"分からない（G確率は計算外）"};
+function render(){document.querySelectorAll('[data-f]').forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f]||"";});document.querySelectorAll('[data-src]').forEach(function(b){b.classList.toggle("on",b.dataset.src===S.gsrc);});$("gNote").textContent=SRC[S.gsrc]+"。周期加算G・AT中Gは入力しないでください。";renderLogs();renderResult();}
+function commit(){save();render();}
+function copyText(){function fmt(r){return !r.post?r.conflict?"示唆が矛盾しています":"入力エラー・保留":r.post.map(function(p,i){return (i+1)+":"+(p*100).toFixed(1)+"%";}).join(" ");}var cs=S.cz.filter(validCZ);return ["【SLOTSENSE / "+TITLE+"】",new Date().toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+" 台番: "+(S.dai||"-")+" 収支: "+(S.balance||"-"),"通常G: "+(S.normalG||"-")+"／出所: "+SRC[S.gsrc]+"（周期G不使用）","AT初当たり: "+S.hits.length+"（うち戦国乙女ボーナス "+S.hits.filter(function(h){return h.kind==="bonus";}).length+"・二重加点なし）","巫女0pt→乙女アタック: "+cs.filter(function(c){return c.result===1;}).length+"/"+cs.length+"（不明・カンスケ・RL2除外 "+(S.cz.length-cs.length)+"件）","巫女ログ: "+S.cz.map(function(c){return (c.result===1?"突入":c.result===0?"非突入":"不明")+(c.kansuke?"/カンスケ除外":"")+(c.lock2?"/RL2除外":"");}).join(" ／ "),"数字のみ: "+fmt(estimate(false)),"示唆込み: "+fmt(estimate(true)),"示唆: "+(S.ev.map(function(e){var h=MAP[e.id];return (h?h.n:e.id)+"［"+eventDetail(e)+"］"+(h&&h.condition?(e.confirmed?"条件確認済み":"保留")+"/"+h.condition:"");}).join(" ／ ")||"-"),"採用方針：スタンプ・設定範囲ボイス・枚数OVER・ハルルナPUSH・隠れ凪は濃厚、範囲制約のみ。反復加点・未出現評価なし。","枚数OVER・ハルルナPUSH・隠れ凪は他機種参考・推察を含む。本機固有の確認済み解析ではありません。","⚙未公表ボイス仮重み: "+(S.unpub==="1"?"ON（仮定）":"OFF"),"不一致：スタンプなし＝必勝本デフォルト／他調査中。555枚・銀凪＝必勝本設定5or6。","メモ: "+(S.notes||"-")].join("\n");}
+function copy(){var out=$("copyOut");out.hidden=false;out.style.display="block";out.value=copyText();function fallback(){out.focus();out.select();$("status").textContent="欄を長押ししてコピーしてください。";}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out.value).then(function(){$("status").textContent="コピーしました";},fallback);else fallback();}
+function today(){return new Date().toLocaleDateString("sv-SE",{timeZone:"Asia/Tokyo"});}
+function finish(){[ ["endStore","store"],["endDai","dai"],["endBal","balance"],["endMemo","notes"] ].forEach(function(p){$(p[0]).value=S[p[1]]||"";});$("endDate").value=today();$("endDlg").hidden=false;}
+function finishSave(clear){var next=Object.assign({},S,{store:$("endStore").value,dai:$("endDai").value,balance:$("endBal").value,notes:$("endMemo").value});var prev=S;S=next;
+try{var a=JSON.parse(localStorage.getItem(SESS)||"[]");if(!Array.isArray(a))throw Error("invalid sessions");var now=new Date().toISOString();a.push({id:"otome5-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),machine:"otome5",title:TITLE,createdAt:now,date:$("endDate").value||today(),store:S.store,dai:S.dai,balance:S.balance,summary:"通常"+(S.normalG||0)+"G ／ AT初当たり"+S.hits.length+"回",text:copyText(),data:JSON.parse(JSON.stringify(S))});localStorage.setItem(SESS,JSON.stringify(a));}catch(e){S=prev;$("status").textContent="履歴を保存できませんでした。入力は消していません。";alert("履歴を保存できませんでした。入力は残します。");return;}
+if(clear)S=empty();$("endDlg").hidden=true;commit();$("status").textContent="履歴に保存しました（入力は"+(clear?"クリア":"保持")+"）。";}
+
+document.addEventListener("input",function(e){var el=e.target;if(!el.dataset.f)return;var f=el.dataset.f;if(f==="normalG")el.value=el.value.replace(/[^0-9]/g,"");S[f]=el.value;save();renderResult();});
+document.addEventListener("change",function(e){if(e.target.dataset.f){S[e.target.dataset.f]=e.target.value;commit();}});
+document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+if(d.src){S.gsrc=d.src;commit();return;}
+if(d.hint){var h=MAP[d.hint],when=$("nagiWhen").value,section=$("nagiBand").value;
+// One Nagi observation per known section and view type; reread never becomes independent evidence.
+if(h.group==="nagi"){var duplicate=S.ev.find(function(e){return MAP[e.id]&&MAP[e.id].group==="nagi"&&e.section===section&&(e.id===h.id||e.when===when);});if(duplicate){if(duplicate.id===h.id){duplicate.views=duplicate.views||[duplicate.when];if(duplicate.views.indexOf(when)<0)duplicate.views.push(when);commit();}$("status").textContent="同じ隠れ凪区間は記録済みです（再確認・追加計上なし）。訂正は該当ログを削除してから。";return;}}
+S.ev.push({id:d.hint,g:S.normalG,gsrc:S.gsrc,when:h.group==="nagi"?when:null,section:h.group==="nagi"?section:null,confirmed:false,at:new Date().toISOString()});commit();return;}
+if(d.confirm!==undefined){var ev=S.ev[Number(d.confirm)];if(ev){ev.confirmed=!ev.confirmed;commit();}return;}
+if(d.delHint!==undefined){S.ev.splice(Number(d.delHint),1);commit();return;}if(d.delHit!==undefined){S.hits.splice(Number(d.delHit),1);commit();return;}if(d.delCz!==undefined){S.cz.splice(Number(d.delCz),1);commit();return;}
+if(d.cz!==undefined){S.cz.push({result:d.cz==="unknown"?null:Number(d.cz),kansuke:$("kansuke").checked,lock2:$("lock2").checked,g:S.normalG,at:new Date().toISOString()});commit();return;}
+if(b.id==="addAT"||b.id==="addBonus"){S.hits.push({kind:b.id==="addBonus"?"bonus":"at",g:S.normalG,at:new Date().toISOString()});commit();return;}
+if(b.id==="undoHint"){S.ev.pop();commit();return;}if(b.id==="copy")copy();if(b.id==="finish")finish();if(b.id==="cancel")$("endDlg").hidden=true;if(b.id==="keep")finishSave(false);if(b.id==="clear")finishSave(true);
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("endDlg").hidden=true;});
+renderHints();render();window.otome5Test={estimate:estimate,validCZ:validCZ,hints:H,copyText:copyText,rates:{at:AT,bonus:BONUS,cz:CZ}};
+})();
+</script></body></html>

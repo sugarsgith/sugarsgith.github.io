@@ -51,7 +51,7 @@ pre{white-space:pre-wrap;font:12px/1.45 ui-monospace,monospace;background:var(--
 </main>
 <script>
 var KEY='slotsense:sessions:v1';
-var MACHINE_TITLES={bofuri:'スマスロ防振り',enen2:'L炎炎ノ消防隊2',lycoris:'リコリス・リコイル',umineko2:'Lうみねこのなく頃に2',magireco:'マギアレコード'};
+var MACHINE_TITLES={otome5:'L戦国乙女5 業火を穿つ宿焔の双刃',bofuri:'スマスロ防振り',enen2:'L炎炎ノ消防隊2',lycoris:'リコリス・リコイル',umineko2:'Lうみねこのなく頃に2',magireco:'マギアレコード'};
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
 function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]})}
