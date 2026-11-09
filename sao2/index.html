@@ -1,0 +1,296 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>SLOTSENSE SAO2</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--text:#16181d;--sub:#5d6470;--border:#d9dde3;--accent:#2563eb;--accentSoft:#e6eeff;--ok:#15803d;--okSoft:#e3f5e8;--warn:#b45309;--danger:#b91c1c}
+@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1b1e25;--text:#eceef2;--sub:#a0a7b4;--border:#333845;--accent:#5b8cff;--accentSoft:#1f2a44;--ok:#4ade80;--okSoft:#173322;--warn:#f59e0b;--danger:#f87171}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;font-size:15px;line-height:1.5;-webkit-text-size-adjust:100%}
+main{max-width:600px;margin:auto;padding:12px 14px 70px}header{position:static;padding:12px 14px;background:var(--card);border-bottom:1px solid var(--border)}header h1{font-size:19px;margin:6px 0}
+.cap{color:var(--sub);font-size:12.5px;margin:0 0 10px}.note{font-size:12.5px;color:var(--sub)}.warnx{color:var(--warn,#b45309)}.error{color:#b91c1c}.alert{border:1px solid var(--warn);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}.okbox{border:1px solid var(--ok);background:var(--okSoft);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:13.5px}
+section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin:12px 0;scroll-margin-top:10px}h2{font-size:17px;margin:0 0 4px}h3{font-size:15px;margin:14px 0 2px}
+nav{padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;font-size:13px}nav a{color:var(--accent);text-decoration:none;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:var(--card)}
+.hintgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hintgrid button{white-space:normal;text-align:left;min-width:0;padding:10px;font-size:13px;line-height:1.5}.hintgrid button.on{background:var(--accentSoft);border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}.hintgrid button .cnt{display:inline-block;min-width:1.6em;margin-left:4px;padding:0 6px;border-radius:999px;background:var(--accent);color:#fff;font-size:11px;font-weight:700}.hintgrid b,.hintgrid small{display:block}.hintgrid small{color:var(--sub);font-weight:400}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;font-size:13px;margin:8px 0 3px}input,select,textarea{width:100%;min-width:0;padding:9px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:9px;font:inherit;font-size:16px}
+button{font:inherit;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;touch-action:manipulation}button.p{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}button.sm{min-height:36px;padding:4px 12px}button:active{transform:scale(.97)}button:focus-visible{outline:2px solid var(--accent)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}.seg button{flex:1 1 0;min-width:72px;white-space:normal}.seg button.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.logrow{padding:9px;border:1px solid var(--border);border-radius:10px;margin:7px 0;font-size:13px}.toolsbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.toolsbar button{font-size:13px}
+.prob{height:9px;background:var(--border);border-radius:7px;overflow:hidden;margin:4px 0}.prob i{display:block;height:100%;background:var(--accent)}
+.resultrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resultrow .box{min-width:0}.box{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.pill{display:inline-block;border:1px solid var(--border);border-radius:20px;padding:2px 7px;font-size:11px}
+.dlg[hidden],[hidden]{display:none!important}.dlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:12px}.dlg .box{margin:0;background:var(--card);border-radius:16px 16px 12px 12px;padding:16px;width:100%;max-width:480px;max-height:85vh;overflow:auto}.dlg .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.dlg .acts button{font-size:13px}
+.hyena{font-weight:700;font-size:14px;line-height:1.5;margin:6px 0}.hyena.in{color:var(--ok)}.hyena.out{color:var(--warn)}.hyena.none{color:var(--sub)}
+#copyOut{min-height:210px;font:12px/1.6 ui-monospace,monospace;width:100%;display:none}ul{padding-left:18px}.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin:6px 0}.chk input{width:22px;height:22px}
+</style><link rel="stylesheet" href="../topbar.css"><script src="../topbar.js"></script></head><body>
+<header><a href="../">← メニュー</a>　<a href="../history/">履歴</a><h1>スロット実戦メモ（L SAO2）</h1><p class="cap">スロット ソードアート・オンラインⅡ · パオン・ディーピー · 2026/6/8導入</p></header>
+<main><nav><a href="#base">液晶G</a><a href="#hits">当たり</a><a href="#mode">履歴・モード</a><a href="#hints">終了画面</a><a href="#hyena">狙い目</a><a href="#est">設定推測</a><a href="#sources">出典</a></nav>
+
+<section id="base"><h2>台・液晶ゲーム数</h2>
+<label>何の数字？（設定推測の分母）</label>
+<div class="seg" id="gsrc"><button data-src="lcd">液晶G</button><button data-src="lamp">データランプ</button><button data-src="myslot">ダイトモ等</button><button data-src="manual">自分で数えた</button><button data-src="unknown">分からない</button></div>
+<label for="lcdG">液晶G（主入力・現在表示）</label><input id="lcdG" data-f="lcdG" inputmode="numeric" placeholder="例 520">
+<p class="note" id="gNote"></p>
+<p class="cap">設定推測の主分母は液晶Gです。AT中Gや別区間の合算を混ぜないでください。CZ実G天井（499/256）とAT間実Gは下の任意欄・狙い目用です。</p>
+<div class="grid2"><div><label for="czG">CZ間 実G（任意・狙い目用）</label><input id="czG" data-f="czG" inputmode="numeric" placeholder="履歴の実G"></div>
+<div><label for="atG">AT間 実G（任意・狙い目用）</label><input id="atG" data-f="atG" inputmode="numeric" placeholder="例 820"></div></div>
+<label class="chk"><input type="checkbox" id="reset256" data-bool="reset256">設定変更後／初回上位CZ失敗後（CZ実G天井256）</label>
+<div class="grid2"><label>店名（任意）<input data-f="store"></label><label>台番（任意）<input data-f="dai"></label><label>収支（任意）<input data-f="balance"></label><label>朝一（任意）<input data-f="reset" placeholder="変更あり／据え置き／不明"></label></div>
+<label>メモ<textarea data-f="notes" rows="2"></textarea></label>
+</section>
+
+<section id="hits"><h2>当たり記録</h2>
+<p class="cap">AT初当たりとCZは分けて記録。同じ当たりを二重に数えません。詩乃直撃は例外契機を除外できます。小役カウンターはv1対象外です。</p>
+<div class="toolsbar"><button class="p" id="addAT">＋ AT初当たり</button><button id="addCZ">＋ CZ（スコードロン）</button><button id="addShinon">＋ 詩乃直撃AT</button></div>
+<label class="chk"><input type="checkbox" id="exceptDirect">詩乃直撃の例外契機（天井・引き戻し・ウルティマ等）として除外</label>
+<div class="grid2"><label>AT開始ステージ<select id="stage"><option value="">未記録</option><option value="wasteland">荒野（奇数寄り）</option><option value="buggy">バギー（偶数寄り）</option><option value="skip">高確スタート等・除外</option></select></label>
+<label>セット継続（0枚到達時）<input data-f="setCont" inputmode="numeric" placeholder="当選回数"></label></div>
+<label>キリト移行確認（変更後/AT後・回数）<input data-f="kiritoShift" inputmode="numeric" placeholder="移行した回数／試行はメモへ"></label>
+<label>THE END状態CZ（突入時）回数<input data-f="theEnd" inputmode="numeric" placeholder="途中昇格は含めない"></label>
+<div id="hitLog"></div>
+</section>
+
+<section id="mode"><h2>履歴画面・モード</h2>
+<p class="cap">PUSHの遊技履歴・右上キャラと左アイテム。濃厚はモード下限／GGO認識に使い、設定のハード除外にはしません（設定文言の濃厚は終了画面以外の該当箇所のみ）。未出現は証拠にしません。</p>
+<div id="modeBox" class="okbox">推定モード帯：未入力</div>
+<h3>履歴キャラ（13）</h3>
+<div class="hintgrid" id="histBtns"></div>
+<h3>アイテム（種類×色）</h3>
+<label>種類<select id="itemKind"><option value="sword">光剣（キリト示唆）</option><option value="amusphere">アミュスフィア（詩乃）</option><option value="hecate">へカートⅡ（シノン）</option><option value="blackstar">黒星（死銃）</option><option value="buggy">バギー（全モード）</option></select></label>
+<div class="seg" id="itemColor"><button data-color="blue">青</button><button data-color="green">緑≈50%</button><button data-color="red" class="p">赤・滞在濃厚!?</button></div>
+<button id="addItem">＋ このアイテムを記録</button>
+<div id="modeLog"></div>
+</section>
+
+<section id="hints"><h2>AT終了画面・その他示唆</h2>
+<p class="cap">終了画面はなな徹表どおり「○以上／示唆」。ハード除外しません。アルテマ・ちょんぼが「濃厚」と書く箇所は脚注。強さ表記は出典の示唆／○以上／濃厚のみです。</p>
+<div class="hintgrid" id="endBtns"></div>
+<p class="note" id="endSoftNote">○以上／設定N（ワイシャツ〜パジャマ・幼少期）は弱いソフト重みで示唆込みに反映します（ハード除外なし）。奇偶・高設定「示唆」は下の⚙がOFFなら計算に入れません → その場合バーは均等のままに見えます。</p>
+<details><summary>⚙ 奇偶・高設定「示唆」の仮重み（初期OFF）</summary>
+<label>制服／ソファー／木漏れ日／夏祭りの仮重み<select data-f="unpub"><option value="0">OFF（計算に入れない）</option><option value="1">ON（仮定・弱い重み）</option></select></label>
+<p class="note">出現率未公表。ONでも範囲除外はしません。○以上側は⚙に関係なくソフト反映します。</p></details>
+<div id="endLog"></div>
+<h3>ミニキャラ（設定文言が濃厚のもの）</h3>
+<p class="cap">詩乃／ユイ＝設定4以上濃厚、虹・ペア＝設定6濃厚 → ここだけ設定範囲のハード除外。</p>
+<div class="hintgrid" id="miniBtns"></div>
+<p class="note">コパンダトロフィーは従来機予想のため記録のみ（計算外）。</p>
+<div class="hintgrid" id="trophyBtns"></div>
+<div class="toolsbar"><button id="undoHint">↶ 最後の示唆を取り消す</button></div>
+<div id="hintLog"></div>
+</section>
+
+<section id="hyena"><h2>狙い目・天井</h2>
+<p class="cap">判定は既存ハイエナ頁と同じ「狙い目内／対象外／未入力」。デフォルトAT間狙い目は800G（スロパチクエスト）。700G（スロがち）は不一致のため切替可能。</p>
+<label>AT間狙い目ライン</label>
+<div class="seg" id="aimSeg"><button data-aim="800">800G（デフォ／スロパチクエスト）</button><button data-aim="700">700G（スロがち・不一致）</button></div>
+<div id="hyenaLine" class="hyena none">Gを入力してください</div>
+<div id="hyenaDetail" class="note"></div>
+</section>
+
+<section id="est"><h2>設定推測</h2>
+<p class="cap">設定1〜6同じ事前確率。数字のみ／示唆込みを分離。モード示唆はモード帯と天井に使い、設定ベイズは公表確率と設定文言の濃厚のみ。</p>
+<div id="result"></div>
+<div class="toolsbar"><button id="copy" class="p">チャット用にコピー</button><button id="finish">この台を終了して保存</button></div>
+<textarea id="copyOut" hidden readonly aria-label="チャット用コピー出力"></textarea>
+<p class="note" id="status" role="status"></p>
+</section>
+
+<section id="sources"><h2>出典・不一致・調査中</h2>
+<ul>
+<li><a href="https://nana-press.com/kaiseki/machine/1158/37242/">なな徹：設定差</a>／<a href="https://nana-press.com/kaiseki/machine/1158/37254/">モード</a>／<a href="https://nana-press.com/kaiseki/machine/1158/37273/">履歴キャラ</a>／<a href="https://nana-press.com/kaiseki/machine/1158/37275/">終了画面</a></li>
+<li><a href="https://1geki.jp/slot/l_sao2/">一撃：スペック</a>／<a href="https://1geki.jp/slot/l_sao2/8/">メニュー・履歴</a></li>
+<li><a href="https://chonborista.com/slot/daito-slot/256112/">ちょんぼりすた</a>／<a href="https://pachimo.altema.jp/lsao2gamen">アルテマ終了画面</a></li>
+<li><a href="https://www.slopachi-quest.com/article/surotto-soodoaato-onrain-ii-tenjou/">スロパチクエスト：狙い目800G</a>／<a href="https://slogati.com/lsao2/">スロがち：700G</a></li>
+</ul>
+<ul class="note">
+<li>終了画面：なな徹表は「○以上／設定6」。本文・アルテマ・ちょんぼは一部「濃厚」。本ツールは表どおり○以上（ハード除外なし）＋脚注。</li>
+<li>ペイルライダー：天国示唆／期待度UP（濃厚にしない）。司会者・デス・ガン：濃厚 vs 濃厚!?</li>
+<li>コパンダ：従来機予想。小役カウンター・共通ベル設定差・曠野2〜5・GGO滞在率2〜6は調査中／v1対象外。</li>
+<li>パチナビ除外。slot-toolbox不使用。</li>
+</ul>
+</section>
+</main>
+
+<div class="dlg" id="endDlg" hidden><div class="box"><h3>この台を終了して保存</h3><p class="cap">履歴は作業中の自動保存とは別です。</p>
+<div class="grid2"><label>店名<input id="endStore"></label><label>台番<input id="endDai"></label><label>収支<input id="endBal"></label><label>日付<input id="endDate" type="date"></label></div>
+<label>メモ<textarea id="endMemo" rows="2"></textarea></label>
+<p>保存したあと、いまの入力をどうしますか？</p>
+<div class="acts"><button class="p" id="keep">保存して入力は残す</button><button id="clear">保存して入力を消す</button><button id="cancel">やめる</button></div>
+</div></div>
+
+<script>
+(function(){"use strict";
+var KEY="slotmemo:v1:sao2",SESS="slotsense:sessions:v1",TITLE="Lソードアート・オンラインⅡ";
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function num(s){return Math.max(0,Number(s)||0);}
+function empty(){return {v:1,gsrc:"lcd",lcdG:"",czG:"",atG:"",reset256:false,aim:800,unpub:"0",store:"",dai:"",balance:"",reset:"",notes:"",setCont:"",kiritoShift:"",theEnd:"",stage:"",hits:[],ev:[],items:[]};}
+var S=empty();try{var o=JSON.parse(localStorage.getItem(KEY)||"null");if(o&&typeof o==="object")Object.keys(S).forEach(function(k){if(o[k]!=null)S[k]=o[k];});}catch(e){}
+["hits","ev","items"].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[];});
+if(S.aim!==700)S.aim=800;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));$("status").textContent="自動保存済み";}catch(e){$("status").textContent="自動保存できません。コピーで控えを残してください。";}}
+
+var AT=[386.2,364.3,368.1,326.8,340.6,269.6],CZ=[238.4,232.3,232.7,218.9,225.2,191.7];
+var THEEND=[20177.5,17579.1,17586.3,13784.5,11459.0,7077.2];
+var SHINON=[18091.8,14160.5,14390.8,8498.0,4723.3,3415.7];
+var KIRITO=[.102,.105,.109,.117,.125,.25];
+var SETC=[.06,.065,.066,.077,.113,.131];
+var STAGE_W=[.6,.4,.6,.4,.6,.4],STAGE_B=[.4,.6,.4,.6,.4,.6];
+var MODES=["A","B","C","D","heaven"];
+var MODE_CEIL={A:800,B:800,C:650,D:350,heaven:100};
+
+var H=[];
+function add(id,n,m,group,opts){opts=opts||{};var h={id:id,n:n,m:m,group:group,modeMin:opts.modeMin||null,ggo:opts.ggo||null,hardGgo:!!opts.hardGgo,allow:opts.allow||null,soft:opts.soft||null,recordOnly:!!opts.recordOnly,note:opts.note||""};H.push(h);return h;}
+add("h0","シノン","通常C以上の期待度約50%","hist");
+add("h1","キリト","通常C以上の期待度約50%","hist");
+add("h2","菊岡","高モード示唆","hist");
+add("h3","ALO（4人）","高モード示唆（強）","hist");
+add("h4","安岐ナツキ","通常B以上濃厚","hist",{modeMin:"B"});
+add("h5","ゼクシード","通常C以上濃厚","hist",{modeMin:"C"});
+add("h6","ダイン","通常D以上濃厚","hist",{modeMin:"D"});
+add("h7","ペイルライダー","天国示唆（不一致:期待度UP表記あり・濃厚にしない）","hist");
+add("h8","闇風","キリトモード示唆","hist",{ggo:"kirito"});
+add("h9","銃士X","キリトモード濃厚","hist",{ggo:"kirito",hardGgo:true});
+add("h10","司会者","モードアップ濃厚（不一致:一撃は濃厚!?）","hist");
+add("h11","シュピーゲル＆シノン","死銃モード示唆","hist",{ggo:"death"});
+add("h12","デス・ガン","死銃モード濃厚（不一致:一撃は濃厚!?）","hist",{ggo:"death",hardGgo:true});
+add("e0","キリト＆シノン","デフォルト","end",{recordOnly:true});
+add("e1","制服","奇数設定示唆","end",{soft:"odd"});
+add("e2","ソファー","偶数設定示唆","end",{soft:"even"});
+add("e3","木漏れ日","高設定示唆","end",{soft:"high"});
+add("e4","夏祭り","高設定示唆（強）","end",{soft:"strong"});
+add("e5","幼少期","設定5以上示唆（6より5が出やすい）","end",{soft:"five"});
+add("e6","ワイシャツ","設定2以上（不一致:他サイトは濃厚）","end",{soft:"ge2",note:"ハード除外なし"});
+add("e7","お風呂","設定3以上（不一致:他サイトは濃厚）","end",{soft:"ge3",note:"ハード除外なし"});
+add("e8","水着","設定4以上（不一致:他サイトは濃厚）","end",{soft:"ge4",note:"ハード除外なし"});
+add("e9","パジャマ","設定6（不一致:他サイトは設定6濃厚）","end",{soft:"six",note:"ハード除外なし"});
+add("m0","詩乃／ユイ","設定4以上濃厚","mini",{allow:[4,5,6]});
+add("m1","虹／ペア","設定6濃厚","mini",{allow:[6]});
+add("t0","コパンダ（銅〜虹）","従来機予想・記録のみ","trophy",{recordOnly:true});
+var MAP={};H.forEach(function(h){MAP[h.id]=h;});
+
+function estG(){return num(S.lcdG);}
+function modeState(){
+  var order={A:0,B:1,C:2,D:3,heaven:4},min=null,ggo={},notes=[];
+  S.ev.forEach(function(e){var h=MAP[e.id];if(!h||h.group!=="hist")return;
+    if(h.modeMin){if(min==null||order[h.modeMin]>order[min])min=h.modeMin;notes.push(h.n+"→"+h.m);}
+    if(h.ggo){if(h.hardGgo)ggo[h.ggo]="hard";else if(ggo[h.ggo]!=="hard")ggo[h.ggo]="soft";}
+  });
+  S.items.forEach(function(it){var map={sword:"kirito",amusphere:"shinon",hecate:"sinon",blackstar:"death",buggy:"any"};var g=map[it.kind]||"any";
+    if(it.color==="red")ggo[g]="hard";else if(it.color==="green"&&ggo[g]!=="hard")ggo[g]=ggo[g]||"soft";
+  });
+  return {min:min,ggo:ggo,notes:notes};
+}
+function lcdCeiling(st){
+  var ceil=800;
+  if(st.min==="C")ceil=650;else if(st.min==="D")ceil=350;else if(st.min==="heaven")ceil=100;
+  if(st.ggo.kirito==="hard")ceil=Math.min(ceil,500);
+  return ceil;
+}
+function hyenaJudge(){
+  var at=S.atG===""?null:num(S.atG),cz=S.czG===""?null:num(S.czG),lcd=S.lcdG===""?null:num(S.lcdG);
+  var st=modeState(),lcdCeil=lcdCeiling(st),czCeil=S.reset256?256:499,aim=+S.aim||800;
+  var parts=[],status="none";
+  if(at==null&&cz==null&&lcd==null)return {status:"none",text:"Gを入力してください",detail:"液晶Gまたは実G（CZ間／AT間）を入れて判定します。"};
+  if(at!=null){var remAt=Math.max(0,1200-at);var inAim=at>=aim;parts.push("AT間 "+at+"G／狙い目"+aim+"G〜 → "+(inAim?"狙い目内":"対象外")+"／天井まで"+remAt+"G");if(inAim)status="in";else if(status==="none")status="out";}
+  if(cz!=null){var remCz=Math.max(0,czCeil-cz);var inCz=cz>=Math.max(0,czCeil-180);parts.push("CZ実G "+cz+"G／天井"+czCeil+" → 天井まで"+remCz+"G");}
+  if(lcd!=null){var remL=Math.max(0,lcdCeil-lcd);parts.push("液晶 "+lcd+"G／推定天井"+lcdCeil+(st.min?"（下限"+st.min+"）":"）")+" → 残"+remL+"G");}
+  var text=status==="in"?"狙い目内":status==="out"?"対象外":"判定材料不足";
+  if(at!=null)text+=" ／ AT天井まで"+Math.max(0,1200-at)+"G";
+  return {status:status==="none"&&(cz!=null||lcd!=null)?"out":status,text:text,detail:parts.join(" ｜ "),aim:aim,lcdCeil:lcdCeil};
+}
+
+function estimate(withHints){
+  var ll=[0,0,0,0,0,0],allowed=[true,true,true,true,true,true],used=[],masks=[],errors=[];
+  var g=estG(),ats=S.hits.filter(function(h){return h.kind==="at"||h.kind==="shinon";}).length;
+  var czs=S.hits.filter(function(h){return h.kind==="cz";}).length;
+  var shin=S.hits.filter(function(h){return h.kind==="shinon"&&!h.except;}).length;
+  if(S.gsrc!=="unknown"&&g>0){
+    if(ats>g)errors.push("AT回数が液晶Gを超えています");
+    else{for(var i=0;i<6;i++){var p=1/AT[i];ll[i]+=ats*Math.log(p)+(g-ats)*Math.log(1-p);}used.push("液晶G＋AT初当たり");}
+    if(czs>0&&czs<=g){for(var j=0;j<6;j++){var pc=1/CZ[j];ll[j]+=czs*Math.log(pc)+(g-czs)*Math.log(1-pc);}used.push("CZ回数（ATと別カウント）");}
+  }
+  var te=num(S.theEnd);if(te>0&&g>0&&S.gsrc!=="unknown"){for(var t=0;t<6;t++){var pt=1/THEEND[t];ll[t]+=te*Math.log(pt)+(Math.max(g,te)-te)*Math.log(1-pt);}used.push("THE END状態CZ（突入時）");}
+  if(shin>0&&g>0&&S.gsrc!=="unknown"){for(var s=0;s<6;s++){var ps=1/SHINON[s];ll[s]+=shin*Math.log(ps)+(g-shin)*Math.log(1-ps);}used.push("詩乃直撃（例外除外後）");}
+  var ks=num(S.kiritoShift);if(ks>0){for(var k=0;k<6;k++)ll[k]+=ks*Math.log(KIRITO[k]);used.push("キリト移行（変更後/AT後・試行母数は近似）");}
+  var sc=num(S.setCont);if(sc>0){for(var c=0;c<6;c++)ll[c]+=sc*Math.log(SETC[c]);used.push("AT終了セット継続");}
+  if(S.stage==="wasteland"||S.stage==="buggy"){var arr=S.stage==="wasteland"?STAGE_W:STAGE_B;for(var u=0;u<6;u++)ll[u]+=Math.log(arr[u]);used.push("AT開始ステージ "+(S.stage==="wasteland"?"荒野":"バギー"));}
+  if(withHints){
+    var softSeen={}, aboveSeen={}, hintSoftSeen={};
+    function applySoft(kind,i){var set=i+1,hit=false;
+      if(kind==="odd")hit=set%2===1;else if(kind==="even")hit=set%2===0;else if(kind==="high"||kind==="strong")hit=set>=4;else if(kind==="five")hit=set===5;else if(kind==="ge2")hit=set>=2;else if(kind==="ge3")hit=set>=3;else if(kind==="ge4")hit=set>=4;else if(kind==="six")hit=set===6;
+      if(hit)ll[i]+=Math.log(kind==="strong"?1.15:kind==="six"||kind.indexOf("ge")===0||kind==="five"?1.12:1.08);
+    }
+    S.ev.forEach(function(e){var h=MAP[e.id];if(!h)return;
+      if(h.allow){allowed=allowed.map(function(a,i){return a&&h.allow.indexOf(i+1)>=0;});if(masks.indexOf(h.n+"："+h.m)<0)masks.push(h.n+"："+h.m);}
+      if(!h.soft||h.recordOnly||softSeen[h.id])return;
+      softSeen[h.id]=true;
+      // ○以上 / 設定N are always soft-weighted (never hard). Odd/even/high "示唆" stay behind ⚙.
+      var needsGear=/^(odd|even|high|strong)$/.test(h.soft);
+      if(needsGear&&S.unpub!=="1")return;
+      for(var i=0;i<6;i++)applySoft(h.soft,i);
+      if(needsGear)hintSoftSeen[h.id]=true;else aboveSeen[h.id]=true;
+    });
+    if(masks.length)used.push("設定文言の濃厚（ミニキャラ等・反復加点なし）");
+    if(Object.keys(aboveSeen).length)used.push("終了画面○以上ソフト重み（ハード除外なし）");
+    if(Object.keys(hintSoftSeen).length)used.push("⚙奇偶・高設定示唆仮重みON");
+    // Mode/history characters intentionally omitted from used[] — they feed mode band / hyena only.
+  }
+  var conflict=!allowed.some(Boolean);if(conflict||errors.length)return {post:null,used:used,masks:masks,conflict:conflict,errors:errors};
+  var max=Math.max.apply(null,ll.filter(function(x,i){return allowed[i];}));var raw=ll.map(function(x,i){return allowed[i]?Math.exp(x-max):0;}),sum=raw.reduce(function(a,b){return a+b;},0);
+  return {post:raw.map(function(x){return x/sum;}),used:used,masks:masks,conflict:false,errors:[]};
+}
+function topHasData(r){
+  if(!r||r.conflict||!r.post)return false;
+  if(r.masks&&r.masks.length)return true;
+  // Mode-only notes must never appear in used; still guard against empty prior display.
+  return !!(r.used&&r.used.length);
+}
+function resultBox(name,r){if(r.post&&!topHasData(r))return '<div class="box"><b>'+name+'</b><p class="ss-empty">推測材料がありません</p></div>';if(!r.post)return '<div class="box"><b>'+name+'</b><p class="error">'+(r.conflict?"示唆が矛盾しています。":esc((r.errors||[]).join("／")))+'</p></div>';var high=r.post.slice(3).reduce(function(a,b){return a+b;},0),best=r.post.indexOf(Math.max.apply(null,r.post))+1;return '<div class="box"><b>'+name+'</b><p>高設定域4〜6 <b>'+Math.round(high*100)+'%</b><br>最有力 設定'+best+'</p>'+r.post.map(function(p,i){return '<small>設定'+(i+1)+'　'+(p*100).toFixed(1)+'%</small><div class="prob"><i style="width:'+(p*100)+'%"></i></div>';}).join("")+'</div>';}
+function renderTopEstimate(a,b){var g=estG(),k=S.hits.filter(function(h){return h.kind==="at"||h.kind==="shinon";}).length;var hj=hyenaJudge();SSTop.render({numeric:topHasData(a)?a:null,hints:topHasData(b)?b:null,meta:"液晶G "+g+"G"+(g>0&&k?" ／ AT初当たり 1/"+Math.round(g/k):" ／ AT "+k+"回")+(hj.status==="in"?" ／狙い目内":""),low:S.gsrc==="lamp",masks:b.masks.length,warning:b.conflict?"示唆が矛盾しています":(b.errors&&b.errors.length)?b.errors.join("／"):""});}
+function renderHyena(){var j=hyenaJudge();$("hyenaLine").className="hyena "+(j.status==="in"?"in":j.status==="out"?"out":"none");$("hyenaLine").textContent=j.text;$("hyenaDetail").textContent=j.detail;if(window.SSTop&&SSTop.hyena){/* page has own line; keep estimate topbar for settings */}}
+function renderMode(){var st=modeState();var ggo=Object.keys(st.ggo).map(function(k){return k+(st.ggo[k]==="hard"?"濃厚":"示唆");}).join("・")||"なし";$("modeBox").textContent="推定モード帯："+(st.min?("通常"+st.min+"以上"+(st.min==="heaven"?"（天国示唆系）":"")):"未入力（A〜）")+" ／ GGO："+ggo+" ／ 液晶天井目安 "+lcdCeiling(st)+"G";}
+function renderResult(){var a=estimate(false),b=estimate(true);renderTopEstimate(a,b);renderHyena();renderMode();$("result").innerHTML='<div class="resultrow">'+resultBox("数字のみ",a)+resultBox("示唆込み",b)+'</div><p class="note">使用：'+esc(b.used.join(" ／ ")||"未入力")+'</p>'+(b.masks.length?'<p class="note">設定範囲：'+esc(b.masks.join(" ／ "))+'</p>':""); }
+function badge(h){if(h.recordOnly)return "記録";if(h.allow)return "濃厚";if(h.modeMin)return "モード濃厚";if(h.hardGgo)return "GGO濃厚";if(h.soft)return "⚙/○以上";return "示唆";}
+function countHint(id){return S.ev.filter(function(e){return e.id===id;}).length;}
+function renderHints(){["hist","end","mini","trophy"].forEach(function(g){var el=$(g==="hist"?"histBtns":g==="end"?"endBtns":g==="mini"?"miniBtns":"trophyBtns");el.innerHTML=H.filter(function(h){return h.group===g;}).map(function(h){var c=countHint(h.id);return '<button data-hint="'+h.id+'" class="'+(c?"on":"")+'"><b>'+esc(h.n)+(c?'<span class="cnt">×'+c+'</span>':'')+'</b><small>'+esc(h.m)+'</small><span class="pill">'+badge(h)+'</span></button>';}).join("");});}
+function renderLogs(){
+  $("hitLog").innerHTML=S.hits.map(function(h,i){return '<div class="logrow">'+(h.kind==="cz"?"CZ":h.kind==="shinon"?"詩乃直撃AT":"AT初当たり")+(h.except?"（例外除外）":"")+' · 液晶'+esc(h.g||"?")+'G <button data-del-hit="'+i+'">✕</button></div>';}).join("")||'<p class="note">まだ当たりがありません</p>';
+  $("modeLog").innerHTML=S.ev.filter(function(e){return MAP[e.id]&&MAP[e.id].group==="hist";}).map(function(e){var h=MAP[e.id];return '<div class="logrow">履歴：'+esc(h.n)+' · '+esc(h.m)+' <button data-del-ev="'+S.ev.indexOf(e)+'">✕</button></div>';}).join("")+S.items.map(function(it,i){return '<div class="logrow">アイテム：'+esc(it.kind)+'／'+esc(it.color)+' <button data-del-item="'+i+'">✕</button></div>';}).join("");
+  var ends=S.ev.map(function(e,i){return {e:e,i:i,h:MAP[e.id]};}).filter(function(x){return x.h&&x.h.group==="end";});
+  $("endLog").innerHTML=ends.length?'<h3>記録した終了画面</h3>'+ends.map(function(x){return '<div class="logrow">'+esc(x.h.n)+' · '+esc(x.h.m)+' · 液晶'+esc(x.e.g||"?")+'G <button data-del-ev="'+x.i+'" aria-label="この終了画面を取り消し">✕</button></div>';}).join(""):'<p class="note" id="endLogEmpty">終了画面はまだありません。上のボタンで記録されます。</p>';
+  $("hintLog").innerHTML=S.ev.filter(function(e){return MAP[e.id]&&MAP[e.id].group!=="hist"&&MAP[e.id].group!=="end";}).map(function(e){var h=MAP[e.id];return '<div class="logrow">'+esc(h.n)+' · '+esc(h.m)+' <button data-del-ev="'+S.ev.indexOf(e)+'">✕</button></div>';}).join("");
+}
+var SRC={lcd:"液晶G（主）",lamp:"データランプ（信頼度低め）",myslot:"ダイトモ等",manual:"自分で数えたG",unknown:"分からない（G確率は計算外）"};
+function render(){document.querySelectorAll("[data-f]").forEach(function(el){if(document.activeElement!==el)el.value=S[el.dataset.f]||"";});
+  document.querySelectorAll("[data-src]").forEach(function(b){b.classList.toggle("on",b.dataset.src===S.gsrc);});
+  document.querySelectorAll("[data-aim]").forEach(function(b){b.classList.toggle("on",+b.dataset.aim===+S.aim);});
+  $("reset256").checked=!!S.reset256;$("gNote").textContent=SRC[S.gsrc]+"。小役カウンターはv1未実装。";
+  if($("stage"))$("stage").value=S.stage||"";
+  renderHints();renderLogs();renderResult();}
+function commit(){save();render();}
+function copyText(){function fmt(r){return !r.post?r.conflict?"矛盾":"保留":r.post.map(function(p,i){return (i+1)+":"+(p*100).toFixed(1)+"%";}).join(" ");}
+  var st=modeState(),j=hyenaJudge();
+  return ["【SLOTSENSE / "+TITLE+"】",new Date().toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+" 台番: "+(S.dai||"-")+" 収支: "+(S.balance||"-"),"液晶G: "+(S.lcdG||"-")+"／出所: "+SRC[S.gsrc],"CZ実G: "+(S.czG||"-")+" AT実G: "+(S.atG||"-")+" 狙い目ライン: "+S.aim+"G","AT: "+S.hits.filter(function(h){return h.kind==="at"||h.kind==="shinon";}).length+" / CZ: "+S.hits.filter(function(h){return h.kind==="cz";}).length,"モード帯: "+(st.min||"未入力")+" GGO: "+JSON.stringify(st.ggo),"ハイエナ: "+j.text,"数字のみ: "+fmt(estimate(false)),"示唆込み: "+fmt(estimate(true)),"終了画面は○以上（ハード除外なし・不一致脚注あり）","メモ: "+(S.notes||"-")].join("\n");}
+function copy(){var out=$("copyOut");out.hidden=false;out.style.display="block";out.value=copyText();function fallback(){out.focus();out.select();$("status").textContent="欄を長押ししてコピーしてください。";}if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(out.value).then(function(){$("status").textContent="コピーしました";},fallback);else fallback();}
+function today(){return new Date().toLocaleDateString("sv-SE",{timeZone:"Asia/Tokyo"});}
+function finish(){[["endStore","store"],["endDai","dai"],["endBal","balance"],["endMemo","notes"]].forEach(function(p){$(p[0]).value=S[p[1]]||"";});$("endDate").value=today();$("endDlg").hidden=false;}
+function finishSave(clear){var prev=S;S=Object.assign({},S,{store:$("endStore").value,dai:$("endDai").value,balance:$("endBal").value,notes:$("endMemo").value});
+  try{var a=JSON.parse(localStorage.getItem(SESS)||"[]");if(!Array.isArray(a))throw Error("bad");a.push({id:"sao2-"+Date.now(),machine:"sao2",title:TITLE,createdAt:new Date().toISOString(),date:$("endDate").value||today(),store:S.store,dai:S.dai,balance:S.balance,summary:"液晶"+(S.lcdG||0)+"G ／ AT"+S.hits.filter(function(h){return h.kind!=="cz";}).length+"回",text:copyText(),data:JSON.parse(JSON.stringify(S))});localStorage.setItem(SESS,JSON.stringify(a));}catch(e){S=prev;alert("履歴を保存できませんでした");return;}
+  if(clear)S=empty();$("endDlg").hidden=true;commit();$("status").textContent="履歴に保存しました。";}
+
+document.addEventListener("input",function(e){var el=e.target;if(!el.dataset.f)return;var f=el.dataset.f;if(/G$|setCont|kiritoShift|theEnd/.test(f))el.value=el.value.replace(/[^0-9]/g,"");S[f]=el.value;save();renderResult();});
+document.addEventListener("change",function(e){var el=e.target;if(el.id==="reset256"){S.reset256=el.checked;commit();return;}if(el.id==="stage"){S.stage=el.value;commit();return;}if(el.dataset.f){S[el.dataset.f]=el.value;commit();}});
+document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var d=b.dataset;
+  if(d.src){S.gsrc=d.src;commit();return;}
+  if(d.aim){S.aim=+d.aim;commit();return;}
+  if(d.hint){S.ev.push({id:d.hint,g:S.lcdG,at:new Date().toISOString()});commit();var hh=MAP[d.hint];if(hh&&hh.group==="end")$("status").textContent=hh.n+" を記録しました（終了画面×"+countHint(d.hint)+"）";return;}
+  if(d.delHit!==undefined){S.hits.splice(+d.delHit,1);commit();return;}
+  if(d.delEv!==undefined){S.ev.splice(+d.delEv,1);commit();return;}
+  if(d.delItem!==undefined){S.items.splice(+d.delItem,1);commit();return;}
+  if(b.id==="addAT"||b.id==="addCZ"||b.id==="addShinon"){S.hits.push({kind:b.id==="addCZ"?"cz":b.id==="addShinon"?"shinon":"at",g:S.lcdG,except:b.id==="addShinon"&&$("exceptDirect").checked,at:new Date().toISOString()});commit();return;}
+  if(b.id==="addItem"){var color=(document.querySelector("#itemColor button.on")||{}).dataset;color=color&&color.color||"blue";S.items.push({kind:$("itemKind").value,color:color,at:new Date().toISOString()});commit();return;}
+  if(d.color){document.querySelectorAll("#itemColor button").forEach(function(x){x.classList.toggle("on",x===b);});return;}
+  if(b.id==="undoHint"){S.ev.pop();commit();return;}
+  if(b.id==="copy")copy();if(b.id==="finish")finish();if(b.id==="cancel")$("endDlg").hidden=true;if(b.id==="keep")finishSave(false);if(b.id==="clear")finishSave(true);
+});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")$("endDlg").hidden=true;});
+document.querySelector('#itemColor button[data-color="blue"]').classList.add("on");
+render();window.sao2Test={estimate:estimate,modeState:modeState,hyenaJudge:hyenaJudge,lcdCeiling:lcdCeiling,hints:H,KEY:KEY};
+})();
+</script></body></html>
