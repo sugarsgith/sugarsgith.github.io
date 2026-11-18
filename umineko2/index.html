@@ -609,7 +609,7 @@ function gSrcCaption(){return({lamp:"データランプの累計G（AT等を含�
 function sessionSummary(){return "G"+(S.g||0);}
 function buildCopyText(){var lines=["【SLOTSENSE / "+machineMeta().title+"】","日付: "+(new Date()).toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+"  台番: "+(S.dai||"-")+"  収支: "+(S.balance||"-")];
  lines.push("G種別: "+(S.gSrc|| ( true ?"lamp":"通常G"))+"  入力G: "+(S.g||S.normalG||S.nG||"-"));
- try{if(typeof estimate==="function"){var r=estimate();if(r&&r.post){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});lines.push("設定推測: 高設定域 "+Math.round((r.post[3]+r.post[4]+r.post[5])*100)+"% 最有力 設定"+(b+1));}}}catch(e){}
+ try{var r=est();if(r&&r.any&&r.post){var best=0;r.post.forEach(function(p,i){if(p>r.post[best])best=i;});var hi=r.post[3]+r.post[4]+r.post[5],ev=r.post[1]+r.post[3]+r.post[5];lines.push("設定推測: 高設定域（4・5・6） "+pct(hi)+"　偶数 "+pct(ev)+"　最有力 設定"+(best+1));if(r.conflict)lines.push("濃厚・否定が矛盾しているため、濃厚系を無視して計算中");}}catch(e){}
  lines.push("メモ: "+(S.notes||S.memo||"-"));return lines.join("\n");}
 function doCopy(){var t=buildCopyText(),out=$("copyOut");if(out){out.style.display="block";out.value=t;}
  navigator.clipboard.writeText(t).then(function(){}).catch(function(){if(out){out.focus();out.select();}});}
