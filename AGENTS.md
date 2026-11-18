@@ -31,7 +31,7 @@
 
 ファイルの対応と、ページの世代の違いは `docs/structure.md` に書いてあります。機種ごとの出典と調査中は `docs/machines.md`、ローカル確認と公開手順は `docs/maintenance.md`、未着手のアイデアは `docs/backlog.md` です。
 
-同じリポジトリに、メニューへ出ていない別 PWA `/taicho/`（体調ログ）と、サイトからリンクしていない `muse-usage.json` があります。スロットの作業でこれらを消したり、キャッシュ名を混ぜたりしないでください。詳細は `docs/structure.md` です。
+同じリポジトリに、メニューへ出ていない別 PWA `/taicho/`（体調ログ）と、サイトからリンクしていない `muse-usage.json` があります。スロットの作業でこれらを消したり、キャッシュ名を混ぜたりしないでください。体調ログのルールは `taicho/AGENTS.md`、ファイルとテスト環境と保存形式は `docs/taicho/structure.md` です。スロット側のファイル対応は `docs/structure.md` です。
 
 ## 新しい機種ページの追加
 
@@ -141,6 +141,15 @@ HTML・CSS・JS・アイコン・マニフェストのどれかを変えたら�
 
 推測材料が無い状態と、示唆が矛盾して保留している状態を、同じ「均等 16.7%」に見せない。矛盾は警告にして、詳細を見に行けるようにする。
 
+## 体調ログ（別アプリ）
+
+`/taicho/` はスロットセンスではありません。公開は <https://sugarsgith.github.io/taicho/> です。メニューに足さず、キャッシュは `taicho-vN` だけを上げます。
+
+- ルール: [taicho/AGENTS.md](taicho/AGENTS.md)
+- ファイル、データ、機種変更、テスト、公開: [docs/taicho/structure.md](docs/taicho/structure.md)
+
+テスト環境は `main` のフォルダではなく、ブランチ `fix/taicho-data-protection` と `taicho/build-preview.cjs`（Cloudflare Pages）です。アプリの変更はテストを先にし、利用者の OK のあとだけ本番の `main` へ出します。手順は [docs/taicho/maintenance.md](docs/taicho/maintenance.md) です。
+
 ## チェック
 
 リポジトリのルートで次を実行します。依存パッケージはありません。
@@ -149,6 +158,6 @@ HTML・CSS・JS・アイコン・マニフェストのどれかを変えたら�
 node scripts/check-site.js
 ```
 
-見ているものは、メニューの `a.m` の先に `index.html` があること、Service Worker の事前キャッシュのパスがあること、各 HTML のインライン JS とローカル参照の JS が構文として解析できること、履歴ページの機種名一覧にメニューの機種があることです。
+見ているものは、メニューの `a.m` の先に `index.html` があること、Service Worker の事前キャッシュのパスがあること、各 HTML のインライン JS とローカル参照の JS が構文として解析できること、履歴ページの機種名一覧にメニューの機種があること、体調ログのマニフェストとテストブランチの JS です。
 
 ローカルでの開き方と、main からの公開手順は `docs/maintenance.md` です。

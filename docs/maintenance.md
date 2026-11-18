@@ -40,6 +40,8 @@ node scripts/check-site.js
 - 各 HTML のインラインスクリプトと、その HTML が参照するローカル JS が、Node の構文解析を通る。
 - メニューの設定推測機種（ハイエナと履歴以外）が、`history/index.html` の `MACHINE_TITLES` にある。
 - SLOTSENSE のキャッシュ名が `slotsense-v` と番号、体調ログが `taicho-v` と番号である。
+- 体調ログのマニフェストの `scope` が `/taicho/` で、アイコンがあり、メニューからリンクしていない。
+- ブランチ `fix/taicho-data-protection` の体調ログ JS、マニフェスト、`build-preview.cjs` が解析できる。詳細は `docs/taicho/maintenance.md` です。
 
 推測の確率が出典と一致するかは見ません。ブラウザの表示も見ません。機種を足したあとの目視は、上のローカルサーバーとスクリーンショットで行います。
 
@@ -51,7 +53,7 @@ node scripts/check-site.js
 
 `main` へ直接コミットして公開する運用にはしないでください。プレビューを挟みます。
 
-体調ログだけを直したときは `taicho/sw.js` の `taicho-vN` を上げます。SLOTSENSE の `slotsense-vN` は、SLOTSENSE 側のファイルを変えたときだけ上げます。
+体調ログだけを直したときは `taicho/sw.js` の `taicho-vN` を上げます。SLOTSENSE の `slotsense-vN` は、SLOTSENSE 側のファイルを変えたときだけ上げます。体調ログはテストブランチを先にし、OK のあとで本番へ出します。キャッシュ番号はテストと本番の両方で上げます。手順は `docs/taicho/maintenance.md` です。
 
 ## 機種を追加するチェックリスト
 

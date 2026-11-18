@@ -96,4 +96,4 @@
 
 ## メニューに無いもの
 
-`/taicho/` は体調ログで、設定推測をしない。`docs/structure.md` を参照。
+`/taicho/` は体調ログで、設定推測をしない。境界は `docs/structure.md`、アプリ自身の文書は `docs/taicho/structure.md` です。
