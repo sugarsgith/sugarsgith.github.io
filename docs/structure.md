@@ -83,12 +83,13 @@
 
 ## 体調ログ（`/taicho/`）
 
-スロットセンスとは別のアプリです。
+スロットセンスとは別のアプリです。ルールとテスト環境は `taicho/AGENTS.md` と `docs/taicho/structure.md` です。ここには境界だけを書きます。
 
 - 画面は `taicho/index.html`。マニフェストの `start_url` は `/taicho/`、スコープも `/taicho/`。
-- Service Worker は `taicho/sw.js`、キャッシュ名 `taicho-v1`（ドキュメント作成時点）。
+- Service Worker は `taicho/sw.js`、キャッシュ名 `taicho-v1`（2026-11-18 の `main`）。
 - アイコンは `taicho/icons/`。SLOTSENSE の `icons/` とは別ファイルです。
 - 保存キーは `taicho-log-v2`。旧 `taicho-log-v1` は `migrate` で v2 にしてから v2 へ書き出す。表示切替は `taicho-ov`。
 - 読み込みに失敗したら `loadBlocked` で以後の保存を止め、書き出しで元の文字列を残す、という保護が入っています（コミット「Protect taicho records」）。
+- テスト環境は `main` には無く、ブランチ `fix/taicho-data-protection` の `taicho/build-preview.cjs` です。本番へ出す手順は `docs/taicho/maintenance.md` です。
 
 スロットのキャッシュバージョンを上げても、体調ログのキャッシュは消えません。体調ログを直したときだけ `taicho-vN` を上げます。

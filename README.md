@@ -20,4 +20,9 @@
 node scripts/check-site.js
 ```
 
-同じリポジトリの `/taicho/` は、別アプリの体調ログです。スロットセンスのメニューには出ていません。
+## 体調ログ
+
+別アプリです。公開 URL は <https://sugarsgith.github.io/taicho/> です。スロットセンスのメニューには出ていません。記録はこの端末のブラウザ内に保存されます。
+
+- AI 向けのルール: [taicho/AGENTS.md](taicho/AGENTS.md)
+- ファイル、データ、テスト環境、公開: [docs/taicho/structure.md](docs/taicho/structure.md)
