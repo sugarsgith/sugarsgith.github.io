@@ -18,7 +18,7 @@
 | `history/index.html` | 終了保存した台の一覧、コピー、JSON の書き出しと取り込み |
 | `topbar.js` | ページ先頭ステータス。`window.SSTop` |
 | `topbar.css` | その見た目。ヘッダーを sticky にする |
-| `sw.js` | SLOTSENSE の Service Worker。スコープ `/`。キャッシュ `slotsense-v6`（ドキュメント作成時点） |
+| `sw.js` | SLOTSENSE の Service Worker。スコープ `/`。キャッシュ `slotsense-v7` |
 | `manifest.webmanifest` | 名前 SLOTSENSE、`start_url` `/` |
 | `icons/` | 192 / 512 / maskable / apple-touch-icon |
 | `docs/` | この保守メモ。メニューには出さない |

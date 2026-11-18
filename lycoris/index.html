@@ -644,8 +644,9 @@ document.addEventListener("click",function(e){
 var SESS_KEY="slotsense:sessions:v1";
 function machineMeta(){return{id:"lycoris",title:"スマスロ リコリス・リコイル"};}
 function sessionSummary(){return "通常G"+(S.normalG||0);}
-function buildCopyText(){var lines=["【SLOTSENSE / "+machineMeta().title+"】","日付: "+(new Date()).toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+"  台番: "+(S.dai||"-")+"  収支: "+(S.balance||"-"),"通常G: "+(S.normalG||"-"),"メモ: "+(S.notes||"-")];
- try{if(typeof estimate==="function"){var r=estimate();if(r&&r.post){var b=0;r.post.forEach(function(p,i){if(p>r.post[b])b=i;});lines.push("設定推測: 高設定域 "+Math.round((r.post[3]+r.post[4]+r.post[5])*100)+"% 最有力 設定"+(b+1));}}}catch(e){}
+function buildCopyText(){var lines=["【SLOTSENSE / "+machineMeta().title+"】","日付: "+(new Date()).toLocaleDateString("ja-JP",{timeZone:"Asia/Tokyo"}),"店: "+(S.store||"-")+"  台番: "+(S.dai||"-")+"  収支: "+(S.balance||"-"),"通常G: "+(S.normalG||"-")];
+ try{var m=M(),full=estimate(m);if(full){var fp=fr(full),bi=0;full.forEach(function(p,i){if(p>full[bi])bi=i;});var line="設定推測: 高設定域（4・5・6） "+((fp[3]+fp[4]+fp[5])*100).toFixed(1)+"%　最有力 設定"+(bi+1);var mn=minSetting(m);if(mn>1)line+="　設定"+mn+"以上濃厚";lines.push(line);}}catch(e){}
+ lines.push("メモ: "+(S.notes||"-"));
  return lines.join("\n");}
 function doCopy(){var t=buildCopyText(),out=$("copyOut");if(out){out.style.display="block";out.value=t;}navigator.clipboard.writeText(t).then(function(){}).catch(function(){if(out){out.focus();out.select();}});}
 function openEndDlg(){$("endDlg").hidden=false;$("endStore").value=S.store||"";$("endDai").value=S.dai||"";$("endBal").value=S.balance||"";var z=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Tokyo"}));$("endDate").value=z.getFullYear()+"-"+String(z.getMonth()+1).padStart(2,"0")+"-"+String(z.getDate()).padStart(2,"0");$("endMemo").value=S.notes||"";}
